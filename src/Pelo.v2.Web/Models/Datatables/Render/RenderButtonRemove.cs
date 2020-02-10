@@ -14,7 +14,7 @@
         public RenderButtonRemove(string title)
         {
             Title = title;
-            ClassName = NopButtonClassDefaults.Default;
+            ClassName = NopButtonClassDefaults.Danger;
         }
 
         #endregion

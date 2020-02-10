@@ -59,6 +59,7 @@
    {
        Name="appconfig-grid",
        UrlRead = new DataUrl("GetList","AppConfig",null),
+       UrlDelete = new DataUrl("Delete","AppConfig",null),
        SearchButtonId = "search-appconfig",
        Length = 20,
        LengthMenu = "[10,20,50,100]",
@@ -82,9 +83,16 @@
                                                            new ColumnProperty(nameof(AppConfigModel.Id))
                                                            {
                                                                    Title = "",
-                                                                   Width = "100",
+                                                                   Width = "40",
                                                                    ClassName =  NopColumnClassDefaults.Button,
                                                                    Render = new RenderButtonEdit(new DataUrl("Edit"))
+                                                           },
+                                                           new ColumnProperty(nameof(AppConfigModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "40",
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonRemove("Remove")
                                                            }
                                                    }
    })
@@ -97,9 +105,9 @@
             $('.panel').lobiPanel({
                     sortable: true
                 });
-            $('.panel').on('dragged.lobiPanel', function(ev, lobiPanel){
-                $('.dahsboard-column').matchHeight();
-            });
+            //$('.panel').on('dragged.lobiPanel', function(ev, lobiPanel){
+            //    $('.dahsboard-column').matchHeight();
+            //});
             $('#table').DataTable();
         })
     </script>

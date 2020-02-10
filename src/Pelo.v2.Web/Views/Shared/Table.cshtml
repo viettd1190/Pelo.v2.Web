@@ -1,4 +1,5 @@
 ﻿@model DataTablesModel
+@using System.Net
 @using Pelo.v2.Web.Models.Datatables
 @functions
 {
@@ -38,13 +39,13 @@ string GetUrl(DataUrl dataUrl)
     {
         //selectedIds - This variable will be used on views. It can not be renamed
         <text>
-        var selectedIds = [];
+    var selectedIds = [];
 
-        function updateMasterCheckbox() {
-            var numChkBoxes = $('#@Model.Name input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]').length;
-            var numChkBoxesChecked = $('#@Model.Name input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]:checked').length;
-            $('#mastercheckbox').attr('checked', numChkBoxes == numChkBoxesChecked && numChkBoxes > 0);
-        }
+    function updateMasterCheckbox() {
+        var numChkBoxes = $('#@Model.Name input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]').length;
+        var numChkBoxesChecked = $('#@Model.Name input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]:checked').length;
+        $('#mastercheckbox').attr('checked', numChkBoxes == numChkBoxesChecked && numChkBoxes > 0);
+    }
         </text>
     }
 
@@ -55,13 +56,13 @@ string GetUrl(DataUrl dataUrl)
             selectedIds = [];
         }
     }
-        var datatable=null;
+    var datatable=null;
    
     $(document).ready(function () {
 
         datatable = $('#@Model.Name').DataTable({
-             @await Html.PartialAsync("_Table.Definition", Model)
-        });
+                @await Html.PartialAsync("_Table.Definition", Model)
+            });
 
         //$(document).resize(function () {
         //    if(datatable!=null) {
@@ -79,36 +80,83 @@ string GetUrl(DataUrl dataUrl)
         @if (!string.IsNullOrEmpty(Model.SearchButtonId))
         {
             <text>
-            $('#@Model.SearchButtonId').click(function() {
-                $('#@Model.Name').DataTable().ajax.reload();
-                $('.checkboxGroups').attr('checked', false).change();
-                selectedIds = [];
-                return false;
-            });
+                $('#@Model.SearchButtonId').click(function() {
+                    $('#@Model.Name').DataTable().ajax.reload();
+                    $('.checkboxGroups').attr('checked', false).change();
+                    selectedIds = [];
+                    return false;
+                });
             </text>
         }
         @if (isMasterCheckBoxUsed)
         {
             <text>
-            $('#mastercheckbox').click(function () {
-                $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
-            });
+                $('#mastercheckbox').click(function () {
+                    $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
+                });
 
-            $('#@Model.Name').on('change', 'input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]', function (e) {
-                var $check = $(this);
-                var checked = jQuery.inArray($check.val(), selectedIds);
-                if ($check.is(':checked') == true) {
-                    if (checked == -1) {
-                        selectedIds.push($check.val());
+                $('#@Model.Name').on('change', 'input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]', function (e) {
+                    var $check = $(this);
+                    var checked = jQuery.inArray($check.val(), selectedIds);
+                    if ($check.is(':checked') == true) {
+                        if (checked == -1) {
+                            selectedIds.push($check.val());
+                        }
+                    } else if (checked > -1) {
+                        selectedIds = $.grep(selectedIds, function (item, index) {
+                            return item != $check.val();
+                        });
                     }
-                } else if (checked > -1) {
-                    selectedIds = $.grep(selectedIds, function (item, index) {
-                        return item != $check.val();
-                    });
-                }
-                updateMasterCheckbox();
-            });
+                    updateMasterCheckbox();
+                });
             </text>
         }
     });
 </script>
+@if ((Model.UrlDelete != null) || (Model.ChildTable?.UrlDelete != null))
+{
+    <text>
+        <script>
+            function table_deletedata_@(model_name)(dataId) {
+                if (confirm('Bạn có chắc chắn muốn xóa dữ liệu này không?')) {
+                    var postData = {
+                            @if (!string.IsNullOrEmpty(Model.BindColumnNameActionDelete))
+                            {
+                                <text>
+                            @Model.BindColumnNameActionDelete: dataId
+                                </text>
+                            }
+                            else
+                            {
+                                <text>
+                            id: dataId
+                                </text>
+                            }
+                        };
+                    addAntiForgeryToken(postData);
+
+                    $.ajax({
+                            url: "@Html.Raw(GetUrl((Model.ChildTable?.UrlDelete != null) ? Model.ChildTable?.UrlDelete : Model.UrlDelete))",
+                            type: "@WebRequestMethods.Http.Post",
+                            dataType: "json",
+                            data: postData,
+                            success: function (data, textStatus, jqXHR) {
+                                //display error if returned
+                                if (data) {
+                                    display_nop_error(data);
+                                }
+                                //refresh grid
+                                $('#@Model.Name').DataTable().draw(false);
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                alert(errorThrown);
+                            }
+                        });
+                }
+                else {
+                    return false;
+                }
+            }
+        </script>
+    </text>
+}

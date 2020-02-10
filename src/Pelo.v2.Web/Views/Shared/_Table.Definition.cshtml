@@ -16,7 +16,8 @@
 @functions
 {
 
-    string GetUrl(DataUrl dataUrl) {
+    string GetUrl(DataUrl dataUrl)
+    {
         return !string.IsNullOrEmpty(dataUrl?.ActionName) && !string.IsNullOrEmpty(dataUrl.ControllerName)
                        ? Url.Action(dataUrl.ActionName,
                                     dataUrl.ControllerName,
@@ -30,35 +31,42 @@
 
 }
 
-@if(!string.IsNullOrEmpty(Model.HeaderCallback)) {
+@if (!string.IsNullOrEmpty(Model.HeaderCallback))
+{
     <text>
         headerCallback: function (tfoot, data, start, end, display) {
         return @(Model.HeaderCallback)(tfoot, data, start, end, display);
         },
     </text>
 }
-@if(!string.IsNullOrEmpty(Model.FooterCallback)) {
+@if (!string.IsNullOrEmpty(Model.FooterCallback))
+{
     <text>
         footerCallback: function (tfoot, data, start, end, display) {
         return @(Model.FooterCallback)(tfoot, data, start, end, display);
         },
     </text>
 }
-@if(Model.Processing) {
+@if (Model.Processing)
+{
     <text>
         processing: @Model.Processing.ToString().ToLower(),
     </text>
 }
-@if(Model.ServerSide) {
+@if (Model.ServerSide)
+{
     <text>
         serverSide: @Model.ServerSide.ToString().ToLower(),
     </text>
 }
-@if(Model.Data != null) {
+@if (Model.Data != null)
+{
     <text>
         data: @Html.Raw(Model.Data.ToString()),
     </text>
-} else {
+}
+else
+{
     <text>
         ajax:
         {
@@ -67,98 +75,121 @@
         dataType: "json",
         dataSrc: "data",
         data: function(data) {
-        @if(Model.Filters != null) {
-            foreach (var filter in Model.Filters) {
-                if(filter.Type == typeof(string)) {
-                    if(Model.IsChildTable
-                       && !string.IsNullOrEmpty(filter.ParentName)) {
+        @if (Model.Filters != null)
+        {
+            foreach (var filter in Model.Filters)
+            {
+                if (filter.Type == typeof(string))
+                {
+                    if (Model.IsChildTable
+                       && !string.IsNullOrEmpty(filter.ParentName))
+                    {
                         <text>
-                            data.@filter.Name = row.data().@filter.ParentName;
-                        </text>
-                        continue;
-                    }
+                        data.@filter.Name = row.data().@filter.ParentName;
+    </text>
+    continue;
+}
 
-                    if(!string.IsNullOrEmpty(filter.ModelName)) {
-                        <text>
-                            data.@filter.Name = $('#@(filter.ModelName)_@filter.Name').val();
-                        </text>
-                    } else {
-                        <text>
-                            data.@filter.Name = $('#@filter.Name').val();
-                        </text>
-                    }
-                    continue;
-                }
-                if(filter.Type == typeof(bool)) {
-                    <text>
-                        data.@filter.Name = $('#@filter.Name').is(':checked');
-                    </text>
-                    continue;
-                }
-                if(filter.Type == typeof(int)) {
-                    if(int.TryParse(filter.Value.ToString(),
-                                    out int val)) {
-                        <text>
-                            data.@filter.Name = @val;
-                        </text>
-                    }
-                }
-            }
-        }
+if (!string.IsNullOrEmpty(filter.ModelName))
+{
+    <text>
+        data.@filter.Name = $('#@(filter.ModelName)_@filter.Name').val();
+    </text>
+}
+else
+{
+    <text>
+        data.@filter.Name = $('#@filter.Name').val();
+    </text>
+}
+continue;
+}
+if (filter.Type == typeof(bool))
+{
+<text>
+    data.@filter.Name = $('#@filter.Name').is(':checked');
+</text>
+continue;
+}
+if (filter.Type == typeof(int))
+{
+if (int.TryParse(filter.Value.ToString(),
+                out int val))
+{
+    <text>
+        data.@filter.Name = @val;
+    </text>
+}
+}
+}
+}
         return data;
         }
         },
-    </text>
-}
+        </text>
+    }
 scrollX: true,
 info: @Model.Info.ToString().ToLower(),
 paging: @Model.Paging.ToString().ToLower(),
 pagingType: '@Model.PagingType',
 ordering: @Model.Ordering.ToString().ToLower(),
 columns: [
-@for (int i = 0; i < Model.ColumnCollection.Count; i++) {
+@for (int i = 0; i < Model.ColumnCollection.Count; i++)
+{
     var column = Model.ColumnCollection[i];
     <text>
         {
-        @if(!string.IsNullOrEmpty(column.Title)
-            && !column.IsMasterCheckBox) {
+        @if (!string.IsNullOrEmpty(column.Title)
+           && !column.IsMasterCheckBox)
+        {
             <text>
-                title: '@JavaScriptEncoder.Default.Encode(column.Title)',
+            title: '@JavaScriptEncoder.Default.Encode(column.Title)',
+    </text>
+}
+else
+{
+    if (!string.IsNullOrEmpty(column.Title)
+       && column.IsMasterCheckBox)
+    {
+        <text>
+            title: '
+            <div class="checkbox">
+                <label>
+                    <input id="mastercheckbox" type="checkbox" />@JavaScriptEncoder.Default.Encode(column.Title)
+                </label>
+            </div>',
+        </text>
+    }
+    else
+    {
+        if (string.IsNullOrEmpty(column.Title)
+           && column.IsMasterCheckBox)
+        {
+            <text>
+                title: '
+                <input id="mastercheckbox" type="checkbox" />',
             </text>
-        } else {
-            if(!string.IsNullOrEmpty(column.Title)
-               && column.IsMasterCheckBox) {
-                <text>
-                    title: '
-                    <div class="checkbox">
-                        <label>
-                            <input id="mastercheckbox" type="checkbox"/>@JavaScriptEncoder.Default.Encode(column.Title)</label>
-                    </div>',
-                </text>
-            } else {
-                if(string.IsNullOrEmpty(column.Title)
-                   && column.IsMasterCheckBox) {
-                    <text>
-                        title: '<input id="mastercheckbox" type="checkbox"/>',
-                    </text>
-                }
-            }
         }
+    }
+}
         width: '@column.Width',
         visible: @column.Visible.ToString().ToLower(),
         searchable: @column.Searchable.ToString().ToLower(),
-        @if(column.AutoWidth) {
+        @if (column.AutoWidth)
+        {
             <text>
                 autoWidth: @column.AutoWidth.ToString().ToLower(),
             </text>
         }
-        @if(!string.IsNullOrEmpty(column.ClassName)) {
+        @if (!string.IsNullOrEmpty(column.ClassName))
+        {
             <text>
                 className: '@column.ClassName',
             </text>
         }
 
-        @switch (column.Render) {
+        @switch (column.Render)
+        {
             case RenderDate date:
                 <text>
                     render: function (data, type, row, meta) {
@@ -166,10 +197,17 @@ columns: [
                     },
                 </text>
                 break;
+            case RenderButtonRemove button:
+                <text>
+                    render: function (data, type, row, meta) {
+                    return '<a href="#" class="@button.ClassName" onclick="table_deletedata_@(model_name)(\'' + data + '\');return false;"><i class="fa fa-remove"></i></a>';
+                    },
+                </text>
+                break;
             case RenderButtonEdit buttonEdit:
                 <text>
                     render: function (data, type, row, meta) {
-                    return '<a class="@buttonEdit.ClassName" href="@GetUrl(buttonEdit.Url)' + data + '"><i class="fa fa-pencil"></i>Edit</a>';
+                    return '<a class="@buttonEdit.ClassName" href="@GetUrl(buttonEdit.Url)' + data + '"><i class="fa fa-pencil"></i></a>';
                     },
                 </text>
                 break;
@@ -181,14 +219,16 @@ columns: [
                 </text>
                 break;
             case RenderButtonCustom buttonCustom:
-                if(!string.IsNullOrEmpty(buttonCustom.Url)) {
+                if (!string.IsNullOrEmpty(buttonCustom.Url))
+                {
                     <text>
                         render: function (data, type, row, meta) {
                         return '<a class="@buttonCustom.ClassName" href="@buttonCustom.Url' + data + '">@JavaScriptEncoder.Default.Encode(buttonCustom.Title)</a>';
                         },
                     </text>
                 }
-                if(!string.IsNullOrEmpty(buttonCustom.OnClickFunctionName)) {
+                if (!string.IsNullOrEmpty(buttonCustom.OnClickFunctionName))
+                {
                     <text>
                         render: function (data, type, row, meta) {
                         return '<a class="@buttonCustom.ClassName" onclick="@buttonCustom.OnClickFunctionName;' + '(' + data + ');">@JavaScriptEncoder.Default.Encode(buttonCustom.Title)</a>';
@@ -201,8 +241,10 @@ columns: [
                 <text>
                     render: function (data, type, row, meta) {
                     return (data === 'true')
-                    ? '<input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" class="checkboxGroups" checked="checked"/>'
-                    : '<input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" class="checkboxGroups"/>';
+                    ? '
+                    <input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" class="checkboxGroups" checked="checked" />'
+                    : '
+                    <input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" class="checkboxGroups" />';
                     },
                 </text>
                 break;
@@ -217,9 +259,10 @@ columns: [
         }
         data: '@column.Data'
         }
-        @if(i != Model.ColumnCollection.Count - 1) {
+        @if (i != Model.ColumnCollection.Count - 1)
+        {
             <text>,</text>
         }
-    </text>
-}
+        </text>
+    }
 ]

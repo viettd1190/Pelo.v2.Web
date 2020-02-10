@@ -273,6 +273,7 @@ namespace Pelo.v2.Web.Models.Datatables
             //set default values
             Visible = true;
             Encode = true;
+            AutoWidth = true;
         }
 
         #endregion
