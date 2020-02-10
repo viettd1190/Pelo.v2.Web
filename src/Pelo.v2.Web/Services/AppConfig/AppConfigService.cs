@@ -29,45 +29,60 @@ namespace Pelo.v2.Web.Services.AppConfig
         {
             try
             {
-                var start = 1;
-
-                if(request != null) start = request.Start / request.Length + 1;
-
                 var columnOrder = "name";
                 var sortDir = "ASC";
 
-                var url = string.Format(ApiUrl.APP_CONFIG_GET_BY_PAGING,
-                                        request.AppConfigName,
-                                        request.AppConfigDescription,
-                                        start,
-                                        request?.Length ?? 10,
-                                        columnOrder,
-                                        sortDir);
+                if(request != null)
+                {
+                    var start = request.Start / request.Length + 1;
 
-                var response = await HttpService.Send<PageResult<GetAppConfigPagingResponse>>(url,
-                                                                                              null,
-                                                                                              HttpMethod.Get,
-                                                                                              true);
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
-                if(response.IsSuccess)
-                    return new AppConfigListModel
-                           {
-                                   Draw = request.Draw,
-                                   RecordsFiltered = response.Data.TotalCount,
-                                   Total = response.Data.TotalCount,
-                                   RecordsTotal = response.Data.TotalCount,
-                                   Data = response.Data.Data.Select(c => new AppConfigModel
-                                                                         {
-                                                                                 Id = c.Id,
-                                                                                 Name = c.Name,
-                                                                                 Description = c.Description,
-                                                                                 PageSize = request.PageSize,
-                                                                                 Value = c.Value,
-                                                                                 PageSizeOptions = request.AvailablePageSizes
-                                                                         })
-                           };
+                    var url = string.Format(ApiUrl.APP_CONFIG_GET_BY_PAGING,
+                                            request.AppConfigName,
+                                            request.AppConfigDescription,
+                                            start,
+                                            request?.Length ?? 10,
+                                            columnOrder,
+                                            sortDir);
 
-                throw new PeloException(response.Message);
+                    var response = await HttpService.Send<PageResult<GetAppConfigPagingResponse>>(url,
+                                                                                                  null,
+                                                                                                  HttpMethod.Get,
+                                                                                                  true);
+
+                    if(response.IsSuccess)
+                        return new AppConfigListModel
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new AppConfigModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Name = c.Name,
+                                                                                     Description = c.Description,
+                                                                                     PageSize = request.PageSize,
+                                                                                     Value = c.Value,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
+
+                    throw new PeloException(response.Message);
+                }
+
+                throw new PeloException("Request is null");
             }
             catch (Exception exception)
             {
