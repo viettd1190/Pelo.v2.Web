@@ -15,17 +15,45 @@
 
         public const string ROLE_GET_ALL = BASE_API_URL + "/api/role/all";
 
+        public const string ROLE_PAGING = BASE_API_URL + "/api/role?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
+
+        public const string ROLE_INSERT = BASE_API_URL + "/api/role";
+
+        public const string ROLE_UPDATE = BASE_API_URL + "/api/role";
+
+        public const string ROLE_DELETE = BASE_API_URL + "/api/role/{0}";
+
+        public const string GET_ROLE_ID = BASE_API_URL + "/api/role/{0}";
+
         #endregion
 
         #region Branch
 
         public const string BRANCH_GET_ALL = BASE_API_URL + "/api/branch/all";
 
+        public const string BRANCH_PAGING = BASE_API_URL + "/api/branch?name={0}&hotline={1}&provinceId={2}&districtId={3}&wardId={4}&column_order={5}&sort_dir={6}page={7}&page_size={8}";
+
+        public const string BRANCH_INSERT = BASE_API_URL + "/api/branch";
+
+        public const string BRANCH_UPDATE = BASE_API_URL + "/api/branch";
+
+        public const string BRANCH_DELETE = BASE_API_URL + "/api/branch/{0}";
+
+        public const string GET_BRANCH_ID = BASE_API_URL + "/api/branch/{0}";
+
         #endregion
 
         #region Department
 
         public const string DEPARTMENT_GET_ALL = BASE_API_URL + "/api/department/all";
+
+        public const string DEPARTMENT_DELETE = BASE_API_URL + "/api/department/{0}";
+
+        public const string DEPARTMENT_GET_BY_ID = BASE_API_URL + "/api/department/{0}";
+
+        public const string DEPARTMENT_UPDATE = BASE_API_URL + "/api/department";
+
+        public const string DEPARTMENT_GET_BY_PAGING = BASE_API_URL + "/api/department?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
 
         #endregion
 
@@ -192,6 +220,14 @@
         #region PayMethod
 
         public const string PAY_METHOD_GET_ALL = BASE_API_URL + "/api/pay_method/all";
+
+        public const string PAY_METHOD_GET_BY_PAGING = BASE_API_URL + "/api/pay_method?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
+
+        public const string PAY_METHOD_DELETE = BASE_API_URL + "/api/pay_method/{0}";
+
+        public const string PAY_METHOD_GET_BY_ID = BASE_API_URL + "/api/pay_method/{0}";
+
+        public const string PAY_METHOD_UPDATE = BASE_API_URL + "/api/pay_method";
 
         #endregion
 
