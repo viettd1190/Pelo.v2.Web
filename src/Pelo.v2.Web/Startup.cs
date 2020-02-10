@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pelo.v2.Web.Commons;
 
 namespace Pelo.v2.Web
 {
@@ -21,7 +26,7 @@ namespace Pelo.v2.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -30,13 +35,41 @@ namespace Pelo.v2.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddAuthentication(options =>
+                                       {
+                                           options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                                           options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                                       })
+                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+                               options =>
+                               {
+                                   options.AccessDeniedPath = new PathString("/Account/Access");
+                                   options.LoginPath = new PathString("/Account/LogOn");
+                                   options.LogoutPath = new PathString("/Account/Logout");
+                                   options.ReturnUrlParameter = "ReturnUrl";
+                                   options.SlidingExpiration = true;
+                               });
+
+            //services.AddOutputCaching();
+
+            services.AddMvc()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<ContextHelper>();
+
+            var container = services.RegisterAutofac(Configuration);
+            return new AutofacServiceProvider(container);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseAuthentication();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -47,14 +80,15 @@ namespace Pelo.v2.Web
             }
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
+            //app.UseOutputCaching();
             app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+                       {
+                           routes.MapRoute(name: "default",
+                                           template: "{controller=Home}/{action=Index}/{id?}");
+                       });
+
+            app.UseCookiePolicy();
         }
     }
 }

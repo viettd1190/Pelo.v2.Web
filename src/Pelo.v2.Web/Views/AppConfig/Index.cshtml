@@ -1,0 +1,106 @@
+﻿@using Pelo.v2.Web.Models.AppConfig
+@using Pelo.v2.Web.Models.Datatables
+@using Pelo.v2.Web.Models.Datatables.Render
+@model Pelo.v2.Web.Models.AppConfig.AppConfigSearchModel
+@{
+  ViewBag.Title = "Danh sách tham số";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section cssPlugin{ 
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{ 
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height:auto !important;
+        }
+    </style>
+}
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12 dahsboard-column">
+        <section class="box-typical box-typical-dashboard panel panel-default scrollable">
+            <header class="box-typical-header panel-heading">
+                <h3 class="panel-title">Danh sách tham số</h3>
+            </header>
+            <div class="box-typical-body panel-body">
+                <div class="row" style="padding:15px;">
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="AppConfigName">Tên tham số</label>
+                            <input asp-for="AppConfigName" class="form-control" type="text" placeholder="Tên tham số"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="AppConfigDescription">Ghi chú</label>
+                            <input asp-for="AppConfigDescription" class="form-control" type="text" placeholder="Ghi chú"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary" id="search-appconfig">Tìm kiếm</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-block">
+        @await Html.PartialAsync("Table",new DataTablesModel
+   {
+       Name="appconfig-grid",
+       UrlRead = new DataUrl("GetList","AppConfig",null),
+       SearchButtonId = "search-appconfig",
+       Length = 20,
+       LengthMenu = "[10,20,50,100]",
+       Filters = new List<FilterParameter> {
+                                                   new FilterParameter(nameof(Model.AppConfigName)),
+                                                   new FilterParameter(nameof(Model.AppConfigDescription))
+                                           },
+       ColumnCollection = new List<ColumnProperty> {
+                                                           new ColumnProperty(nameof(AppConfigModel.Name))
+                                                           {
+                                                                   Title = "Tên"
+                                                           },
+                                                           new ColumnProperty(nameof(AppConfigModel.Value))
+                                                           {
+                                                                   Title = "Giá trị"
+                                                           },
+                                                           new ColumnProperty(nameof(AppConfigModel.Description))
+                                                           {
+                                                                   Title = "Mô tả"
+                                                           },
+                                                           new ColumnProperty(nameof(AppConfigModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "100",
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonEdit(new DataUrl("Edit"))
+                                                           }
+                                                   }
+   })
+    </div>
+</section>
+
+@section js{ 
+    <script>
+        $(document).ready(function () {
+            $('.panel').lobiPanel({
+                    sortable: true
+                });
+            $('.panel').on('dragged.lobiPanel', function(ev, lobiPanel){
+                $('.dahsboard-column').matchHeight();
+            });
+            $('#table').DataTable();
+        })
+    </script>
+}

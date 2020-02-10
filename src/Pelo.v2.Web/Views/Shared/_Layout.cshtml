@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>StartUI - Premium Bootstrap 4 Admin Dashboard Template</title>
+    <title>Vidia Admin - @ViewBag.Title</title>
 
     <link href="~/startui/img/favicon.144x144.png" rel="apple-touch-icon" type="image/png" sizes="144x144">
     <link href="~/startui/img/favicon.114x114.png" rel="apple-touch-icon" type="image/png" sizes="114x114">
@@ -22,9 +22,13 @@
     <link rel="stylesheet" href="~/startui/css/separate/vendor/lobipanel.min.css">
     <link rel="stylesheet" href="~/startui/css/lib/jqueryui/jquery-ui.min.css">
     <link rel="stylesheet" href="~/startui/css/separate/pages/widgets.min.css">
+    @RenderSection("cssPlugin", false)
     <link rel="stylesheet" href="~/startui/css/lib/font-awesome/font-awesome.min.css">
     <link rel="stylesheet" href="~/startui/css/lib/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="~/startui/css/main.css">
+    @RenderSection("css",false)
+    <script src="~/startui/js/lib/jquery/jquery.min.js"></script>
+
 </head>
 <body class="with-side-menu control-panel control-panel-compact">
 
@@ -675,16 +679,14 @@
         </a>
     </div>
 
-    <script src="~/startui/js/lib/jquery/jquery.min.js"></script>
     <script src="~/startui/js/lib/tether/tether.min.js"></script>
     <script src="~/startui/js/lib/bootstrap/bootstrap.min.js"></script>
     <script src="~/startui/js/plugins.js"></script>
-
+    @RenderSection("jsPlugin",false)
     <script type="text/javascript" src="~/startui/js/lib/jqueryui/jquery-ui.min.js"></script>
     <script type="text/javascript" src="~/startui/js/lib/lobipanel/lobipanel.min.js"></script>
     <script type="text/javascript" src="~/startui/js/lib/match-height/jquery.matchHeight.min.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script>$(document).ready(function() {
+    @*<script>$(document).ready(function() {
 			$('.panel').lobiPanel({
 				sortable: true
 			});
@@ -777,7 +779,8 @@
 				setTimeout(function(){
 				}, 1000);
 			});
-		});</script>
-    <script src="~/startui/js/app.js"></script>
+		});</script>*@
+<script src="~/startui/js/app.js"></script>
+@RenderSection("js",false)
 </body>
 </html>
