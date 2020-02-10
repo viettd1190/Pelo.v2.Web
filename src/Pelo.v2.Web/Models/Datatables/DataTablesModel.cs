@@ -273,7 +273,7 @@ namespace Pelo.v2.Web.Models.Datatables
             //set default values
             Visible = true;
             Encode = true;
-            AutoWidth = true;
+            Orderable = true;
         }
 
         #endregion
@@ -325,6 +325,11 @@ namespace Pelo.v2.Web.Models.Datatables
         /// Enable or disable filtering on the data in this column.
         /// </summary>
         public bool Searchable { get; set; }
+
+        /// <summary>
+        /// Enable or disable ordering on the data in this column
+        /// </summary>
+        public bool Orderable { get; set; }
 
         /// <summary>
         /// Enable or disable editing on the data in this column.

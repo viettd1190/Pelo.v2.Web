@@ -129,11 +129,10 @@ string GetUrl(DataUrl dataUrl)
                             else
                             {
                                 <text>
-                            id: dataId
+                                    id: dataId
                                 </text>
                             }
                         };
-                    addAntiForgeryToken(postData);
 
                     $.ajax({
                             url: "@Html.Raw(GetUrl((Model.ChildTable?.UrlDelete != null) ? Model.ChildTable?.UrlDelete : Model.UrlDelete))",
