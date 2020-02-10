@@ -106,12 +106,13 @@
     <script>
         $(document).ready(function () {
             $('.panel').lobiPanel({
-                    sortable: true
+                sortable: false,
+                draggable: false,
+                resize: 'none'
                 });
-            //$('.panel').on('dragged.lobiPanel', function(ev, lobiPanel){
-            //    $('.dahsboard-column').matchHeight();
-            //});
             $('#table').DataTable();
+            reloadDataWhenEnter('AppConfigName');
+            reloadDataWhenEnter('AppConfigDescription');
         })
     </script>
 }

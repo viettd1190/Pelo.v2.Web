@@ -683,11 +683,29 @@
     <script src="~/startui/js/lib/tether/tether.min.js"></script>
     <script src="~/startui/js/lib/bootstrap/bootstrap.min.js"></script>
     <script src="~/startui/js/plugins.js"></script>
-    @RenderSection("jsPlugin",false)
+    <script src="~/startui/js/lib/notie/notie.js"></script>
+    @RenderSection("jsPlugin", false)
     <script type="text/javascript" src="~/startui/js/lib/jqueryui/jquery-ui.min.js"></script>
     <script type="text/javascript" src="~/startui/js/lib/lobipanel/lobipanel.min.js"></script>
     <script type="text/javascript" src="~/startui/js/lib/match-height/jquery.matchHeight.min.js"></script>
-<script src="~/startui/js/app.js"></script>
-@RenderSection("js",false)
+    <script src="~/startui/js/app.js"></script>
+    <script>
+        $(document).ready(function () {
+            notie.alert({
+                type: 1,
+                text: 'Test',
+                time: 30
+            });
+        });
+        function reloadDataWhenEnter(name) {
+            $('#' + name).keyup(function (key) {
+                if (key.keyCode === 13) {
+                    reloadData();
+                }
+            });
+        }
+    </script>
+    <script src="~/js/site.js"></script>
+    @RenderSection("js", false)
 </body>
 </html>

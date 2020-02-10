@@ -56,6 +56,14 @@ string GetUrl(DataUrl dataUrl)
             selectedIds = [];
         }
     }
+
+    function reloadData() {
+        $('#@Model.Name').DataTable().ajax.reload();
+        $('.checkboxGroups').attr('checked', false).change();
+        selectedIds = [];
+        return false;
+    }
+
     var datatable=null;
    
     $(document).ready(function () {
@@ -63,12 +71,6 @@ string GetUrl(DataUrl dataUrl)
         datatable = $('#@Model.Name').DataTable({
                 @await Html.PartialAsync("_Table.Definition", Model)
             });
-
-        //$(document).resize(function () {
-        //    if(datatable!=null) {
-        //        datatable.columns.adjust().draw();
-        //    }
-        //});
 
         $('#container-fluid').resize(function () {
             if(datatable!=null) {
@@ -80,12 +82,7 @@ string GetUrl(DataUrl dataUrl)
         @if (!string.IsNullOrEmpty(Model.SearchButtonId))
         {
             <text>
-                $('#@Model.SearchButtonId').click(function() {
-                    $('#@Model.Name').DataTable().ajax.reload();
-                    $('.checkboxGroups').attr('checked', false).change();
-                    selectedIds = [];
-                    return false;
-                });
+                $('#@Model.SearchButtonId').click(function() {reloadData();});
             </text>
         }
         @if (isMasterCheckBoxUsed)
@@ -140,12 +137,12 @@ string GetUrl(DataUrl dataUrl)
                             dataType: "json",
                             data: postData,
                             success: function (data, textStatus, jqXHR) {
-                                //display error if returned
-                                if (data) {
-                                    display_nop_error(data);
+                                showNotification(data);
+                                if (data.data===true) {
+                                    //refresh grid
+                                    $('#@Model.Name').DataTable().draw(false);
                                 }
-                                //refresh grid
-                                $('#@Model.Name').DataTable().draw(false);
+                                
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
                                 alert(errorThrown);

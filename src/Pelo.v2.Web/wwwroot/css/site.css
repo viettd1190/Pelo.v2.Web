@@ -1,3 +1,6 @@
 ﻿.dataTables_filter {
     display:none;
 }
+.notie-container {
+    box-shadow: none;
+}

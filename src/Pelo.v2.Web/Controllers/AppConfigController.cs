@@ -25,5 +25,12 @@ namespace Pelo.v2.Web.Controllers
             var result = await _appConfigService.GetByPaging(model);
             return Json(result);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _appConfigService.Delete(id);
+            return Json(result);
+        }
     }
 }

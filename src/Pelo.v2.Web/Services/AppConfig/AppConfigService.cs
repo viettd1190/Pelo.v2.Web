@@ -14,6 +14,8 @@ namespace Pelo.v2.Web.Services.AppConfig
     public interface IAppConfigService
     {
         Task<AppConfigListModel> GetByPaging(AppConfigSearchModel request);
+
+        Task<TResponse<bool>> Delete(int id);
     }
 
     public class AppConfigService : BaseService,
@@ -87,6 +89,29 @@ namespace Pelo.v2.Web.Services.AppConfig
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Delete(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.APP_CONFIG_DELETE,
+                                        id);
+                var response = await HttpService.Send<bool>(url,
+                                                            null,
+                                                            HttpMethod.Delete,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 
