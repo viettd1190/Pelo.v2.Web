@@ -205,6 +205,16 @@
 
         public const string DISTRICT_GET_ALL = BASE_API_URL + "/api/district/{0}/all";
 
+        public const string DISTRICT_GET_BY_PAGING = BASE_API_URL + "/api/district?name={0}&province_id={1}&column_order={2}&sort_dir={3}&page={4}&page_size={5}";
+
+        public const string DISTRICT_INSERT = BASE_API_URL + "/api/district";
+
+        public const string DISTRICT_UPDATE = BASE_API_URL + "/api/district";
+
+        public const string DISTRICT_DELETE = BASE_API_URL + "/api/district/{0}";
+
+        public const string DISTRICT_GET_BY_ID = BASE_API_URL + "/api/district/{0}";
+
         public const string WARD_GET_ALL = BASE_API_URL + "/api/ward/{0}/all";
 
         #endregion
