@@ -2,34 +2,30 @@
     if (data.length == 0) {
         return;
     }
-    var icon = 3; //error
+    var icon = 'danger'; //error
     if (data.is_success === true) {
-        icon = 1; //success
+        icon = 'success'; //success
     }
     var msg = 'Cập nhật thành công';
     if (data.is_success === false) {
         msg = data.message;
     }
-    notie.alert({
-        type: icon,
-        text: msg,
-        time: 30
+    
+    $.notify({
+            // options
+            message: '<table cellpadding="3" cellspacing="3"><tr><td nowrap="nowrap">Cập nhật lúc :</td><td nowrap="nowrap"><i>' + Util.date.formatDateTime(new Date()) + '</i></td></tr>' + '<tr><td nowrap="nowrap">Nội dung :</td><td nowrap="nowrap">' + msg + '</td></tr></table>'
+        }, {
+            // settings
+            type: icon,
+            placement: {
+                    from: 'bottom',
+                    align: 'right',
+                    animate: {
+                            enter: 'animated fadeInDown',
+                            exit: 'animated fadeOutUp'
+                        }
+                }
         });
-    //$.notify({
-    //        // options
-    //        message: '<table cellpadding="3" cellspacing="3"><tr><td nowrap="nowrap">Cập nhật lúc :</td><td nowrap="nowrap"><i>' + Util.date.formatDateTime(new Date()) + '</i></td></tr>' + '<tr><td nowrap="nowrap">Nội dung :</td><td nowrap="nowrap">' + msg + '</td></tr></table>'
-    //    }, {
-    //        // settings
-    //        type: icon,
-    //        placement: {
-    //                from: 'bottom',
-    //                align: 'right',
-    //                animate: {
-    //                        enter: 'animated fadeInDown',
-    //                        exit: 'animated fadeOutUp'
-    //                    }
-    //            }
-    //    });
 }
 function isNull(data) {
     if (data) {
