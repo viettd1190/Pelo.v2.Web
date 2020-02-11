@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -29,19 +26,15 @@ namespace Pelo.v2.Web
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+                                                    {
+                                                        // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                                                        options.CheckConsentNeeded = context => true;
+                                                        options.MinimumSameSitePolicy = SameSiteMode.None;
+                                                    });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddAuthentication(options =>
-                                       {
-                                           options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                                           options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                                       })
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
                                options =>
                                {
@@ -66,11 +59,12 @@ namespace Pelo.v2.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app,
+                              IHostingEnvironment env)
         {
             app.UseAuthentication();
 
-            if (env.IsDevelopment())
+            if(env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

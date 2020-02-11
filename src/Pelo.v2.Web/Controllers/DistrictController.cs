@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.District;
 using Pelo.v2.Web.Services.Province;
 
@@ -9,14 +10,22 @@ namespace Pelo.v2.Web.Controllers
     {
         private readonly IDistrictService _districtService;
 
-        public DistrictController(IDistrictService districtService)
+        private readonly IBaseModelFactory _baseModelFactory;
+
+        public DistrictController(IDistrictService districtService,
+                                  IBaseModelFactory baseModelFactory)
         {
             _districtService = districtService;
+            _baseModelFactory = baseModelFactory;
         }
 
         public IActionResult Index()
         {
-            return View(new DistrictSearchModel());
+            var searchModel = new DistrictSearchModel();
+
+            _baseModelFactory.PrepareProvinces(searchModel.AvaiableProvinces);
+
+            return View(searchModel);
         }
 
         [HttpPost]
