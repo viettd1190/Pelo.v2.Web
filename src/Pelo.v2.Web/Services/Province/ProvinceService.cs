@@ -8,6 +8,7 @@ using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.Province;
 using Pelo.v2.Web.Services.Http;
+using ProvinceModel = Pelo.v2.Web.Models.Province.ProvinceModel;
 
 namespace Pelo.v2.Web.Services.Province
 {
@@ -23,7 +24,7 @@ namespace Pelo.v2.Web.Services.Province
     }
 
     public class ProvinceService : BaseService,
-                                    IProvinceService
+                                   IProvinceService
     {
         public ProvinceService(IHttpService httpService) : base(httpService)
         {
@@ -56,15 +57,15 @@ namespace Pelo.v2.Web.Services.Province
 
                     var url = string.Format(ApiUrl.PROVINCE_GET_BY_PAGING,
                                             request.ProvinceName,
-                                            start,
-                                            request?.Length ?? 10,
                                             columnOrder,
-                                            sortDir);
+                                            sortDir,
+                                            start,
+                                            request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetProvincePagingResponse>>(url,
-                                                                                                  null,
-                                                                                                  HttpMethod.Get,
-                                                                                                  true);
+                                                                                                 null,
+                                                                                                 HttpMethod.Get,
+                                                                                                 true);
 
                     if(response.IsSuccess)
                         return new ProvinceListModel
@@ -124,9 +125,9 @@ namespace Pelo.v2.Web.Services.Province
                 var url = string.Format(ApiUrl.PROVINCE_GET_BY_ID,
                                         id);
                 var response = await HttpService.Send<ProvinceUpdate>(url,
-                                                                       null,
-                                                                       HttpMethod.Get,
-                                                                       true);
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
                 if(response.IsSuccess)
                 {
                     return await Ok(response.Data);

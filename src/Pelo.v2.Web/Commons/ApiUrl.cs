@@ -191,6 +191,16 @@
 
         #region Province / District / Ward
 
+        public const string PROVINCE_GET_BY_PAGING = BASE_API_URL + "/api/province?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
+
+        public const string PROVINCE_INSERT = BASE_API_URL + "/api/province";
+
+        public const string PROVINCE_UPDATE = BASE_API_URL + "/api/province";
+
+        public const string PROVINCE_DELETE = BASE_API_URL + "/api/province/{0}";
+
+        public const string PROVINCE_GET_BY_ID = BASE_API_URL + "/api/province/{0}";
+
         public const string PROVINCE_GET_ALL = BASE_API_URL + "/api/province/all";
 
         public const string DISTRICT_GET_ALL = BASE_API_URL + "/api/district/{0}/all";
