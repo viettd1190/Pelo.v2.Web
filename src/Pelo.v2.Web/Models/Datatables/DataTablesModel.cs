@@ -26,8 +26,10 @@ namespace Pelo.v2.Web.Models.Datatables
             Processing = true;
             Paging = true;
             PagingType = DEFAULT_PAGING_TYPE;
-
+            Length = 20;
+            LengthMenu = "[10,20,50,100]";
             Filters = new List<FilterParameter>();
+            Ordering = true;
             ColumnCollection = new List<ColumnProperty>();
         }
 

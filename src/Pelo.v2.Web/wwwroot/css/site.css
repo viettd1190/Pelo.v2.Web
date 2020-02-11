@@ -4,3 +4,60 @@
 .notie-container {
     box-shadow: none;
 }
+/*************** Notifications ***************/
+.notification-box {
+    display: none;
+}
+
+.notification {
+    background-position: 10px 11px !important;
+    background-repeat: no-repeat !important;
+    border: 1px solid;
+    font-size: 13px;
+    margin: 0 0 15px 0;
+    padding: 0;
+    position: relative;
+    width: 99.8%;
+}
+
+.attention {
+    background: #fffbcc url('~/img/icons/exclamation.png') 10px 11px no-repeat;
+    border-color: #e6db55;
+    color: #666452;
+}
+
+.information {
+    background: #dbe3ff url('~/img/icons/information.png');
+    border-color: #a2b4ee;
+    color: #585b66;
+}
+
+.success {
+    background: #d5ffce url('~/img/icons/tick_circle.png');
+    border-color: #9adf8f;
+    color: #556652;
+}
+
+.error {
+    background: #ffcece url('~/img/icons/cross_circle.png');
+    border-color: #df8f8f;
+    color: #665252;
+}
+
+.notification div {
+    display: block;
+    font-style: normal;
+    line-height: 1.5em;
+    padding: 10px 10px 10px 36px;
+}
+
+.notification .close {
+    background-image: url('~/img/icons/cross_grey_small.png');
+    color: #990000;
+    font-size: 9px;
+    height: 7px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 7px;
+}

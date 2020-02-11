@@ -15,6 +15,10 @@ namespace Pelo.v2.Web.Services.AppConfig
     {
         Task<AppConfigListModel> GetByPaging(AppConfigSearchModel request);
 
+        Task<TResponse<bool>> Insert(AppConfigInsert request);
+
+        Task<TResponse<AppConfigUpdate>> GetById(int id);
+
         Task<TResponse<bool>> Delete(int id);
     }
 
@@ -92,6 +96,51 @@ namespace Pelo.v2.Web.Services.AppConfig
             }
         }
 
+        public async Task<TResponse<bool>> Insert(AppConfigInsert request)
+        {
+            try
+            {
+                var url = ApiUrl.APP_CONFIG_INSERT;
+                var response = await HttpService.Send<bool>(url,
+                                                            request,
+                                                            HttpMethod.Post,
+                                                            true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<AppConfigUpdate>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.APP_CONFIG_GET_BY_ID,
+                                        id);
+                var response = await HttpService.Send<AppConfigUpdate>(url,
+                                                                       null,
+                                                                       HttpMethod.Get,
+                                                                       true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<AppConfigUpdate>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<AppConfigUpdate>(exception);
+            }
+        }
+
         public async Task<TResponse<bool>> Delete(int id)
         {
             try
@@ -102,7 +151,7 @@ namespace Pelo.v2.Web.Services.AppConfig
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(true);
                 }
