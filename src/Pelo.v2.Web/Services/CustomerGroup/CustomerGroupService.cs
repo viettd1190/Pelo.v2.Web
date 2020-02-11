@@ -3,34 +3,33 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Pelo.Common.Dtos.District;
-using Pelo.Common.Dtos.ProductUnit;
+using Pelo.Common.Dtos.CustomerGroup;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.District;
-using Pelo.v2.Web.Models.ProductUnit;
+using Pelo.v2.Web.Models.CustomerGroup;
 using Pelo.v2.Web.Services.Http;
-using DistrictModel = Pelo.v2.Web.Models.District.DistrictModel;
 
-namespace Pelo.v2.Web.Services.ProductUnit
+namespace Pelo.v2.Web.Services.CustomerGroup
 {
-    public interface IProductUnitService
+    public interface ICustomerGroupService
     {
-        Task<ProductUnitListModel> GetByPaging(ProductUnitSearchModel request);
+        Task<CustomerGroupListModel> GetByPaging(CustomerGroupSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
     }
 
-    public class ProductUnitService : BaseService,
-                                   IProductUnitService
+    public class CustomerGroupService : BaseService,
+                                   ICustomerGroupService
     {
-        public ProductUnitService(IHttpService httpService) : base(httpService)
+        public CustomerGroupService(IHttpService httpService) : base(httpService)
         {
         }
 
         #region IDistrictService Members
 
-        public async Task<ProductUnitListModel> GetByPaging(ProductUnitSearchModel request)
+        public async Task<CustomerGroupListModel> GetByPaging(CustomerGroupSearchModel request)
         {
             try
             {
@@ -41,26 +40,26 @@ namespace Pelo.v2.Web.Services.ProductUnit
                 {
                     var start = request.Start / request.Length + 1;
 
-                    var url = string.Format(ApiUrl.PRODUCT_UNIT_GET_BY_PAGING,
+                    var url = string.Format(ApiUrl.CUSTOMER_GROUP_GET_BY_PAGING,
                                             request.Name,
                                             columnOrder,
                                             sortDir,
                                             start,
                                             request?.Length ?? 10);
 
-                    var response = await HttpService.Send<PageResult<GetProductUnitPagingResponse>>(url,
+                    var response = await HttpService.Send<PageResult<GetCustomerGroupPagingResponse>>(url,
                                                                                                  null,
                                                                                                  HttpMethod.Get,
                                                                                                  true);
 
                     if(response.IsSuccess)
-                        return new ProductUnitListModel
+                        return new CustomerGroupListModel
                         {
                                        Draw = request.Draw,
                                        RecordsFiltered = response.Data.TotalCount,
                                        Total = response.Data.TotalCount,
                                        RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new ProductUnitModel
+                                       Data = response.Data.Data.Select(c => new CustomerGroupModel
                                                                              {
                                                                                      Id = c.Id,
                                                                                      Name = c.Name,
@@ -84,7 +83,7 @@ namespace Pelo.v2.Web.Services.ProductUnit
         {
             try
             {
-                var url = string.Format(ApiUrl.PRODUCT_UNIT_DELETE,
+                var url = string.Format(ApiUrl.CUSTOMER_GROUP_DELETE,
                                         id);
                 var response = await HttpService.Send<bool>(url,
                                                             null,

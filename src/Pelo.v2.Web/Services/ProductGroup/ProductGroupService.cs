@@ -34,7 +34,7 @@ namespace Pelo.v2.Web.Services.ProductGroup
         {
             try
             {
-                var columnOrder = "SortOrder";
+                var columnOrder = "name";
                 var sortDir = "ASC";
 
                 if(request != null)
