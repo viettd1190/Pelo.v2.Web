@@ -145,11 +145,27 @@
 
         public const string CUSTOMER_SOURCE_GET_ALL = BASE_API_URL + "/api/customer_source/all";
 
+        public const string CUSTOMER_SOURCE_DELETE = BASE_API_URL + "/api/customer_source/{0}";
+
+        public const string CUSTOMER_SOURCE_GET_BY_ID = BASE_API_URL + "/api/customer_source/{0}";
+
+        public const string CUSTOMER_SOURCE_UPDATE = BASE_API_URL + "/api/customer_source";
+
+        public const string CUSTOMER_SOURCE_GET_BY_PAGING = BASE_API_URL + "/api/customer_source?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
+
         #endregion
 
         #region CrmStatus
 
         public const string CRM_STATUS_GET_ALL = BASE_API_URL + "/api/crm_status/all";
+
+        public const string CRM_STATUS_DELETE = BASE_API_URL + "/api/crm_status/{0}";
+
+        public const string CRM_STATUS_GET_BY_ID = BASE_API_URL + "/api/crm_status/{0}";
+
+        public const string CRM_STATUS_UPDATE = BASE_API_URL + "/api/crm_status";
+
+        public const string CRM_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/crm_status?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
 
         #endregion
 
@@ -157,11 +173,27 @@
 
         public const string CRM_TYPE_GET_ALL = BASE_API_URL + "/api/crm_type/all";
 
+        public const string CRM_TYPE_DELETE = BASE_API_URL + "/api/crm_type/{0}";
+
+        public const string CRM_TYPE_GET_BY_ID = BASE_API_URL + "/api/crm_type/{0}";
+
+        public const string CRM_TYPE_UPDATE = BASE_API_URL + "/api/crm_type";
+
+        public const string CRM_TYPE_GET_BY_PAGING = BASE_API_URL + "/api/crm_type?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
+
         #endregion
 
         #region CrmPriority
 
         public const string CRM_PRIORITY_GET_ALL = BASE_API_URL + "/api/crm_priority/all";
+
+        public const string CRM_PRIORITY_DELETE = BASE_API_URL + "/api/crm_priority/{0}";
+
+        public const string CRM_PRIORITY_GET_BY_ID = BASE_API_URL + "/api/crm_priority/{0}";
+
+        public const string CRM_PRIORITY_UPDATE = BASE_API_URL + "/api/crm_priority";
+
+        public const string CRM_PRIORITY_GET_BY_PAGING = BASE_API_URL + "/api/crm_priority?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
 
         #endregion
 
@@ -169,8 +201,28 @@
 
         public const string PRODUCT_GROUP_GET_ALL = BASE_API_URL + "/api/product_group/all";
 
-        #endregion
+        public const string PRODUCT_GROUP_DELETE = BASE_API_URL + "/api/product_group/{0}";
 
+        public const string PRODUCT_GROUP_GET_BY_ID = BASE_API_URL + "/api/product_group/{0}";
+
+        public const string PRODUCT_GROUP_UPDATE = BASE_API_URL + "/api/product_group";
+
+        public const string PRODUCT_GROUP_GET_BY_PAGING = BASE_API_URL + "/api/product_group?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
+
+        #endregion
+        #region ProductStatus
+
+        public const string PRODUCT_STATUS_GET_ALL = BASE_API_URL + "/api/product_status/all";
+
+        public const string PRODUCT_STATUS_DELETE = BASE_API_URL + "/api/product_status/{0}";
+
+        public const string PRODUCT_STATUS_GET_BY_ID = BASE_API_URL + "/api/product_status/{0}";
+
+        public const string PRODUCT_STATUS_UPDATE = BASE_API_URL + "/api/product_status";
+
+        public const string PRODUCT_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/product_status?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
+
+        #endregion
         #region Crm
 
         public const string CRM_GET_BY_PAGING = BASE_API_URL + "/api/crm?code={0}&customer_code={1}&customer_name={2}&customer_phone={3}&customer_address={4}&province_id={5}&district_id={6}&ward_id={7}&customer_group_id={8}&customer_vip_id={9}&customer_source_id={10}&product_group_id={11}&crm_status_id={12}&crm_type_id={13}&crm_priority_id={14}&visit={15}&from_date={16}&to_date={17}&user_created_id={18}&date_created={19}&user_care_id={20}&need={21}&page={22}&page_size={23}";
@@ -217,11 +269,27 @@
 
         public const string WARD_GET_ALL = BASE_API_URL + "/api/ward/{0}/all";
 
+        public const string WARD_DELETE = BASE_API_URL + "/api/ward/{0}";
+
+        public const string WARD_GET_BY_ID = BASE_API_URL + "/api/ward/{0}";
+
+        public const string WARD_UPDATE = BASE_API_URL + "/api/ward";
+
+        public const string WARD_GET_BY_PAGING = BASE_API_URL + "/api/ward?name={0}&districtId={1}&column_order={2}&page={3}&page_size={4}&column_order={5}&sort_dir={6}";
+
         #endregion
 
         #region InvoiceStatus
 
         public const string INVOICE_STATUS_GET_ALL = BASE_API_URL + "/api/invoice_status/all";
+
+        public const string INVOICE_STATUS_DELETE = BASE_API_URL + "/api/invoice_status/{0}";
+
+        public const string INVOICE_STATUS_GET_BY_ID = BASE_API_URL + "/api/invoice_status/{0}";
+
+        public const string INVOICE_STATUS_UPDATE = BASE_API_URL + "/api/invoice_status";
+
+        public const string INVOICE_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/invoice_status?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
 
         #endregion
 
@@ -229,14 +297,42 @@
 
         public const string INVOICE_GET_BY_PAGING = BASE_API_URL + "/api/invoice?customer_code={0}&customer_phone={1}&customer_name={2}&code={3}&branch_id={4}&invoice_status_id={5}&user_created_id={6}&user_sell_id={7}&user_delivery_id={8}&from_date={9}&to_date={10}&page={11}&page_size={12}";
 
+        public const string INVOICE_DELETE = BASE_API_URL + "/api/invoice/{0}";
+
+        public const string INVOICE_GET_BY_ID = BASE_API_URL + "/api/invoice/{0}";
+
+        public const string INVOICE_UPDATE = BASE_API_URL + "/api/invoice";
+
+        public const string INVOICE_GET_ALL = BASE_API_URL + "/api/invoice/all";
+
         #endregion
 
         #region Product
 
         public const string PRODUCT_GET_ALL = BASE_API_URL + "/api/product/all";
 
-        #endregion
+        public const string PRODUCT_GET_BY_PAGING = BASE_API_URL + "/api/product?name={0}&product_status_id={1}&product_group_id={2}&product_unit_id={3}manufacturer_id={4}&country_id={5}&description{6}&warranty_month={7}&column_order={8}&page={2}&page_size={9}&column_order={10}&sort_dir={11}";
 
+        public const string PRODUCT_DELETE = BASE_API_URL + "/api/product/{0}";
+
+        public const string PRODUCT_GET_BY_ID = BASE_API_URL + "/api/product/{0}";
+
+        public const string PRODUCT_UPDATE = BASE_API_URL + "/api/product";
+
+        #endregion
+        #region ProductUnit
+
+        public const string PRODUCT_UNIT_GET_ALL = BASE_API_URL + "/api/product_unit/all";
+
+        public const string PRODUCT_UNIT_DELETE = BASE_API_URL + "/api/product_unit/{0}";
+
+        public const string PRODUCT_UNIT_GET_BY_ID = BASE_API_URL + "/api/product_unit/{0}";
+
+        public const string PRODUCT_UNIT_UPDATE = BASE_API_URL + "/api/product_unit";
+
+        public const string PRODUCT_UNIT_GET_BY_PAGING = BASE_API_URL + "/api/product_unit?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
+
+        #endregion
         #region PayMethod
 
         public const string PAY_METHOD_GET_ALL = BASE_API_URL + "/api/pay_method/all";
@@ -251,5 +347,18 @@
 
         #endregion
 
+        #region Manufacturer
+
+        public const string MANUFACTURER_GET_ALL = BASE_API_URL + "/api/manufacturer/all";
+
+        public const string MANUFACTURER_DELETE = BASE_API_URL + "/api/manufacturer/{0}";
+
+        public const string MANUFACTURER_GET_BY_ID = BASE_API_URL + "/api/manufacturer/{0}";
+
+        public const string MANUFACTURER_UPDATE = BASE_API_URL + "/api/manufacturer";
+
+        public const string MANUFACTURER_GET_BY_PAGING = BASE_API_URL + "/api/manufacturer?name={0}&column_order={1}&page={2}&page_size={3}&column_order={4}&sort_dir={5}";
+
+        #endregion
     }
 }

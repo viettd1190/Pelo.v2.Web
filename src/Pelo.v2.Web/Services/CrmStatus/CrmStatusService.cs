@@ -3,70 +3,67 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Pelo.Common.Dtos.District;
+using Pelo.Common.Dtos.CrmStatus;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.District;
+using Pelo.v2.Web.Models.CrmStatus;
 using Pelo.v2.Web.Services.Http;
-using DistrictModel = Pelo.v2.Web.Models.District.DistrictModel;
 
-namespace Pelo.v2.Web.Services.Province
+namespace Pelo.v2.Web.Services.CrmStatus
 {
-    public interface IDistrictService
+    public interface ICrmStatusService
     {
-        Task<DistrictListModel> GetByPaging(DistrictSearchModel request);
+        Task<CrmStatusListModel> GetByPaging(CrmStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
     }
 
-    public class DistrictService : BaseService,
-                                   IDistrictService
+    public class CrmStatusService : BaseService,
+                                   ICrmStatusService
     {
-        public DistrictService(IHttpService httpService) : base(httpService)
+        public CrmStatusService(IHttpService httpService) : base(httpService)
         {
         }
 
         #region IDistrictService Members
 
-        public async Task<DistrictListModel> GetByPaging(DistrictSearchModel request)
+        public async Task<CrmStatusListModel> GetByPaging(CrmStatusSearchModel request)
         {
             try
             {
-                var columnOrder = "SortOrder";
+                var columnOrder = "name";
                 var sortDir = "ASC";
 
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
-                    var url = string.Format(ApiUrl.DISTRICT_GET_BY_PAGING,
-                                            request.DistrictName,
-                                            request.ProvinceId,
+                    var url = string.Format(ApiUrl.CRM_STATUS_GET_BY_PAGING,
+                                            request.Name,
                                             columnOrder,
                                             sortDir,
                                             start,
                                             request?.Length ?? 10);
 
-                    var response = await HttpService.Send<PageResult<GetDistrictPagingResponse>>(url,
+                    var response = await HttpService.Send<PageResult<GetCrmStatusPagingResponse>>(url,
                                                                                                  null,
                                                                                                  HttpMethod.Get,
                                                                                                  true);
 
                     if(response.IsSuccess)
-                        return new DistrictListModel
-                               {
+                        return new CrmStatusListModel
+                        {
                                        Draw = request.Draw,
                                        RecordsFiltered = response.Data.TotalCount,
                                        Total = response.Data.TotalCount,
                                        RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new DistrictModel
+                                       Data = response.Data.Data.Select(c => new CrmStatusModel
                                                                              {
                                                                                      Id = c.Id,
                                                                                      Name = c.Name,
-                                                                                     Province = c.Province,
-                                                                                     SortOrder = c.SortOrder,
                                                                                      PageSize = request.PageSize,
-                                                                                     Type = c.Type,
                                                                                      PageSizeOptions = request.AvailablePageSizes
                                                                              })
                                };
@@ -86,7 +83,7 @@ namespace Pelo.v2.Web.Services.Province
         {
             try
             {
-                var url = string.Format(ApiUrl.DISTRICT_DELETE,
+                var url = string.Format(ApiUrl.CRM_STATUS_DELETE,
                                         id);
                 var response = await HttpService.Send<bool>(url,
                                                             null,

@@ -17,17 +17,59 @@
 
 
   <ItemGroup>
+    <Folder Include="Models\CandidateStatus\" />
+    <Folder Include="Models\Candidate\" />
+    <Folder Include="Models\Crm\" />
+    <Folder Include="Models\Customer\" />
+    <Folder Include="Models\CustomerGroup\" />
+    <Folder Include="Models\CustomerSource\" />
+    <Folder Include="Models\InvoiceStatusInRole\" />
+    <Folder Include="Models\InvoiceStatus\" />
+    <Folder Include="Models\Invoice\" />
+    <Folder Include="Models\Product\" />
+    <Folder Include="Models\ReceiptDescription\" />
+    <Folder Include="Models\ReceiptStatusInRole\" />
+    <Folder Include="Models\ReceiptStatus\" />
+    <Folder Include="Models\Receipt\" />
+    <Folder Include="Models\RecruitmentStatus\" />
+    <Folder Include="Models\Recruitment\" />
+    <Folder Include="Models\TaskLoop\" />
+    <Folder Include="Models\TaskPriority\" />
+    <Folder Include="Models\TaskStatusInRole\" />
+    <Folder Include="Models\TaskStatus\" />
+    <Folder Include="Models\TaskType\" />
+    <Folder Include="Models\WarrantyDescription\" />
+    <Folder Include="Models\WarrantyStatusInRole\" />
+    <Folder Include="Models\WarrantyStatus\" />
+    <Folder Include="Models\Warranty\" />
+    <Folder Include="Models\Task\" />
     <Folder Include="Pages\" />
     <Folder Include="Services\Crm\" />
+    <Folder Include="Services\CustomerGroup\" />
+    <Folder Include="Services\CustomerSource\" />
     <Folder Include="Services\Customer\" />
     <Folder Include="Services\Invoice\" />
     <Folder Include="Services\Candidate\" />
+    <Folder Include="Services\CandidateStatus\" />
+    <Folder Include="Services\InvoiceStatusInRole\" />
+    <Folder Include="Services\InvoiceStatus\" />
+    <Folder Include="Services\TaskType\" />
+    <Folder Include="Services\TaskStatus\" />
+    <Folder Include="Services\TaskPriority\" />
+    <Folder Include="Services\TaskLoop\" />
+    <Folder Include="Services\TaskStatusInRole\" />
+    <Folder Include="Services\ReceiptDescription\" />
+    <Folder Include="Services\ReceiptStatus\" />
+    <Folder Include="Services\ReceiptStatusInRole\" />
+    <Folder Include="Services\WarrantyDescription\" />
+    <Folder Include="Services\WarrantyStatus\" />
+    <Folder Include="Services\WarrantyStatusInRole\" />
+    <Folder Include="Services\Recruitment\" />
+    <Folder Include="Services\RecruitmentStatus\" />
     <Folder Include="Services\Receipt\" />
     <Folder Include="Services\Task\" />
     <Folder Include="Services\Warranty\" />
     <Folder Include="Services\Product\" />
-    <Folder Include="Services\ProductUnit\" />
-    <Folder Include="Services\ProductGroup\" />
   </ItemGroup>
 
 

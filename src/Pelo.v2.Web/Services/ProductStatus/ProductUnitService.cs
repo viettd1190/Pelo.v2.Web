@@ -3,32 +3,34 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Pelo.Common.Dtos.District;
+using Pelo.Common.Dtos.ProductStatus;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.District;
+using Pelo.v2.Web.Models.ProductStatus;
 using Pelo.v2.Web.Services.Http;
 using DistrictModel = Pelo.v2.Web.Models.District.DistrictModel;
 
-namespace Pelo.v2.Web.Services.Province
+namespace Pelo.v2.Web.Services.ProductStatus
 {
-    public interface IDistrictService
+    public interface IProductStatusService
     {
-        Task<DistrictListModel> GetByPaging(DistrictSearchModel request);
+        Task<ProductStatusListModel> GetByPaging(ProductStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
     }
 
-    public class DistrictService : BaseService,
-                                   IDistrictService
+    public class ProductStatusService : BaseService,
+                                   IProductStatusService
     {
-        public DistrictService(IHttpService httpService) : base(httpService)
+        public ProductStatusService(IHttpService httpService) : base(httpService)
         {
         }
 
         #region IDistrictService Members
 
-        public async Task<DistrictListModel> GetByPaging(DistrictSearchModel request)
+        public async Task<ProductStatusListModel> GetByPaging(ProductStatusSearchModel request)
         {
             try
             {
@@ -39,34 +41,30 @@ namespace Pelo.v2.Web.Services.Province
                 {
                     var start = request.Start / request.Length + 1;
 
-                    var url = string.Format(ApiUrl.DISTRICT_GET_BY_PAGING,
-                                            request.DistrictName,
-                                            request.ProvinceId,
+                    var url = string.Format(ApiUrl.PRODUCT_STATUS_GET_BY_PAGING,
+                                            request.Name,
                                             columnOrder,
                                             sortDir,
                                             start,
                                             request?.Length ?? 10);
 
-                    var response = await HttpService.Send<PageResult<GetDistrictPagingResponse>>(url,
+                    var response = await HttpService.Send<PageResult<GetProductStatusPagingResponse>>(url,
                                                                                                  null,
                                                                                                  HttpMethod.Get,
                                                                                                  true);
 
                     if(response.IsSuccess)
-                        return new DistrictListModel
-                               {
+                        return new ProductStatusListModel
+                        {
                                        Draw = request.Draw,
                                        RecordsFiltered = response.Data.TotalCount,
                                        Total = response.Data.TotalCount,
                                        RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new DistrictModel
+                                       Data = response.Data.Data.Select(c => new ProductStatusModel
                                                                              {
                                                                                      Id = c.Id,
                                                                                      Name = c.Name,
-                                                                                     Province = c.Province,
-                                                                                     SortOrder = c.SortOrder,
                                                                                      PageSize = request.PageSize,
-                                                                                     Type = c.Type,
                                                                                      PageSizeOptions = request.AvailablePageSizes
                                                                              })
                                };
@@ -86,7 +84,7 @@ namespace Pelo.v2.Web.Services.Province
         {
             try
             {
-                var url = string.Format(ApiUrl.DISTRICT_DELETE,
+                var url = string.Format(ApiUrl.PRODUCT_STATUS_DELETE,
                                         id);
                 var response = await HttpService.Send<bool>(url,
                                                             null,

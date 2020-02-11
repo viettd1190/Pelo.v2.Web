@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Pelo.v2.Web.Models.District;
-using Pelo.v2.Web.Services.District;
+using Pelo.v2.Web.Services.Province;
 
 namespace Pelo.v2.Web.Controllers
 {
