@@ -1,4 +1,5 @@
-﻿@using Pelo.v2.Web.Models.AppConfig
+﻿@using Microsoft.AspNetCore.Routing
+@using Pelo.v2.Web.Models.AppConfig
 @using Pelo.v2.Web.Models.Datatables
 @using Pelo.v2.Web.Models.Datatables.Render
 @model Pelo.v2.Web.Models.AppConfig.AppConfigSearchModel
@@ -46,6 +47,7 @@
                     </div>
                     <div class="col-xs-12">
                         <button class="btn btn-primary" id="search-appconfig">Tìm kiếm</button>
+                        <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
                     </div>
                 </div>
             </div>
@@ -61,8 +63,6 @@
        UrlRead = new DataUrl("GetList","AppConfig",null),
        UrlDelete = new DataUrl("Delete","AppConfig",null),
        SearchButtonId = "search-appconfig",
-       Length = 20,
-       LengthMenu = "[10,20,50,100]",
        Filters = new List<FilterParameter> {
                                                    new FilterParameter(nameof(Model.AppConfigName)),
                                                    new FilterParameter(nameof(Model.AppConfigDescription))
@@ -84,13 +84,15 @@
                                                            {
                                                                    Title = "",
                                                                    Width = "40",
+                                                                   Orderable = false,
                                                                    ClassName =  NopColumnClassDefaults.Button,
-                                                                   Render = new RenderButtonEdit(new DataUrl("Edit"))
+                                                                   Render = new RenderButtonEdit(new DataUrl("AppConfig/Edit"))
                                                            },
                                                            new ColumnProperty(nameof(AppConfigModel.Id))
                                                            {
                                                                    Title = "",
                                                                    Width = "40",
+                                                                   Orderable = false,
                                                                    ClassName =  NopColumnClassDefaults.Button,
                                                                    Render = new RenderButtonRemove("Remove")
                                                            }
@@ -103,12 +105,13 @@
     <script>
         $(document).ready(function () {
             $('.panel').lobiPanel({
-                    sortable: true
+                sortable: false,
+                draggable: false,
+                resize: 'none'
                 });
-            //$('.panel').on('dragged.lobiPanel', function(ev, lobiPanel){
-            //    $('.dahsboard-column').matchHeight();
-            //});
             $('#table').DataTable();
+            reloadDataWhenEnter('AppConfigName');
+            reloadDataWhenEnter('AppConfigDescription');
         })
     </script>
 }

@@ -558,7 +558,6 @@ $(document).ready(function(){
 
 	$('.control-panel-toggle').on('click', function() {
 		var self = $(this);
-		
 		if (self.hasClass('open')) {
 			self.removeClass('open');
 			$('.control-panel').removeClass('open');

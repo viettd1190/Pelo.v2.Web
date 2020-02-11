@@ -74,6 +74,11 @@ else
         type: "@WebRequestMethods.Http.Post",
         dataType: "json",
         dataSrc: "data",
+        @*error: function (xhr, error, code)
+        {
+        console.log(xhr);
+        console.log(code);
+        },*@
         data: function(data) {
         @if (Model.Filters != null)
         {
@@ -140,7 +145,7 @@ columns: [
     <text>
         {
         @if (!string.IsNullOrEmpty(column.Title)
-           && !column.IsMasterCheckBox)
+    && !column.IsMasterCheckBox)
         {
             <text>
             title: '@JavaScriptEncoder.Default.Encode(column.Title)',
@@ -175,6 +180,7 @@ else
         width: '@column.Width',
         visible: @column.Visible.ToString().ToLower(),
         searchable: @column.Searchable.ToString().ToLower(),
+        orderable: @column.Orderable.ToString().ToLower(),
         @if (column.AutoWidth)
         {
             <text>

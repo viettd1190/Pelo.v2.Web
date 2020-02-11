@@ -56,44 +56,64 @@ string GetUrl(DataUrl dataUrl)
             selectedIds = [];
         }
     }
+
+    function reloadData() {
+        $('#@Model.Name').DataTable().ajax.reload();
+        $('.checkboxGroups').attr('checked', false).change();
+        selectedIds = [];
+        return false;
+    }
+
     var datatable=null;
    
     $(document).ready(function () {
 
         datatable = $('#@Model.Name').DataTable({
                 @await Html.PartialAsync("_Table.Definition", Model)
-            });
+        });
 
-        //$(document).resize(function () {
-        //    if(datatable!=null) {
-        //        datatable.columns.adjust().draw();
-        //    }
-        //});
+        $.fn.dataTable.ext.errMode = function ( settings, helpPage, message ) { 
+            console.log(message);
+            $.notify({
+                    // options
+                    message: '<table><tr><td nowrap="nowrap">Error :</td><td nowrap="nowrap">'+message+'</td></tr></table>'
+                }, {
+                    // settings
+                    type: 'danger',
+                    placement: {
+                            from: 'bottom',
+                            align: 'right',
+                            animate: {
+                                    enter: 'animated fadeInDown',
+                                    exit: 'animated fadeOutUp'
+                                }
+                        }
+                });
+        };
 
-        $('#container-fluid').resize(function () {
+        $('#show-hide-sidebar-toggle').on('click', function() {
             if(datatable!=null) {
-                datatable.columns.adjust().draw();
-            
+                setTimeout(function() {$($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();},200);
+            }
+        });
+        $('.control-panel-toggle').on('click', function() {
+            if(datatable!=null) {
+                setTimeout(function() {$($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();},200);
             }
         });
 
         @if (!string.IsNullOrEmpty(Model.SearchButtonId))
         {
             <text>
-                $('#@Model.SearchButtonId').click(function() {
-                    $('#@Model.Name').DataTable().ajax.reload();
-                    $('.checkboxGroups').attr('checked', false).change();
-                    selectedIds = [];
-                    return false;
-                });
+                $('#@Model.SearchButtonId').click(function() {reloadData();});
             </text>
         }
         @if (isMasterCheckBoxUsed)
         {
             <text>
-                $('#mastercheckbox').click(function () {
-                    $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
-                });
+                //$('#mastercheckbox').click(function () {
+                //    $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
+                //});
 
                 $('#@Model.Name').on('change', 'input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]', function (e) {
                     var $check = $(this);
@@ -129,11 +149,10 @@ string GetUrl(DataUrl dataUrl)
                             else
                             {
                                 <text>
-                            id: dataId
+                                    id: dataId
                                 </text>
                             }
                         };
-                    addAntiForgeryToken(postData);
 
                     $.ajax({
                             url: "@Html.Raw(GetUrl((Model.ChildTable?.UrlDelete != null) ? Model.ChildTable?.UrlDelete : Model.UrlDelete))",
@@ -141,12 +160,12 @@ string GetUrl(DataUrl dataUrl)
                             dataType: "json",
                             data: postData,
                             success: function (data, textStatus, jqXHR) {
-                                //display error if returned
-                                if (data) {
-                                    display_nop_error(data);
+                                showNotification(data);
+                                if (data.data===true) {
+                                    //refresh grid
+                                    $('#@Model.Name').DataTable().draw(false);
                                 }
-                                //refresh grid
-                                $('#@Model.Name').DataTable().draw(false);
+                                
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
                                 alert(errorThrown);

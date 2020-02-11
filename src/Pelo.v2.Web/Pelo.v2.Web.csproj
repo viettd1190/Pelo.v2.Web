@@ -28,7 +28,6 @@
     <Folder Include="Services\Product\" />
     <Folder Include="Services\ProductUnit\" />
     <Folder Include="Services\ProductGroup\" />
-    <Folder Include="Views\AppConfig\" />
   </ItemGroup>
 
 
