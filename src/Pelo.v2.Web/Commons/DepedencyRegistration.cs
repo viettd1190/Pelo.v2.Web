@@ -5,6 +5,7 @@ using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Services.AppConfig;
 
 namespace Pelo.v2.Web.Commons
@@ -17,6 +18,9 @@ namespace Pelo.v2.Web.Commons
             var builder = new ContainerBuilder();
 
             RegisterMaps(builder);
+
+            builder.RegisterType<BaseModelFactory>()
+                   .As<IBaseModelFactory>();
 
             builder.RegisterAssemblyTypes(typeof(AppConfigService).Assembly)
                    .Where(c => c.Name.EndsWith("Service"))

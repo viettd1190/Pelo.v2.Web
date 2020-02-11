@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
@@ -22,9 +23,12 @@ namespace Pelo.v2.Web.Services.Http
     {
         private readonly ContextHelper _contextHelper;
 
-        public HttpService(ContextHelper contextHelper)
+        private ILogger<HttpService> _logger;
+
+        public HttpService(ContextHelper contextHelper,ILogger<HttpService> logger)
         {
             _contextHelper = contextHelper;
+            _logger = logger;
         }
 
         #region IHttpService Members
@@ -69,8 +73,11 @@ namespace Pelo.v2.Web.Services.Http
                         request.Headers.Add("Content-Type", contentType);
                     }
                     var response = await client.SendAsync(request);
+                    _logger.LogInformation($"Request: {request.RequestUri.ToString()}");
+                    _logger.LogInformation($"Response: {response.StatusCode}");
 
                     var res = await response.Content.ReadAsStringAsync();
+                    _logger.LogInformation($"Res: {res}");
                     var obj = JsonConvert.DeserializeObject<TResponse<T>>(res);
                     if (obj != null)
                     {
@@ -102,6 +109,7 @@ namespace Pelo.v2.Web.Services.Http
             }
             catch (Exception exception)
             {
+                _logger.LogInformation(exception.ToString());
                 return await Task.FromResult(new TResponse<T>
                 {
                     Data = default(T),

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 namespace Pelo.v2.Web
 {
@@ -14,11 +9,32 @@ namespace Pelo.v2.Web
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateWebHostBuilder(args)
+                    .Build()
+                    .Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u4}] | {Message:l}{NewLine}{Exception}";
+
+            return WebHost.CreateDefaultBuilder(args)
+                          .UseStartup<Startup>()
+                          .UseSerilog((context,
+                                       configuration) =>
+                                      {
+                                          configuration.MinimumLevel.Debug()
+                                                       .MinimumLevel.Override("Microsoft",
+                                                                              LogEventLevel.Warning)
+                                                       .MinimumLevel.Override("System",
+                                                                              LogEventLevel.Warning)
+                                                       .MinimumLevel.Override("Microsoft.AspNetCore.Authentication",
+                                                                              LogEventLevel.Information)
+                                                       .Enrich.FromLogContext()
+                                                       .WriteTo.File(@"logs/log-.txt",
+                                                                     outputTemplate: outputTemplate,
+                                                                     rollingInterval: RollingInterval.Day);
+                                      });
+        }
     }
 }

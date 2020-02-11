@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.Province;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
@@ -14,6 +16,8 @@ namespace Pelo.v2.Web.Services.Province
 {
     public interface IProvinceService
     {
+        Task<IEnumerable<ProvinceModel>> GetAll();
+
         Task<ProvinceListModel> GetByPaging(ProvinceSearchModel request);
 
         Task<TResponse<bool>> Insert(ProvinceInsert request);
@@ -26,11 +30,37 @@ namespace Pelo.v2.Web.Services.Province
     public class ProvinceService : BaseService,
                                    IProvinceService
     {
-        public ProvinceService(IHttpService httpService) : base(httpService)
+        private ILogger<ProvinceService> _logger;
+
+        public ProvinceService(IHttpService httpService,ILogger<ProvinceService> logger) : base(httpService)
         {
+            _logger = logger;
         }
 
         #region IProvinceService Members
+
+        public async Task<IEnumerable<ProvinceModel>> GetAll()
+        {
+            try
+            {
+                var url = ApiUrl.PROVINCE_GET_ALL;
+                var response = await HttpService.Send<IEnumerable<ProvinceModel>>(url,
+                                                                                  null,
+                                                                                  HttpMethod.Get,
+                                                                                  true);
+                if (response.IsSuccess)
+                {
+                    return response.Data;
+                }
+
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.ToString());
+                return null;
+            }
+        }
 
         public async Task<ProvinceListModel> GetByPaging(ProvinceSearchModel request)
         {
