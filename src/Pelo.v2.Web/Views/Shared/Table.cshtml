@@ -72,10 +72,14 @@ string GetUrl(DataUrl dataUrl)
                 @await Html.PartialAsync("_Table.Definition", Model)
             });
 
-        $('#container-fluid').resize(function () {
+        $('#show-hide-sidebar-toggle').on('click', function() {
             if(datatable!=null) {
-                datatable.columns.adjust().draw();
-            
+                setTimeout(function() {$($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();},200);
+            }
+        });
+        $('.control-panel-toggle').on('click', function() {
+            if(datatable!=null) {
+                setTimeout(function() {$($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();},200);
             }
         });
 
@@ -88,9 +92,9 @@ string GetUrl(DataUrl dataUrl)
         @if (isMasterCheckBoxUsed)
         {
             <text>
-                $('#mastercheckbox').click(function () {
-                    $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
-                });
+                //$('#mastercheckbox').click(function () {
+                //    $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
+                //});
 
                 $('#@Model.Name').on('change', 'input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]', function (e) {
                     var $check = $(this);
