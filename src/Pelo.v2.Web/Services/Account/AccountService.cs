@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.Account;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
@@ -17,7 +18,8 @@ namespace Pelo.v2.Web.Services.Account
     public class AccountService : BaseService,
                                   IAccountService
     {
-        public AccountService(IHttpService httpService) : base(httpService)
+        public AccountService(IHttpService httpService,
+                              ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 

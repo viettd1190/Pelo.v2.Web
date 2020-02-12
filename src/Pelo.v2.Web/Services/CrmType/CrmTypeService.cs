@@ -2,12 +2,11 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Pelo.Common.Dtos.District;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.CrmType;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
-using Pelo.v2.Web.Models.District;
 using Pelo.v2.Web.Models.CrmType;
 using Pelo.v2.Web.Services.Http;
 
@@ -21,13 +20,14 @@ namespace Pelo.v2.Web.Services.CrmType
     }
 
     public class CrmTypeService : BaseService,
-                                   ICrmTypeService
+                                  ICrmTypeService
     {
-        public CrmTypeService(IHttpService httpService) : base(httpService)
+        public CrmTypeService(IHttpService httpService,
+                              ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 
-        #region IDistrictService Members
+        #region ICrmTypeService Members
 
         public async Task<CrmTypeListModel> GetByPaging(CrmTypeSearchModel request)
         {
@@ -48,13 +48,13 @@ namespace Pelo.v2.Web.Services.CrmType
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetCrmTypePagingResponse>>(url,
-                                                                                                 null,
-                                                                                                 HttpMethod.Get,
-                                                                                                 true);
+                                                                                                null,
+                                                                                                HttpMethod.Get,
+                                                                                                true);
 
                     if(response.IsSuccess)
                         return new CrmTypeListModel
-                        {
+                               {
                                        Draw = request.Draw,
                                        RecordsFiltered = response.Data.TotalCount,
                                        Total = response.Data.TotalCount,

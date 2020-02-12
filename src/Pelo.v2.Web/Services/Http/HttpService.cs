@@ -16,16 +16,18 @@ namespace Pelo.v2.Web.Services.Http
                                    object content,
                                    HttpMethod method,
                                    bool authentication = false,
-                                   string version = "", string contentType = "");
+                                   string version = "",
+                                   string contentType = "");
     }
 
     public class HttpService : IHttpService
     {
         private readonly ContextHelper _contextHelper;
 
-        private ILogger<HttpService> _logger;
+        private readonly ILogger<HttpService> _logger;
 
-        public HttpService(ContextHelper contextHelper,ILogger<HttpService> logger)
+        public HttpService(ContextHelper contextHelper,
+                           ILogger<HttpService> logger)
         {
             _contextHelper = contextHelper;
             _logger = logger;
@@ -37,7 +39,8 @@ namespace Pelo.v2.Web.Services.Http
                                                 object content,
                                                 HttpMethod method,
                                                 bool authentication = false,
-                                                string version = "", string contentType = "")
+                                                string version = "",
+                                                string contentType = "")
         {
             try
             {
@@ -46,21 +49,21 @@ namespace Pelo.v2.Web.Services.Http
                     string mediaType = "application/json";
 
                     var request = new HttpRequestMessage
-                    {
-                        Method = method,
-                        RequestUri = new Uri(url),
-                        Content = new StringContent(JsonConvert.SerializeObject(content),
+                                  {
+                                          Method = method,
+                                          RequestUri = new Uri(url),
+                                          Content = new StringContent(JsonConvert.SerializeObject(content),
                                                                       Encoding.UTF8,
                                                                       mediaType)
-                    };
+                                  };
 
-                    if (!string.IsNullOrEmpty(version))
+                    if(!string.IsNullOrEmpty(version))
                     {
                         request.Content.Headers.ContentType.Parameters.Add(new NameValueHeaderValue("v",
                                                                                                     version));
                     }
 
-                    if (authentication)
+                    if(authentication)
                     {
                         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer",
                                                                                       _contextHelper.GetToken());
@@ -68,54 +71,55 @@ namespace Pelo.v2.Web.Services.Http
 
                     request.Headers.Add("Controller", _contextHelper.GetController());
                     request.Headers.Add("Action", _contextHelper.GetAction());
-                    if (!string.IsNullOrEmpty(contentType))
+                    if(!string.IsNullOrEmpty(contentType))
                     {
                         request.Headers.Add("Content-Type", contentType);
                     }
+
                     var response = await client.SendAsync(request);
-                    _logger.LogInformation($"Request: {request.RequestUri.ToString()}");
+                    _logger.LogInformation($"Request: {request.RequestUri}");
                     _logger.LogInformation($"Response: {response.StatusCode}");
 
                     var res = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation($"Res: {res}");
                     var obj = JsonConvert.DeserializeObject<TResponse<T>>(res);
-                    if (obj != null)
+                    if(obj != null)
                     {
-                        if (obj.IsSuccess)
+                        if(obj.IsSuccess)
                         {
                             return await Task.FromResult(new TResponse<T>
-                            {
-                                Data = obj.Data,
-                                IsSuccess = true,
-                                Message = string.Empty
-                            });
+                                                         {
+                                                                 Data = obj.Data,
+                                                                 IsSuccess = true,
+                                                                 Message = string.Empty
+                                                         });
                         }
 
                         return await Task.FromResult(new TResponse<T>
-                        {
-                            Data = default(T),
-                            IsSuccess = false,
-                            Message = obj.Message
-                        });
+                                                     {
+                                                             Data = default(T),
+                                                             IsSuccess = false,
+                                                             Message = obj.Message
+                                                     });
                     }
 
                     return await Task.FromResult(new TResponse<T>
-                    {
-                        Data = default(T),
-                        IsSuccess = false,
-                        Message = res
-                    });
+                                                 {
+                                                         Data = default(T),
+                                                         IsSuccess = false,
+                                                         Message = res
+                                                 });
                 }
             }
             catch (Exception exception)
             {
                 _logger.LogInformation(exception.ToString());
                 return await Task.FromResult(new TResponse<T>
-                {
-                    Data = default(T),
-                    IsSuccess = false,
-                    Message = exception.ToString()
-                });
+                                             {
+                                                     Data = default(T),
+                                                     IsSuccess = false,
+                                                     Message = exception.ToString()
+                                             });
             }
         }
 

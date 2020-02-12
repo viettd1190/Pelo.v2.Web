@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Services.Http;
 
@@ -10,9 +12,12 @@ namespace Pelo.v2.Web.Services
     {
         protected IHttpService HttpService;
 
-        public BaseService(IHttpService httpService)
+        protected ILogger<BaseService> _logger;
+
+        public BaseService(IHttpService httpService,ILogger<BaseService> logger)
         {
             HttpService = httpService;
+            _logger = logger;
         }
 
         protected async Task<TResponse<T>> Execute<T>(string url,
@@ -63,6 +68,7 @@ namespace Pelo.v2.Web.Services
         /// <returns></returns>
         protected Task<TResponse<T>> Fail<T>(Exception ex)
         {
+            _logger.LogError(ex.ToString());
             return Task.FromResult(new TResponse<T>
             {
                 Data = default(T),
@@ -79,6 +85,7 @@ namespace Pelo.v2.Web.Services
         /// <returns></returns>
         protected Task<TResponse<T>> Fail<T>(string message)
         {
+            _logger.LogError(message);
             return Task.FromResult(new TResponse<T>
             {
                 Data = default(T),

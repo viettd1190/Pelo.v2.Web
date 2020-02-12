@@ -2,16 +2,16 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Pelo.Common.Dtos.District;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.Ward;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.District;
 using Pelo.v2.Web.Services.Http;
-using DistrictModel = Pelo.v2.Web.Models.District.DistrictModel;
+using WardModel = Pelo.v2.Web.Models.District.WardModel;
 
-namespace Pelo.v2.Web.Services.Ward
+namespace Pelo.v2.Web.Services.Province
 {
     public interface IWardService
     {
@@ -21,13 +21,14 @@ namespace Pelo.v2.Web.Services.Ward
     }
 
     public class WardService : BaseService,
-                                   IWardService
+                               IWardService
     {
-        public WardService(IHttpService httpService) : base(httpService)
+        public WardService(IHttpService httpService,
+                           ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 
-        #region IDistrictService Members
+        #region IWardService Members
 
         public async Task<WardListModel> GetByPaging(WardSearchModel request)
         {
@@ -49,22 +50,22 @@ namespace Pelo.v2.Web.Services.Ward
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetWardPagingResponse>>(url,
-                                                                                                 null,
-                                                                                                 HttpMethod.Get,
-                                                                                                 true);
+                                                                                             null,
+                                                                                             HttpMethod.Get,
+                                                                                             true);
 
                     if(response.IsSuccess)
                         return new WardListModel
-                        {
+                               {
                                        Draw = request.Draw,
                                        RecordsFiltered = response.Data.TotalCount,
                                        Total = response.Data.TotalCount,
                                        RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new Models.District.WardModel
+                                       Data = response.Data.Data.Select(c => new WardModel
                                                                              {
                                                                                      Id = c.Id,
                                                                                      Name = c.Name,
-                                                                                     District = c.District,
+                                                                                     District = c.Province,
                                                                                      SortOrder = c.SortOrder,
                                                                                      PageSize = request.PageSize,
                                                                                      Type = c.Type,

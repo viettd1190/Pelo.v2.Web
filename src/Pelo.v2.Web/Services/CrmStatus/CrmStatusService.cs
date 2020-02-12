@@ -2,12 +2,11 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Pelo.Common.Dtos.District;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.CrmStatus;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
-using Pelo.v2.Web.Models.District;
 using Pelo.v2.Web.Models.CrmStatus;
 using Pelo.v2.Web.Services.Http;
 
@@ -21,13 +20,14 @@ namespace Pelo.v2.Web.Services.CrmStatus
     }
 
     public class CrmStatusService : BaseService,
-                                   ICrmStatusService
+                                    ICrmStatusService
     {
-        public CrmStatusService(IHttpService httpService) : base(httpService)
+        public CrmStatusService(IHttpService httpService,
+                                ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 
-        #region IDistrictService Members
+        #region ICrmStatusService Members
 
         public async Task<CrmStatusListModel> GetByPaging(CrmStatusSearchModel request)
         {
@@ -48,13 +48,13 @@ namespace Pelo.v2.Web.Services.CrmStatus
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetCrmStatusPagingResponse>>(url,
-                                                                                                 null,
-                                                                                                 HttpMethod.Get,
-                                                                                                 true);
+                                                                                                  null,
+                                                                                                  HttpMethod.Get,
+                                                                                                  true);
 
                     if(response.IsSuccess)
                         return new CrmStatusListModel
-                        {
+                               {
                                        Draw = request.Draw,
                                        RecordsFiltered = response.Data.TotalCount,
                                        Total = response.Data.TotalCount,

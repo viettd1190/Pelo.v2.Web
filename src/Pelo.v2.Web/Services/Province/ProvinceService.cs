@@ -16,7 +16,7 @@ namespace Pelo.v2.Web.Services.Province
 {
     public interface IProvinceService
     {
-        Task<IEnumerable<ProvinceModel>> GetAll();
+        Task<TResponse<IEnumerable<ProvinceModel>>> GetAll();
 
         Task<ProvinceListModel> GetByPaging(ProvinceSearchModel request);
 
@@ -30,16 +30,14 @@ namespace Pelo.v2.Web.Services.Province
     public class ProvinceService : BaseService,
                                    IProvinceService
     {
-        private ILogger<ProvinceService> _logger;
-
-        public ProvinceService(IHttpService httpService,ILogger<ProvinceService> logger) : base(httpService)
+        public ProvinceService(IHttpService httpService,
+                               ILogger<ProvinceService> logger) : base(httpService, logger)
         {
-            _logger = logger;
         }
 
         #region IProvinceService Members
 
-        public async Task<IEnumerable<ProvinceModel>> GetAll()
+        public async Task<TResponse<IEnumerable<ProvinceModel>>> GetAll()
         {
             try
             {
@@ -48,17 +46,17 @@ namespace Pelo.v2.Web.Services.Province
                                                                                   null,
                                                                                   HttpMethod.Get,
                                                                                   true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
-                    return response.Data;
+                    return await Ok(response.Data);
                 }
 
-                return null;
+                return await Fail<IEnumerable<ProvinceModel>>(response.Message);
             }
             catch (Exception exception)
             {
                 _logger.LogError(exception.ToString());
-                return null;
+                return await Fail<IEnumerable<ProvinceModel>>(exception);
             }
         }
 

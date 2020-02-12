@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.AppConfig;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
@@ -25,7 +26,8 @@ namespace Pelo.v2.Web.Services.AppConfig
     public class AppConfigService : BaseService,
                                     IAppConfigService
     {
-        public AppConfigService(IHttpService httpService) : base(httpService)
+        public AppConfigService(IHttpService httpService,
+                                ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 

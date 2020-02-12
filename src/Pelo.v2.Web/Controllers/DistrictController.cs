@@ -12,15 +12,21 @@ namespace Pelo.v2.Web.Controllers
 
         private readonly IBaseModelFactory _baseModelFactory;
 
+        private IProvinceService _provinceService;
+
         public DistrictController(IDistrictService districtService,
-                                  IBaseModelFactory baseModelFactory)
+                                  IBaseModelFactory baseModelFactory,
+                                  IProvinceService provinceService)
         {
             _districtService = districtService;
             _baseModelFactory = baseModelFactory;
+            _provinceService = provinceService;
         }
 
         public IActionResult Index()
         {
+            var provinces = _provinceService.GetAll();
+
             var searchModel = new DistrictSearchModel();
 
             _baseModelFactory.PrepareProvinces(searchModel.AvaiableProvinces);

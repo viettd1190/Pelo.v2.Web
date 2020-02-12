@@ -4,43 +4,40 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Pelo.Common.Dtos.Manufacturer;
+using Pelo.Common.Dtos.Role;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
-using Pelo.v2.Web.Models.Branch;
-using Pelo.v2.Web.Models.Manufacturer;
+using Pelo.v2.Web.Models.Role;
 using Pelo.v2.Web.Services.Http;
 
-namespace Pelo.v2.Web.Services.Manufacturer
+namespace Pelo.v2.Web.Services.Role
 {
-    public interface IManufacturerService
+    public interface IRoleService
     {
-        Task<IEnumerable<ManufacturerSimpleModel>> GetAll();
+        Task<IEnumerable<RoleSimpleModel>> GetAll();
 
-        Task<ManufacturerListModel> GetByPaging(ManufacturerSearchModel request);
+        Task<RoleListModel> GetByPaging(RoleSearchModel request);
     }
 
-    public class ManufacturerService : BaseService, IManufacturerService
+    public class RoleService : BaseService, IRoleService
     {
-        public ManufacturerService(IHttpService httpService,
-                                   ILogger<BaseService> logger) : base(httpService, logger)
+        public RoleService(IHttpService httpService,
+                           ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 
-        #region IManufacturerService Members
+        #region IRoleService Members
 
-        public async Task<IEnumerable<ManufacturerSimpleModel>> GetAll()
+        public async Task<IEnumerable<RoleSimpleModel>> GetAll()
         {
             try
             {
-                var response = await HttpService.Send<IEnumerable<ManufacturerSimpleModel>>(ApiUrl.MANUFACTURER_GET_ALL,
-                                                                                            null,
-                                                                                            HttpMethod.Get,
-                                                                                            true);
-
-                if(response.IsSuccess)
-                    return response.Data;
+                var response = await HttpService.Send<IEnumerable<RoleSimpleModel>>(ApiUrl.ROLE_GET_ALL,
+                                                                                    null,
+                                                                                    HttpMethod.Get,
+                                                                                    true);
+                if(response.IsSuccess) return response.Data;
 
                 throw new PeloException(response.Message);
             }
@@ -50,7 +47,7 @@ namespace Pelo.v2.Web.Services.Manufacturer
             }
         }
 
-        public async Task<ManufacturerListModel> GetByPaging(ManufacturerSearchModel request)
+        public async Task<RoleListModel> GetByPaging(RoleSearchModel request)
         {
             try
             {
@@ -61,7 +58,7 @@ namespace Pelo.v2.Web.Services.Manufacturer
                 var columnOrder = "name";
                 var sortDir = "ASC";
 
-                var url = string.Format(ApiUrl.MANUFACTURER_GET_BY_PAGING,
+                var url = string.Format(ApiUrl.DEPARTMENT_GET_BY_PAGING,
                                         request.Name,
                                         request.ColumnOrder,
                                         start,
@@ -69,19 +66,19 @@ namespace Pelo.v2.Web.Services.Manufacturer
                                         columnOrder,
                                         sortDir);
 
-                var response = await HttpService.Send<PageResult<GetManufacturerPagingResponse>>(url,
-                                                                                                 null,
-                                                                                                 HttpMethod.Get,
-                                                                                                 true);
+                var response = await HttpService.Send<PageResult<GetRolePagingResponse>>(url,
+                                                                                         null,
+                                                                                         HttpMethod.Get,
+                                                                                         true);
 
                 if(response.IsSuccess)
-                    return new ManufacturerListModel
+                    return new RoleListModel
                            {
                                    Draw = request.Draw,
                                    RecordsFiltered = response.Data.TotalCount,
                                    Total = response.Data.TotalCount,
                                    RecordsTotal = response.Data.TotalCount,
-                                   Data = response.Data.Data.Select(c => new ManufacturerModel
+                                   Data = response.Data.Data.Select(c => new RoleModel
                                                                          {
                                                                                  Id = c.Id,
                                                                                  Name = c.Name,

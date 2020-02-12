@@ -2,12 +2,11 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Pelo.Common.Dtos.District;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.CustomerGroup;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
-using Pelo.v2.Web.Models.District;
 using Pelo.v2.Web.Models.CustomerGroup;
 using Pelo.v2.Web.Services.Http;
 
@@ -21,13 +20,14 @@ namespace Pelo.v2.Web.Services.CustomerGroup
     }
 
     public class CustomerGroupService : BaseService,
-                                   ICustomerGroupService
+                                        ICustomerGroupService
     {
-        public CustomerGroupService(IHttpService httpService) : base(httpService)
+        public CustomerGroupService(IHttpService httpService,
+                                    ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 
-        #region IDistrictService Members
+        #region ICustomerGroupService Members
 
         public async Task<CustomerGroupListModel> GetByPaging(CustomerGroupSearchModel request)
         {
@@ -48,13 +48,13 @@ namespace Pelo.v2.Web.Services.CustomerGroup
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetCustomerGroupPagingResponse>>(url,
-                                                                                                 null,
-                                                                                                 HttpMethod.Get,
-                                                                                                 true);
+                                                                                                      null,
+                                                                                                      HttpMethod.Get,
+                                                                                                      true);
 
                     if(response.IsSuccess)
                         return new CustomerGroupListModel
-                        {
+                               {
                                        Draw = request.Draw,
                                        RecordsFiltered = response.Data.TotalCount,
                                        Total = response.Data.TotalCount,

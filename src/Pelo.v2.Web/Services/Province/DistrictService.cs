@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.District;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
@@ -22,7 +23,8 @@ namespace Pelo.v2.Web.Services.Province
     public class DistrictService : BaseService,
                                    IDistrictService
     {
-        public DistrictService(IHttpService httpService) : base(httpService)
+        public DistrictService(IHttpService httpService,
+                               ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 

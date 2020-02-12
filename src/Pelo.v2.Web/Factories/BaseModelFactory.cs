@@ -45,19 +45,22 @@ namespace Pelo.v2.Web.Factories
 
             //prepare available provinces
             var avaiableProvinces = await _provinceService.GetAll();
-            foreach (var province in avaiableProvinces)
+            if(avaiableProvinces.IsSuccess)
             {
-                items.Add(new SelectListItem
-                          {
-                                  Value = province.Id.ToString(),
-                                  Text = province.Name
-                          });
-            }
+                foreach (var province in avaiableProvinces.Data)
+                {
+                    items.Add(new SelectListItem
+                              {
+                                      Value = province.Id.ToString(),
+                                      Text = province.Name
+                              });
+                }
 
-            //insert special item for the default value
-            PrepareDefaultItem(items,
-                               withSpecialDefaultItem,
-                               defaultItemText);
+                //insert special item for the default value
+                PrepareDefaultItem(items,
+                                   withSpecialDefaultItem,
+                                   defaultItemText);
+            }
         }
 
         #endregion

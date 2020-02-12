@@ -1,16 +1,17 @@
-﻿using Pelo.Common.Dtos.Department;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Pelo.Common.Dtos.Department;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.Department;
 using Pelo.v2.Web.Services.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace Pelo.v2.Web.Services.MasterService
+namespace Pelo.v2.Web.Services.Department
 {
     public interface IDepartmentService
     {
@@ -22,7 +23,8 @@ namespace Pelo.v2.Web.Services.MasterService
     public class DepartmentService : BaseService,
                                      IDepartmentService
     {
-        public DepartmentService(IHttpService httpService) : base(httpService)
+        public DepartmentService(IHttpService httpService,
+                                 ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 
@@ -36,7 +38,7 @@ namespace Pelo.v2.Web.Services.MasterService
                                                                                           null,
                                                                                           HttpMethod.Get,
                                                                                           true);
-                if (response.IsSuccess) return response.Data;
+                if(response.IsSuccess) return response.Data;
 
                 throw new PeloException(response.Message);
             }
@@ -52,7 +54,7 @@ namespace Pelo.v2.Web.Services.MasterService
             {
                 var start = 1;
 
-                if (request != null) start = request.Start / request.Length + 1;
+                if(request != null) start = request.Start / request.Length + 1;
 
                 var columnOrder = "name";
                 var sortDir = "ASC";
@@ -66,25 +68,25 @@ namespace Pelo.v2.Web.Services.MasterService
                                         sortDir);
 
                 var response = await HttpService.Send<PageResult<GetDepartmentPagingResponse>>(url,
-                                                                                              null,
-                                                                                              HttpMethod.Get,
-                                                                                              true);
+                                                                                               null,
+                                                                                               HttpMethod.Get,
+                                                                                               true);
 
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                     return new DepartmentListModel
-                    {
-                        Draw = request.Draw,
-                        RecordsFiltered = response.Data.TotalCount,
-                        Total = response.Data.TotalCount,
-                        RecordsTotal = response.Data.TotalCount,
-                        Data = response.Data.Data.Select(c => new DepartmentModel
-                        {
-                            Id = c.Id,
-                            Name = c.Name,
-                            PageSize = request.PageSize,
-                            PageSizeOptions = request.AvailablePageSizes
-                        })
-                    };
+                           {
+                                   Draw = request.Draw,
+                                   RecordsFiltered = response.Data.TotalCount,
+                                   Total = response.Data.TotalCount,
+                                   RecordsTotal = response.Data.TotalCount,
+                                   Data = response.Data.Data.Select(c => new DepartmentModel
+                                                                         {
+                                                                                 Id = c.Id,
+                                                                                 Name = c.Name,
+                                                                                 PageSize = request.PageSize,
+                                                                                 PageSizeOptions = request.AvailablePageSizes
+                                                                         })
+                           };
 
                 throw new PeloException(response.Message);
             }

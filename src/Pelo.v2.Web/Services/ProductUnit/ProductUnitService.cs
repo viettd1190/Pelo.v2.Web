@@ -2,15 +2,13 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Pelo.Common.Dtos.District;
+using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.ProductUnit;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
-using Pelo.v2.Web.Models.District;
 using Pelo.v2.Web.Models.ProductUnit;
 using Pelo.v2.Web.Services.Http;
-using DistrictModel = Pelo.v2.Web.Models.District.DistrictModel;
 
 namespace Pelo.v2.Web.Services.ProductUnit
 {
@@ -22,13 +20,14 @@ namespace Pelo.v2.Web.Services.ProductUnit
     }
 
     public class ProductUnitService : BaseService,
-                                   IProductUnitService
+                                      IProductUnitService
     {
-        public ProductUnitService(IHttpService httpService) : base(httpService)
+        public ProductUnitService(IHttpService httpService,
+                                  ILogger<BaseService> logger) : base(httpService, logger)
         {
         }
 
-        #region IDistrictService Members
+        #region IProductUnitService Members
 
         public async Task<ProductUnitListModel> GetByPaging(ProductUnitSearchModel request)
         {
@@ -49,13 +48,13 @@ namespace Pelo.v2.Web.Services.ProductUnit
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetProductUnitPagingResponse>>(url,
-                                                                                                 null,
-                                                                                                 HttpMethod.Get,
-                                                                                                 true);
+                                                                                                    null,
+                                                                                                    HttpMethod.Get,
+                                                                                                    true);
 
                     if(response.IsSuccess)
                         return new ProductUnitListModel
-                        {
+                               {
                                        Draw = request.Draw,
                                        RecordsFiltered = response.Data.TotalCount,
                                        Total = response.Data.TotalCount,
