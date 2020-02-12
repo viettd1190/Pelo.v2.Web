@@ -398,5 +398,17 @@
 
         public const string GET_RECEIPT_DESCRIPTION_ID = BASE_API_URL + "/api/receipt_description/{0}";
         #endregion
+
+        #region Warranty Status
+        public const string WARRANTY_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/warranty_status?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
+
+        public const string WARRANTY_STATUS_GET_ALL = BASE_API_URL + "/api/warranty_status/all";
+
+        public const string WARRANTY_STATUS_DELETE = BASE_API_URL + "/api/warranty_status/{0}";
+
+        public const string WARRANTY_STATUS_GET_BY_ID = BASE_API_URL + "/api/warranty_status/{0}";
+
+        public const string WARRANTY_STATUS_UPDATE = BASE_API_URL + "/api/warranty_status";
+        #endregion
     }
 }

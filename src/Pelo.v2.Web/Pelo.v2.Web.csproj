@@ -21,6 +21,7 @@
   <ItemGroup>
     <Folder Include="Models\Candidate\" />
     <Folder Include="Models\Crm\" />
+    <Folder Include="Models\User\" />
     <Folder Include="Models\Product\" />
     <Folder Include="Models\ReceiptStatusInRole\" />
     <Folder Include="Models\Receipt\" />
@@ -33,13 +34,13 @@
     <Folder Include="Models\TaskType\" />
     <Folder Include="Models\WarrantyDescription\" />
     <Folder Include="Models\WarrantyStatusInRole\" />
-    <Folder Include="Models\WarrantyStatus\" />
     <Folder Include="Models\Warranty\" />
     <Folder Include="Models\Task\" />
     <Folder Include="Pages\" />
     <Folder Include="Services\Crm\" />
     <Folder Include="Services\Candidate\" />
     <Folder Include="Services\InvoiceStatusInRole\" />
+    <Folder Include="Services\User\" />
     <Folder Include="Services\TaskType\" />
     <Folder Include="Services\TaskStatus\" />
     <Folder Include="Services\TaskPriority\" />
@@ -47,7 +48,6 @@
     <Folder Include="Services\TaskStatusInRole\" />
     <Folder Include="Services\ReceiptStatusInRole\" />
     <Folder Include="Services\WarrantyDescription\" />
-    <Folder Include="Services\WarrantyStatus\" />
     <Folder Include="Services\WarrantyStatusInRole\" />
     <Folder Include="Services\Recruitment\" />
     <Folder Include="Services\RecruitmentStatus\" />
