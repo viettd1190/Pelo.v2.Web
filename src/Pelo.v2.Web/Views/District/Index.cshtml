@@ -36,7 +36,7 @@
                     <div class="col-lg-6">
                         <fieldset class="form-group">
                             <label class="form-label semibold">Tỉnh thành</label>
-                            <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces" />
+                            <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces"/>
                         </fieldset>
                     </div>
                     <div class="col-lg-6">
@@ -65,7 +65,8 @@
        SearchButtonId = "search-district",
        Ordering = false,
        Filters = new List<FilterParameter> {
-                                                   new FilterParameter(nameof(Model.DistrictName))
+                                                   new FilterParameter(nameof(Model.DistrictName)),
+                                                   new FilterParameter(nameof(Model.ProvinceId)),
                                            },
        ColumnCollection = new List<ColumnProperty> {
                                                            new ColumnProperty(nameof(DistrictModel.SortOrder))

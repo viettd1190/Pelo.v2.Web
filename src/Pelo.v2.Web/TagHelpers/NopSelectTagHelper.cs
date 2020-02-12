@@ -128,9 +128,9 @@ namespace Pelo.v2.Web.TagHelpers
                 else
                 {
                     if (htmlAttributes.ContainsKey("class"))
-                        htmlAttributes["class"] += " form-control";
+                        htmlAttributes["class"] += " form-control select2";
                     else
-                        htmlAttributes.Add("class", "form-control");
+                        htmlAttributes.Add("class", "form-control select2");
 
                     selectList = _htmlHelper.DropDownList(tagName, Items, htmlAttributes);
                 }
