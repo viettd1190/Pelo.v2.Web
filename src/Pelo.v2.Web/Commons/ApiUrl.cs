@@ -361,7 +361,7 @@
 
         #endregion
 
-        #region Candidate
+        #region Candidate Status
         public const string CANDIDATE_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/candidate_status?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
 
         public const string CANDIDATE_STATUS_GET_ALL = BASE_API_URL + "/api/candidate_status/all";
@@ -371,6 +371,18 @@
         public const string CANDIDATE_STATUS_GET_BY_ID = BASE_API_URL + "/api/candidate_status/{0}";
 
         public const string CANDIDATE_STATUS_UPDATE = BASE_API_URL + "/api/candidate_status";
+        #endregion
+
+        #region Receipt Status
+        public const string RECEIPT_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/receipt_status?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
+
+        public const string RECEIPT_STATUS_GET_ALL = BASE_API_URL + "/api/receipt_status/all";
+
+        public const string RECEIPT_STATUS_DELETE = BASE_API_URL + "/api/receipt_status/{0}";
+
+        public const string RECEIPT_STATUS_GET_BY_ID = BASE_API_URL + "/api/receipt_status/{0}";
+
+        public const string RECEIPT_STATUS_UPDATE = BASE_API_URL + "/api/receipt_status";
         #endregion
     }
 }
