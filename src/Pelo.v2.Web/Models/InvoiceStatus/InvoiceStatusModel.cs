@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 
-namespace Pelo.v2.Web.Models.CrmStatus
+namespace Pelo.v2.Web.Models.InvoiceStatus
 {
-    public class CrmStatusModel
+    public class InvoiceStatusModel
     {
-        public CrmStatusModel()
+        public InvoiceStatusModel()
         {
             if(PageSize < 1)
             {
