@@ -19,10 +19,8 @@
 
 
   <ItemGroup>
-    <Folder Include="Models\CandidateStatus\" />
     <Folder Include="Models\Candidate\" />
     <Folder Include="Models\Crm\" />
-    <Folder Include="Models\InvoiceStatusInRole\" />
     <Folder Include="Models\Product\" />
     <Folder Include="Models\ReceiptDescription\" />
     <Folder Include="Models\ReceiptStatusInRole\" />
@@ -43,7 +41,6 @@
     <Folder Include="Pages\" />
     <Folder Include="Services\Crm\" />
     <Folder Include="Services\Candidate\" />
-    <Folder Include="Services\CandidateStatus\" />
     <Folder Include="Services\InvoiceStatusInRole\" />
     <Folder Include="Services\TaskType\" />
     <Folder Include="Services\TaskStatus\" />

@@ -39,7 +39,7 @@ namespace Pelo.v2.Web.Services.PayMethod
                                                                                          HttpMethod.Get,
                                                                                          true);
 
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                     return response.Data;
 
                 throw new PeloException(response.Message);
@@ -56,39 +56,38 @@ namespace Pelo.v2.Web.Services.PayMethod
             {
                 var start = 1;
 
-                if(request != null) start = request.Start / request.Length + 1;
+                if (request != null) start = request.Start / request.Length + 1;
 
-                var columnOrder = "name";
+                var columnOrder = request.ColumnOrder ?? "name";
                 var sortDir = "ASC";
 
                 var url = string.Format(ApiUrl.PAY_METHOD_GET_BY_PAGING,
                                         request.Name,
-                                        request.ColumnOrder,
-                                        start,
-                                        request?.Length ?? 10,
                                         columnOrder,
-                                        sortDir);
+                                        sortDir,
+                                        start,
+                                        request?.Length ?? 10);
 
                 var response = await HttpService.Send<PageResult<GetPayMethodPagingResponse>>(url,
                                                                                               null,
                                                                                               HttpMethod.Get,
                                                                                               true);
 
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                     return new PaymethodListModel
-                           {
-                                   Draw = request.Draw,
-                                   RecordsFiltered = response.Data.TotalCount,
-                                   Total = response.Data.TotalCount,
-                                   RecordsTotal = response.Data.TotalCount,
-                                   Data = response.Data.Data.Select(c => new PaymethodModel
-                                                                         {
-                                                                                 Id = c.Id,
-                                                                                 Name = c.Name,
-                                                                                 PageSize = request.PageSize,
-                                                                                 PageSizeOptions = request.AvailablePageSizes
-                                                                         })
-                           };
+                    {
+                        Draw = request.Draw,
+                        RecordsFiltered = response.Data.TotalCount,
+                        Total = response.Data.TotalCount,
+                        RecordsTotal = response.Data.TotalCount,
+                        Data = response.Data.Data.Select(c => new PaymethodModel
+                        {
+                            Id = c.Id,
+                            Name = c.Name,
+                            PageSize = request.PageSize,
+                            PageSizeOptions = request.AvailablePageSizes
+                        })
+                    };
 
                 throw new PeloException(response.Message);
             }

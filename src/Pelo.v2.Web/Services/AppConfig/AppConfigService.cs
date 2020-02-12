@@ -59,10 +59,10 @@ namespace Pelo.v2.Web.Services.AppConfig
                     var url = string.Format(ApiUrl.APP_CONFIG_GET_BY_PAGING,
                                             request.AppConfigName,
                                             request.AppConfigDescription,
-                                            start,
-                                            request?.Length ?? 10,
                                             columnOrder,
-                                            sortDir);
+                                            sortDir,
+                                            start,
+                                            request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetAppConfigPagingResponse>>(url,
                                                                                                   null,

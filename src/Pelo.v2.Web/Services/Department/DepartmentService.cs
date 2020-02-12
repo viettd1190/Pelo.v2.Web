@@ -56,16 +56,15 @@ namespace Pelo.v2.Web.Services.Department
 
                 if(request != null) start = request.Start / request.Length + 1;
 
-                var columnOrder = "name";
+                var columnOrder = request.ColumnOrder??"name";
                 var sortDir = "ASC";
 
                 var url = string.Format(ApiUrl.DEPARTMENT_GET_BY_PAGING,
                                         request.Name,
-                                        request.ColumnOrder,
-                                        start,
-                                        request?.Length ?? 10,
                                         columnOrder,
-                                        sortDir);
+                                        sortDir,
+                                        start,
+                                        request?.Length ?? 10);
 
                 var response = await HttpService.Send<PageResult<GetDepartmentPagingResponse>>(url,
                                                                                                null,

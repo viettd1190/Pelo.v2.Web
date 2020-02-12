@@ -41,7 +41,15 @@ namespace Pelo.v2.Web.Services.Customer
                     var start = request.Start / request.Length + 1;
 
                     var url = string.Format(ApiUrl.CUSTOMER_GET_BY_PAGING,
-                                            request.Name,
+                        request.Code,request.Name,
+                                            request.ProvinceId,
+                                            request.DistrictId,
+                                            request.WardId,
+                                            request.Address,
+                                            request.Phone,
+                                            request.Email,
+                                            request.CustomerGroupId,
+                                            request.CustomerVipId,
                                             columnOrder,
                                             sortDir,
                                             start,

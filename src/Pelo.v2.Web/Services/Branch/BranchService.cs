@@ -67,7 +67,7 @@ namespace Pelo.v2.Web.Services.Branch
 
                 if(request != null) start = request.Start / request.Length + 1;
 
-                var columnOrder = "name";
+                var columnOrder = request.ColumnOrder??"name";
                 var sortDir = "ASC";
 
                 var url = string.Format(ApiUrl.BRANCH_PAGING,
@@ -75,12 +75,11 @@ namespace Pelo.v2.Web.Services.Branch
                                         request.HotLine,
                                         request.ProvinceId,
                                         request.DistrictId,
-                                        request.DistrictId,
-                                        request.ColumnOrder,
-                                        start,
-                                        request?.Length ?? 10,
+                                        request.WardId,
                                         columnOrder,
-                                        sortDir);
+                                        sortDir,
+                                        start,
+                                        request?.Length ?? 10);
 
                 var response = await HttpService.Send<PageResult<GetBranchPagingResponse>>(url,
                                                                                            null,
