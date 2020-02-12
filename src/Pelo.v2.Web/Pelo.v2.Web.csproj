@@ -22,7 +22,6 @@
     <Folder Include="Models\CandidateStatus\" />
     <Folder Include="Models\Candidate\" />
     <Folder Include="Models\Crm\" />
-    <Folder Include="Models\Customer\" />
     <Folder Include="Models\InvoiceStatusInRole\" />
     <Folder Include="Models\InvoiceStatus\" />
     <Folder Include="Models\Invoice\" />
@@ -45,7 +44,6 @@
     <Folder Include="Models\Task\" />
     <Folder Include="Pages\" />
     <Folder Include="Services\Crm\" />
-    <Folder Include="Services\Customer\" />
     <Folder Include="Services\Invoice\" />
     <Folder Include="Services\Candidate\" />
     <Folder Include="Services\CandidateStatus\" />
