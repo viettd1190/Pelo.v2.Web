@@ -65,7 +65,7 @@ namespace Pelo.v2.Web.Services.Province
                                                                              {
                                                                                      Id = c.Id,
                                                                                      Name = c.Name,
-                                                                                     District = c.Province,
+                                                                                     District = c.District,
                                                                                      SortOrder = c.SortOrder,
                                                                                      PageSize = request.PageSize,
                                                                                      Type = c.Type,
