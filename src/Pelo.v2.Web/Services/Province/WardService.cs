@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -7,7 +8,6 @@ using Pelo.Common.Dtos.Ward;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
-using Pelo.v2.Web.Models.District;
 using Pelo.v2.Web.Models.Ward;
 using Pelo.v2.Web.Services.Http;
 using WardModel = Pelo.v2.Web.Models.Ward.WardModel;
@@ -16,6 +16,8 @@ namespace Pelo.v2.Web.Services.Province
 {
     public interface IWardService
     {
+        Task<TResponse<IEnumerable<WardModel>>> GetAll(int districtId);
+
         Task<WardListModel> GetByPaging(WardSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
@@ -25,11 +27,40 @@ namespace Pelo.v2.Web.Services.Province
                                IWardService
     {
         public WardService(IHttpService httpService,
-                           ILogger<BaseService> logger) : base(httpService, logger)
+                           ILogger<BaseService> logger) : base(httpService,
+                                                               logger)
         {
         }
 
         #region IWardService Members
+
+        public async Task<TResponse<IEnumerable<WardModel>>> GetAll(int districtId)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.WARD_GET_ALL,
+                                        districtId);
+                var response = await HttpService.Send<IEnumerable<Common.Dtos.Ward.WardModel>>(url,
+                                                                                               null,
+                                                                                               HttpMethod.Get,
+                                                                                               true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(response.Data.Select(c => new WardModel
+                                                              {
+                                                                      Id = c.Id,
+                                                                      Type = c.Type,
+                                                                      Name = c.Name
+                                                              }));
+                }
+
+                return await Fail<IEnumerable<WardModel>>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<IEnumerable<WardModel>>(exception);
+            }
+        }
 
         public async Task<WardListModel> GetByPaging(WardSearchModel request)
         {

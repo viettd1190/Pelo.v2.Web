@@ -30,6 +30,20 @@ namespace Pelo.v2.Web.Factories
                               int provinceId = 0,
                               bool withSpecialDefaultItem = true,
                               string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all wards by district id
+        /// </summary>
+        /// <param name="items">List store wards</param>
+        /// <param name="districtId"></param>
+        /// <param name="withSpecialDefaultItem">Whether to insert the first special item for the default value</param>
+        /// <param name="defaultItemText">Default item text; pass null to use default value of the default item text</param>
+        /// <returns></returns>
+        Task PrepareWards(IList<SelectListItem> items,
+                              int districtId=0,
+                              bool withSpecialDefaultItem = true,
+                              string defaultItemText = null);
+
     }
 
     public class BaseModelFactory : IBaseModelFactory
@@ -38,11 +52,15 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IDistrictService _districtService;
 
+        private IWardService _wardService;
+
         public BaseModelFactory(IProvinceService provinceService,
-                                IDistrictService districtService)
+                                IDistrictService districtService,
+                                IWardService wardService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
+            _wardService = wardService;
         }
 
         #region IBaseModelFactory Members
@@ -98,6 +116,34 @@ namespace Pelo.v2.Web.Factories
                               {
                                       Value = district.Id.ToString(),
                                       Text = $"{district.Type} {district.Name}"
+                              });
+                }
+
+                //insert special item for the default value
+                PrepareDefaultItem(items,
+                                   withSpecialDefaultItem,
+                                   defaultItemText);
+            }
+        }
+
+        public async Task PrepareWards(IList<SelectListItem> items,
+                                 int districtId = 0,
+                                 bool withSpecialDefaultItem = true,
+                                 string defaultItemText = null)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available wards
+            var avaiableWards = await _wardService.GetAll(districtId);
+            if (avaiableWards.IsSuccess)
+            {
+                foreach (var ward in avaiableWards.Data)
+                {
+                    items.Add(new SelectListItem
+                              {
+                                      Value = ward.Id.ToString(),
+                                      Text = $"{ward.Type} {ward.Name}"
                               });
                 }
 

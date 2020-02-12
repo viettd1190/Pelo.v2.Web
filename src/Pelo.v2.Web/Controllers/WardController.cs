@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Ward;
@@ -13,7 +14,7 @@ namespace Pelo.v2.Web.Controllers
         private readonly IWardService _wardService;
 
         public WardController(IWardService wardService,
-                                  IBaseModelFactory baseModelFactory)
+                              IBaseModelFactory baseModelFactory)
         {
             _wardService = wardService;
             _baseModelFactory = baseModelFactory;
@@ -33,9 +34,36 @@ namespace Pelo.v2.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> GetList(WardSearchModel model)
         {
-            
             var result = await _wardService.GetByPaging(model);
             return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetWardByDistrictId(int districtId,
+                                                             bool addAll = true)
+        {
+            var districts = await _wardService.GetAll(districtId);
+            if(districts.IsSuccess)
+            {
+                if(districts.Data != null)
+                {
+                    var result = districts.Data.ToList();
+                    if(addAll)
+                    {
+                        result.Insert(0,
+                                      new WardModel
+                                      {
+                                              Id = 0,
+                                              Type = "Tất cả",
+                                              Name = string.Empty
+                                      });
+                    }
+
+                    return Json(result);
+                }
+            }
+
+            return null;
         }
 
         [HttpPost]

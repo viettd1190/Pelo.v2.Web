@@ -63,51 +63,68 @@ namespace Pelo.v2.Web.Services.Branch
         {
             try
             {
-                var start = 1;
-
-                if(request != null) start = request.Start / request.Length + 1;
-
-                var columnOrder = request.ColumnOrder??"name";
+                var columnOrder = "Name";
                 var sortDir = "ASC";
 
-                var url = string.Format(ApiUrl.BRANCH_PAGING,
-                                        request.Name,
-                                        request.HotLine,
-                                        request.ProvinceId,
-                                        request.DistrictId,
-                                        request.WardId,
-                                        columnOrder,
-                                        sortDir,
-                                        start,
-                                        request?.Length ?? 10);
+                if(request != null)
+                {
+                    var start = request.Start / request.Length + 1;
 
-                var response = await HttpService.Send<PageResult<GetBranchPagingResponse>>(url,
-                                                                                           null,
-                                                                                           HttpMethod.Get,
-                                                                                           true);
+                    if (request.Columns != null
+                        && request.Columns.Any()
+                        && request.Order != null
+                        && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
-                if(response.IsSuccess)
-                    return new BranchListModel
-                           {
-                                   Draw = request.Draw,
-                                   RecordsFiltered = response.Data.TotalCount,
-                                   Total = response.Data.TotalCount,
-                                   RecordsTotal = response.Data.TotalCount,
-                                   Data = response.Data.Data.Select(c => new Models.Branch.BranchModel
-                                                                         {
-                                                                                 Id = c.Id,
-                                                                                 Name = c.Name,
-                                                                                 Address = c.Address,
-                                                                                 PageSize = request.PageSize,
-                                                                                 District = c.District,
-                                                                                 Hotline = c.Hotline,
-                                                                                 Province = c.Province,
-                                                                                 Ward = c.Ward,
-                                                                                 PageSizeOptions = request.AvailablePageSizes
-                                                                         })
-                           };
 
-                throw new PeloException(response.Message);
+
+                    var url = string.Format(ApiUrl.BRANCH_PAGING,
+                                            request.Name,
+                                            request.HotLine,
+                                            request.ProvinceId,
+                                            request.DistrictId,
+                                            request.WardId,
+                                            columnOrder,
+                                            sortDir,
+                                            start,
+                                            request?.Length ?? 10);
+
+                    var response = await HttpService.Send<PageResult<GetBranchPagingResponse>>(url,
+                                                                                               null,
+                                                                                               HttpMethod.Get,
+                                                                                               true);
+
+                    if (response.IsSuccess)
+                        return new BranchListModel
+                        {
+                            Draw = request.Draw,
+                            RecordsFiltered = response.Data.TotalCount,
+                            Total = response.Data.TotalCount,
+                            RecordsTotal = response.Data.TotalCount,
+                            Data = response.Data.Data.Select(c => new Models.Branch.BranchModel
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                                Address = c.Address,
+                                PageSize = request.PageSize,
+                                District = c.District,
+                                Hotline = c.Hotline,
+                                Province = c.Province,
+                                Ward = c.Ward,
+                                PageSizeOptions = request.AvailablePageSizes
+                            })
+                        };
+
+                    throw new PeloException(response.Message);
+                }
+
+                throw new PeloException("Request is null");
             }
             catch (Exception exception)
             {

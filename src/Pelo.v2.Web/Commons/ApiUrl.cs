@@ -31,7 +31,7 @@
 
         public const string BRANCH_GET_ALL = BASE_API_URL + "/api/branch/all";
 
-        public const string BRANCH_PAGING = BASE_API_URL + "/api/branch?name={0}&hotline={1}&provinceId={2}&districtId={3}&wardId={4}&column_order={5}&sort_dir={6}page={7}&page_size={8}";
+        public const string BRANCH_PAGING = BASE_API_URL + "/api/branch?name={0}&hotline={1}&provinceId={2}&districtId={3}&wardId={4}&column_order={5}&sort_dir={6}&page={7}&page_size={8}";
 
         public const string BRANCH_INSERT = BASE_API_URL + "/api/branch";
 

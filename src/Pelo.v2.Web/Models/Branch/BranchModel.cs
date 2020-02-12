@@ -12,25 +12,25 @@ namespace Pelo.v2.Web.Models.Branch
             }
         }
 
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public int Id { get; set; }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("province")]
+        [JsonProperty("Province")]
         public string Province { get; set; }
 
-        [JsonProperty("hotline")]
+        [JsonProperty("Hotline")]
         public string Hotline { get; set; }
 
-        [JsonProperty("district")]
+        [JsonProperty("District")]
         public string District { get; set; }
 
-        [JsonProperty("ward_id")]
+        [JsonProperty("Ward")]
         public string Ward { get; set; }
 
-        [JsonProperty("address")]
+        [JsonProperty("Address")]
         public string Address { get; set; }
 
         [JsonProperty("PageSize")]
