@@ -22,7 +22,6 @@
     <Folder Include="Models\Candidate\" />
     <Folder Include="Models\Crm\" />
     <Folder Include="Models\Product\" />
-    <Folder Include="Models\ReceiptDescription\" />
     <Folder Include="Models\ReceiptStatusInRole\" />
     <Folder Include="Models\Receipt\" />
     <Folder Include="Models\RecruitmentStatus\" />
@@ -46,7 +45,6 @@
     <Folder Include="Services\TaskPriority\" />
     <Folder Include="Services\TaskLoop\" />
     <Folder Include="Services\TaskStatusInRole\" />
-    <Folder Include="Services\ReceiptDescription\" />
     <Folder Include="Services\ReceiptStatusInRole\" />
     <Folder Include="Services\WarrantyDescription\" />
     <Folder Include="Services\WarrantyStatus\" />

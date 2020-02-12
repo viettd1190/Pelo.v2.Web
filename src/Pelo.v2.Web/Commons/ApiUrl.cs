@@ -384,5 +384,19 @@
 
         public const string RECEIPT_STATUS_UPDATE = BASE_API_URL + "/api/receipt_status";
         #endregion
+
+        #region Receipt Description
+        public const string RECEIPT_DESCRIPTION_GET_ALL = BASE_API_URL + "/api/receipt_description/all";
+
+        public const string RECEIPT_DESCRIPTION_GET_BY_PAGING = BASE_API_URL + "/api/receipt_description?name={0}&column_order={1}&sort_dir={2}page={3}&page_size={4}";
+
+        public const string RECEIPT_DESCRIPTION_INSERT = BASE_API_URL + "/api/receipt_description";
+
+        public const string RECEIPT_DESCRIPTION_UPDATE = BASE_API_URL + "/api/receipt_description";
+
+        public const string RECEIPT_DESCRIPTION_DELETE = BASE_API_URL + "/api/receipt_description/{0}";
+
+        public const string GET_RECEIPT_DESCRIPTION_ID = BASE_API_URL + "/api/receipt_description/{0}";
+        #endregion
     }
 }
