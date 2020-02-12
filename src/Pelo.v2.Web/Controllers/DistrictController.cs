@@ -8,28 +8,22 @@ namespace Pelo.v2.Web.Controllers
 {
     public class DistrictController : Controller
     {
-        private readonly IDistrictService _districtService;
-
         private readonly IBaseModelFactory _baseModelFactory;
 
-        private IProvinceService _provinceService;
+        private readonly IDistrictService _districtService;
 
         public DistrictController(IDistrictService districtService,
-                                  IBaseModelFactory baseModelFactory,
-                                  IProvinceService provinceService)
+                                  IBaseModelFactory baseModelFactory)
         {
             _districtService = districtService;
             _baseModelFactory = baseModelFactory;
-            _provinceService = provinceService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var provinces = _provinceService.GetAll();
-
             var searchModel = new DistrictSearchModel();
 
-            _baseModelFactory.PrepareProvinces(searchModel.AvaiableProvinces);
+            await _baseModelFactory.PrepareProvinces(searchModel.AvaiableProvinces);
 
             return View(searchModel);
         }
