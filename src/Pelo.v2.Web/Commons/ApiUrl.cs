@@ -275,7 +275,7 @@
 
         public const string WARD_UPDATE = BASE_API_URL + "/api/ward";
 
-        public const string WARD_GET_BY_PAGING = BASE_API_URL + "/api/ward?name={0}&districtId={1}&column_order={2}&sort_dir={3}&page={4}&page_size={5}";
+        public const string WARD_GET_BY_PAGING = BASE_API_URL + "/api/ward?name={0}&district_id={1}&province_id={2}&column_order={3}&sort_dir={4}&page={5}&page_size={6}";
 
         #endregion
 

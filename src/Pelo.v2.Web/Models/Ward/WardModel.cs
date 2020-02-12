@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Pelo.v2.Web.Models.District
+namespace Pelo.v2.Web.Models.Ward
 {
     public class WardModel
     {
@@ -20,6 +20,9 @@ namespace Pelo.v2.Web.Models.District
 
         [JsonProperty("District")]
         public string District { get; set; }
+
+        [JsonProperty("Province")]
+        public string Province { get; set; }
 
         [JsonProperty("SortOrder")]
         public int SortOrder { get; set; }

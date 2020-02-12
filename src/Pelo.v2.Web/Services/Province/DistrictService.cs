@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace Pelo.v2.Web.Services.Province
 {
     public interface IDistrictService
     {
+        Task<TResponse<IEnumerable<DistrictModel>>> GetAll(int provinceId);
+
         Task<DistrictListModel> GetByPaging(DistrictSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
@@ -24,11 +27,36 @@ namespace Pelo.v2.Web.Services.Province
                                    IDistrictService
     {
         public DistrictService(IHttpService httpService,
-                               ILogger<BaseService> logger) : base(httpService, logger)
+                               ILogger<BaseService> logger) : base(httpService,
+                                                                   logger)
         {
         }
 
         #region IDistrictService Members
+
+        public async Task<TResponse<IEnumerable<DistrictModel>>> GetAll(int provinceId)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.DISTRICT_GET_ALL,
+                                        provinceId);
+                var response = await HttpService.Send<IEnumerable<DistrictModel>>(url,
+                                                                                  null,
+                                                                                  HttpMethod.Get,
+                                                                                  true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<IEnumerable<DistrictModel>>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.ToString());
+                return await Fail<IEnumerable<DistrictModel>>(exception);
+            }
+        }
 
         public async Task<DistrictListModel> GetByPaging(DistrictSearchModel request)
         {

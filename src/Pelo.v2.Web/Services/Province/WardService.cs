@@ -8,8 +8,9 @@ using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.District;
+using Pelo.v2.Web.Models.Ward;
 using Pelo.v2.Web.Services.Http;
-using WardModel = Pelo.v2.Web.Models.District.WardModel;
+using WardModel = Pelo.v2.Web.Models.Ward.WardModel;
 
 namespace Pelo.v2.Web.Services.Province
 {
@@ -42,8 +43,9 @@ namespace Pelo.v2.Web.Services.Province
                     var start = request.Start / request.Length + 1;
 
                     var url = string.Format(ApiUrl.WARD_GET_BY_PAGING,
-                                            request.Name,
+                                            request.WardName,
                                             request.DistrictId,
+                                            request.ProvinceId,
                                             columnOrder,
                                             sortDir,
                                             start,
@@ -66,6 +68,7 @@ namespace Pelo.v2.Web.Services.Province
                                                                                      Id = c.Id,
                                                                                      Name = c.Name,
                                                                                      District = c.District,
+                                                                                     Province = c.Province,
                                                                                      SortOrder = c.SortOrder,
                                                                                      PageSize = request.PageSize,
                                                                                      Type = c.Type,

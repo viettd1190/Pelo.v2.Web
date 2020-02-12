@@ -703,6 +703,11 @@
                 }
             });
         }
+        function reloadDataWhenSelect(name) {
+            $('#' + name).change(function () {
+                reloadData();
+            });
+        }
     </script>
     @RenderSection("js", false)
 </body>

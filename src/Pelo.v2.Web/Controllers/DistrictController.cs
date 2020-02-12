@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.District;
@@ -33,6 +34,33 @@ namespace Pelo.v2.Web.Controllers
         {
             var result = await _districtService.GetByPaging(model);
             return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetDistrictByProvinceId(int provinceId,
+                                                                 bool addAll = true)
+        {
+            var districts = await _districtService.GetAll(provinceId);
+            if(districts.IsSuccess)
+            {
+                if(districts.Data!=null)
+                {
+                    var result = districts.Data.ToList();
+                    if(addAll)
+                    {
+                        result.Insert(0,new DistrictModel
+                                        {
+                                                Id = 0,
+                                                Type = "Tất cả",
+                                                Name = string.Empty
+                                        });
+                    }
+
+                    return Json(result);
+                }
+            }
+
+            return null;
         }
 
         [HttpPost]

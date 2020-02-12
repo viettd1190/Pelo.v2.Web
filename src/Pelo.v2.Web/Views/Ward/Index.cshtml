@@ -1,10 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Routing
-@using Pelo.v2.Web.Models.District
+@using Pelo.v2.Web.Models.Ward
 @using Pelo.v2.Web.Models.Datatables
 @using Pelo.v2.Web.Models.Datatables.Render
-@model Pelo.v2.Web.Models.District.DistrictSearchModel
+@model Pelo.v2.Web.Models.Ward.WardSearchModel
 @{
-  ViewBag.Title = "Danh sách quận huyện";
+  ViewBag.Title = "Danh sách phường xã";
   Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -29,24 +29,30 @@
     <div class="col-xl-12 dahsboard-column">
         <section class="box-typical box-typical-dashboard panel panel-default scrollable">
             <header class="box-typical-header panel-heading">
-                <h3 class="panel-title">Danh sách quận huyện</h3>
+                <h3 class="panel-title">Danh sách phường xã</h3>
             </header>
             <div class="box-typical-body panel-body">
                 <div class="row" style="padding:15px;">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <fieldset class="form-group">
-                            <nop-label asp-for="ProvinceId" text-display="Tỉnh thành"/>
-                            <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces"/>
+                            <nop-label asp-for="ProvinceId" text-display="Tỉnh thành" />
+                            <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces" />
                         </fieldset>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <fieldset class="form-group">
-                            <nop-label asp-for="DistrictName" text-display="Tên quận huyện" />
-                            <input asp-for="DistrictName" class="form-control" type="text" placeholder="Tên quận huyện" />
+                            <nop-label asp-for="DistrictId" text-display="Quận huyện" />
+                            <nop-select asp-for="DistrictId" asp-items="Model.AvaiableDistricts" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-4">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="WardName" text-display="Tên phường xã" />
+                            <input asp-for="WardName" class="form-control" type="text" placeholder="Tên phường xã" />
                         </fieldset>
                     </div>
                     <div class="col-xs-12">
-                        <button class="btn btn-primary" id="search-district">Tìm kiếm</button>
+                        <button class="btn btn-primary" id="search-ward">Tìm kiếm</button>
                         <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
                     </div>
                 </div>
@@ -59,39 +65,45 @@
     <div class="card-block">
         @await Html.PartialAsync("Table",new DataTablesModel
    {
-       Name="district-grid",
-       UrlRead = new DataUrl("GetList","District",null),
-       UrlDelete = new DataUrl("Delete","District",null),
-       SearchButtonId = "search-district",
+       Name="ward-grid",
+       UrlRead = new DataUrl("GetList","Ward",null),
+       UrlDelete = new DataUrl("Delete","Ward",null),
+       SearchButtonId = "search-ward",
        Ordering = false,
        Filters = new List<FilterParameter> {
-                                                   new FilterParameter(nameof(Model.DistrictName)),
+                                                   new FilterParameter(nameof(Model.WardName)),
                                                    new FilterParameter(nameof(Model.ProvinceId)),
+                                                   new FilterParameter(nameof(Model.DistrictId))
                                            },
        ColumnCollection = new List<ColumnProperty> {
-                                                           new ColumnProperty(nameof(DistrictModel.Province))
+                                                           new ColumnProperty(nameof(WardModel.Province))
                                                            {
                                                                    Title = "Tỉnh thành",
                                                                    Width = "300"
                                                            },
-                                                           new ColumnProperty(nameof(DistrictModel.Type))
+                                                           new ColumnProperty(nameof(WardModel.District))
+                                                           {
+                                                                   Title = "Quận huyện",
+                                                                   Width = "300"
+                                                           },
+                                                           new ColumnProperty(nameof(WardModel.Type))
                                                            {
                                                                    Title = "Loại",
                                                                    Width = "100"
                                                            },
-                                                           new ColumnProperty(nameof(DistrictModel.Name))
+                                                           new ColumnProperty(nameof(WardModel.Name))
                                                            {
                                                                    Title = "Tên"
                                                            },
-                                                           new ColumnProperty(nameof(DistrictModel.Id))
+                                                           new ColumnProperty(nameof(WardModel.Id))
                                                            {
                                                                    Title = "",
                                                                    Width = "40",
                                                                    Orderable = false,
                                                                    ClassName =  NopColumnClassDefaults.Button,
-                                                                   Render = new RenderButtonEdit(new DataUrl("District/Edit"))
+                                                                   Render = new RenderButtonEdit(new DataUrl("Ward/Edit"))
                                                            },
-                                                           new ColumnProperty(nameof(DistrictModel.Id))
+                                                           new ColumnProperty(nameof(WardModel.Id))
                                                            {
                                                                    Title = "",
                                                                    Width = "40",
@@ -111,10 +123,36 @@
                 sortable: false,
                 draggable: false,
                 resize: 'none'
-                });
+            });
+            $("#@Html.IdFor(model => model.ProvinceId)").change(function() {
+                var selectedItem = $(this).val();
+                var dllDistricts = $("#@Html.IdFor(model => model.DistrictId)");
+                $.ajax({
+                        cache: true,
+                        type: "POST",
+                        url: "@Url.Action("GetDistrictByProvinceId", "District")",
+                        data: {
+                                "provinceId": selectedItem,
+                                "addAll": "true"
+                            },
+                        success: function (data, textStatus, jqXHR) {
+                            dllDistricts.html('');
+                            $.each(data, function(id, option) {
+                                dllDistricts.append($('<option></option>').val(option.Id)
+                                    .html(option.Type+' '+option.Name));
+                            });
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $("#statesAlert").click();
+                            console.log("jqXHR: "+jqXHR);
+                            console.log("textStatus: "+textStatus);
+                            console.log("errorThrown: "+errorThrown);
+                        }
+                    });
+            });       
             $('#table').DataTable();
-            reloadDataWhenEnter('DistrictName');
-            reloadDataWhenSelect('ProvinceId');
+            reloadDataWhenEnter('WardName');
+            reloadDataWhenSelect('DistrictId');
         })
     </script>
 }
