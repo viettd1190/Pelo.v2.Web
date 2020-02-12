@@ -28,9 +28,7 @@
     <Folder Include="Models\RecruitmentStatus\" />
     <Folder Include="Models\Recruitment\" />
     <Folder Include="Models\TaskLoop\" />
-    <Folder Include="Models\TaskPriority\" />
     <Folder Include="Models\TaskStatusInRole\" />
-    <Folder Include="Models\TaskStatus\" />
     <Folder Include="Models\TaskType\" />
     <Folder Include="Models\WarrantyStatusInRole\" />
     <Folder Include="Models\Warranty\" />
@@ -41,8 +39,6 @@
     <Folder Include="Services\InvoiceStatusInRole\" />
     <Folder Include="Services\User\" />
     <Folder Include="Services\TaskType\" />
-    <Folder Include="Services\TaskStatus\" />
-    <Folder Include="Services\TaskPriority\" />
     <Folder Include="Services\TaskLoop\" />
     <Folder Include="Services\TaskStatusInRole\" />
     <Folder Include="Services\ReceiptStatusInRole\" />

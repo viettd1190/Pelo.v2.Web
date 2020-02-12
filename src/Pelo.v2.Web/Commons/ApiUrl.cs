@@ -424,5 +424,31 @@
 
         public const string GET_WARRANTY_DESCRIPTION_ID = BASE_API_URL + "/api/receipt_description/{0}";
         #endregion
+
+        #region Task Status
+        public const string TASK_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/task_status?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
+
+        public const string TASK_STATUS_GET_ALL = BASE_API_URL + "/api/task_status/all";
+
+        public const string TASK_STATUS_DELETE = BASE_API_URL + "/api/task_status/{0}";
+
+        public const string TASK_STATUS_GET_BY_ID = BASE_API_URL + "/api/task_status/{0}";
+
+        public const string TASK_STATUS_UPDATE = BASE_API_URL + "/api/task_status";
+        #endregion
+
+        #region Task Priority
+
+        public const string TASK_PRIORITY_GET_ALL = BASE_API_URL + "/api/task_priority/all";
+
+        public const string TASK_PRIORITY_DELETE = BASE_API_URL + "/api/task_priority/{0}";
+
+        public const string TASK_PRIORITY_GET_BY_ID = BASE_API_URL + "/api/task_priority/{0}";
+
+        public const string TASK_PRIORITY_UPDATE = BASE_API_URL + "/api/task_priority";
+
+        public const string TASK_PRIORITY_GET_BY_PAGING = BASE_API_URL + "/api/task_priority?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
+
+        #endregion
     }
 }
