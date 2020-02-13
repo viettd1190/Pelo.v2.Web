@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Pelo.v2.Web.Services.Branch;
+using Pelo.v2.Web.Services.Department;
 using Pelo.v2.Web.Services.Province;
+using Pelo.v2.Web.Services.Role;
 
 namespace Pelo.v2.Web.Factories
 {
@@ -40,27 +43,71 @@ namespace Pelo.v2.Web.Factories
         /// <param name="defaultItemText">Default item text; pass null to use default value of the default item text</param>
         /// <returns></returns>
         Task PrepareWards(IList<SelectListItem> items,
-                              int districtId=0,
-                              bool withSpecialDefaultItem = true,
-                              string defaultItemText = null);
+                          int districtId = 0,
+                          bool withSpecialDefaultItem = true,
+                          string defaultItemText = null);
 
+        /// <summary>
+        ///     Get all branches
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareBranches(IList<SelectListItem> items,
+                             bool withSpecialDefaultItem = true,
+                             string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all roles
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareRoles(IList<SelectListItem> items,
+                          bool withSpecialDefaultItem = true,
+                          string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all departments
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareDepartments(IList<SelectListItem> items,
+                                bool withSpecialDefaultItem = true,
+                                string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
     {
-        private readonly IProvinceService _provinceService;
+        private readonly IBranchService _branchService;
 
         private readonly IDistrictService _districtService;
 
-        private IWardService _wardService;
+        private readonly IProvinceService _provinceService;
+
+        private readonly IWardService _wardService;
+
+        private readonly IDepartmentService _departmentService;
+
+        private readonly IRoleService _roleService;
 
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
-                                IWardService wardService)
+                                IWardService wardService,
+                                IBranchService branchService,
+                                IRoleService roleService,
+                                IDepartmentService departmentService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
             _wardService = wardService;
+            _branchService = branchService;
+            _roleService = roleService;
+            _departmentService = departmentService;
         }
 
         #region IBaseModelFactory Members
@@ -127,16 +174,16 @@ namespace Pelo.v2.Web.Factories
         }
 
         public async Task PrepareWards(IList<SelectListItem> items,
-                                 int districtId = 0,
-                                 bool withSpecialDefaultItem = true,
-                                 string defaultItemText = null)
+                                       int districtId = 0,
+                                       bool withSpecialDefaultItem = true,
+                                       string defaultItemText = null)
         {
-            if (items == null)
+            if(items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available wards
             var avaiableWards = await _wardService.GetAll(districtId);
-            if (avaiableWards.IsSuccess)
+            if(avaiableWards.IsSuccess)
             {
                 foreach (var ward in avaiableWards.Data)
                 {
@@ -152,6 +199,78 @@ namespace Pelo.v2.Web.Factories
                                    withSpecialDefaultItem,
                                    defaultItemText);
             }
+        }
+
+        public async Task PrepareBranches(IList<SelectListItem> items,
+                                          bool withSpecialDefaultItem = true,
+                                          string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available branches
+            var avaiableBranches = await _branchService.GetAll();
+            foreach (var branch in avaiableBranches)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = branch.Id.ToString(),
+                                  Text = $"{branch.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareRoles(IList<SelectListItem> items,
+                                       bool withSpecialDefaultItem = true,
+                                       string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available roles
+            var avaiableRoles = await _roleService.GetAll();
+            foreach (var role in avaiableRoles)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = role.Id.ToString(),
+                                  Text = $"{role.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareDepartments(IList<SelectListItem> items,
+                                             bool withSpecialDefaultItem = true,
+                                             string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available departments
+            var avaiableDepartments = await _departmentService.GetAll();
+            foreach (var role in avaiableDepartments)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = role.Id.ToString(),
+                                  Text = $"{role.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
         }
 
         #endregion

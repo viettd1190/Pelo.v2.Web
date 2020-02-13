@@ -33,7 +33,6 @@
     <Folder Include="Services\Crm\" />
     <Folder Include="Services\Candidate\" />
     <Folder Include="Services\InvoiceStatusInRole\" />
-    <Folder Include="Services\User\" />
     <Folder Include="Services\TaskStatusInRole\" />
     <Folder Include="Services\ReceiptStatusInRole\" />
     <Folder Include="Services\WarrantyStatusInRole\" />

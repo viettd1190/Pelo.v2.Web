@@ -1,0 +1,185 @@
+﻿@using Microsoft.AspNetCore.Routing
+@using Pelo.v2.Web.Models.User
+@using Pelo.v2.Web.Models.Datatables
+@using Pelo.v2.Web.Models.Datatables.Render
+@model Pelo.v2.Web.Models.User.UserSearchModel
+@{
+  ViewBag.Title = "Danh sách nhân viên";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section cssPlugin{ 
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{ 
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height:auto !important;
+        }
+    </style>
+}
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12 dahsboard-column">
+        <section class="box-typical box-typical-dashboard panel panel-default scrollable">
+            <header class="box-typical-header panel-heading">
+                <h3 class="panel-title">Danh sách nhân viên</h3>
+            </header>
+            <div class="box-typical-body panel-body">
+                <div class="row" style="padding:15px;">
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Code" text-display="Code" />
+                            <input asp-for="Code" class="form-control" type="text" placeholder="Mã nhân viên" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Username" text-display="Tên đăng nhập" />
+                            <input asp-for="Username" class="form-control" type="text" placeholder="Tên đăng nhập" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="FullName" text-display="Tên đầy đủ" />
+                            <input asp-for="FullName" class="form-control" type="text" placeholder="Tên đầy đủ" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="PhoneNumber" text-display="Số điện thoại" />
+                            <input asp-for="PhoneNumber" class="form-control" type="text" placeholder="Số điện thoại" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="BranchId" text-display="Chi nhánh" />
+                            <nop-select asp-for="BranchId" asp-items="Model.AvaiableBranches" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="DepartmentId" text-display="Phòng ban" />
+                            <nop-select asp-for="DepartmentId" asp-items="Model.AvaiableDepartments" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="RoleId" text-display="Nhóm quyền" />
+                            <nop-select asp-for="RoleId" asp-items="Model.AvaiableRoles" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Status" text-display="Trạng thái" />
+                            <nop-select asp-for="Status" asp-items="Model.AvaiableStatuses" />
+                        </fieldset>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary" id="search-user">Tìm kiếm</button>
+                        <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-block">
+        @await Html.PartialAsync("Table",new DataTablesModel
+   {
+       Name="user-grid",
+       UrlRead = new DataUrl("GetList","User",null),
+       UrlDelete = new DataUrl("Delete","User",null),
+       SearchButtonId = "search-user",
+       Filters = new List<FilterParameter> {
+                                                   new FilterParameter(nameof(Model.Code)),
+                                                   new FilterParameter(nameof(Model.Username)),
+                                                   new FilterParameter(nameof(Model.FullName)),
+                                                   new FilterParameter(nameof(Model.PhoneNumber)),
+                                                   new FilterParameter(nameof(Model.BranchId)),
+                                                   new FilterParameter(nameof(Model.DepartmentId)),
+                                                   new FilterParameter(nameof(Model.RoleId)),
+                                                   new FilterParameter(nameof(Model.Status))
+                                           },
+       ColumnCollection = new List<ColumnProperty> {
+                                                           new ColumnProperty(nameof(UserModel.Code))
+                                                           {
+                                                                   Title = "Mã nhân viên",
+                                                                   Render = new RenderCustom("displayCode")
+                                                           },
+                                                           new ColumnProperty(nameof(UserModel.FullName))
+                                                           {
+                                                                   Title = "Tên nhân viên",
+                                                                   Render = new RenderCustom("displayName")
+                                                           },
+                                                           new ColumnProperty(nameof(UserModel.Branch))
+                                                           {
+                                                                   Title = "Chi nhánh"
+                                                           },
+                                                           new ColumnProperty(nameof(UserModel.Department))
+                                                           {
+                                                                   Title = "Phòng ban",
+                                                                   Render = new RenderCustom("displayDepartment")
+                                                           },
+                                                           new ColumnProperty(nameof(UserModel.DateCreated))
+                                                           {
+                                                                   Title = "Ngày tạo",
+                                                                   Width = "150"
+                                                           },
+                                                           new ColumnProperty(nameof(UserModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "40",
+                                                                   Orderable = false,
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonEdit(new DataUrl("User/Edit"))
+                                                           },
+                                                           new ColumnProperty(nameof(UserModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "40",
+                                                                   Orderable = false,
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonRemove("Remove")
+                                                           }
+                                                   }
+   })
+    </div>
+</section>
+
+@section js{ 
+    <script>
+        $(document).ready(function() {
+            $('.panel').lobiPanel({
+                    sortable:false,
+                    draggable:false,
+                    resize:'none'
+                });
+            reloadDataWhenEnter('@nameof(Model.Code)');
+            reloadDataWhenEnter('@nameof(Model.FullName)');
+            reloadDataWhenEnter('@nameof(Model.Username)');
+            reloadDataWhenEnter('@nameof(Model.PhoneNumber)');
+            reloadDataWhenSelect('@nameof(Model.BranchId)');
+            reloadDataWhenSelect('@nameof(Model.DepartmentId)');
+            reloadDataWhenSelect('@nameof(Model.RoleId)');
+            reloadDataWhenSelect('@nameof(Model.Status)');
+        });
+        function displayCode(data,type,row,meta) {
+            return data;
+        }
+        function displayName(data,type,row,meta) {
+            return data;
+        }
+        function displayDepartment(data,type,row,meta) {
+            return data;
+        }
+    </script>
+}

@@ -33,7 +33,8 @@ namespace Pelo.v2.Web.Services.Branch
                                  IBranchService
     {
         public BranchService(IHttpService httpService,
-                             ILogger<BaseService> logger) : base(httpService, logger)
+                             ILogger<BaseService> logger) : base(httpService,
+                                                                 logger)
         {
         }
 
@@ -70,10 +71,10 @@ namespace Pelo.v2.Web.Services.Branch
                 {
                     var start = request.Start / request.Length + 1;
 
-                    if (request.Columns != null
-                        && request.Columns.Any()
-                        && request.Order != null
-                        && request.Order.Any())
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
                     {
                         sortDir = request.Order[0]
                                          .Dir;
@@ -81,8 +82,6 @@ namespace Pelo.v2.Web.Services.Branch
                                                              .Column]
                                              .Data;
                     }
-
-
 
                     var url = string.Format(ApiUrl.BRANCH_PAGING,
                                             request.Name,
@@ -100,26 +99,26 @@ namespace Pelo.v2.Web.Services.Branch
                                                                                                HttpMethod.Get,
                                                                                                true);
 
-                    if (response.IsSuccess)
+                    if(response.IsSuccess)
                         return new BranchListModel
-                        {
-                            Draw = request.Draw,
-                            RecordsFiltered = response.Data.TotalCount,
-                            Total = response.Data.TotalCount,
-                            RecordsTotal = response.Data.TotalCount,
-                            Data = response.Data.Data.Select(c => new Models.Branch.BranchModel
-                            {
-                                Id = c.Id,
-                                Name = c.Name,
-                                Address = c.Address,
-                                PageSize = request.PageSize,
-                                District = c.District,
-                                Hotline = c.Hotline,
-                                Province = c.Province,
-                                Ward = c.Ward,
-                                PageSizeOptions = request.AvailablePageSizes
-                            })
-                        };
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new Models.Branch.BranchModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Name = c.Name,
+                                                                                     Address = c.Address,
+                                                                                     PageSize = request.PageSize,
+                                                                                     District = c.District,
+                                                                                     Hotline = c.Hotline,
+                                                                                     Province = c.Province,
+                                                                                     Ward = c.Ward,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
 
                     throw new PeloException(response.Message);
                 }
