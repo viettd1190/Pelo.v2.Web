@@ -24,7 +24,8 @@ namespace Pelo.v2.Web.Services.Department
                                      IDepartmentService
     {
         public DepartmentService(IHttpService httpService,
-                                 ILogger<BaseService> logger) : base(httpService, logger)
+                                 ILogger<BaseService> logger) : base(httpService,
+                                                                     logger)
         {
         }
 
@@ -54,40 +55,56 @@ namespace Pelo.v2.Web.Services.Department
             {
                 var start = 1;
 
-                if(request != null) start = request.Start / request.Length + 1;
+                if(request != null)
+                {
+                    start = request.Start / request.Length + 1;
+                    var columnOrder = "Name";
+                    var sortDir = "ASC";
 
-                var columnOrder = request.ColumnOrder??"name";
-                var sortDir = "ASC";
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
-                var url = string.Format(ApiUrl.DEPARTMENT_GET_BY_PAGING,
-                                        request.Name,
-                                        columnOrder,
-                                        sortDir,
-                                        start,
-                                        request?.Length ?? 10);
+                    var url = string.Format(ApiUrl.DEPARTMENT_GET_BY_PAGING,
+                                            request.Name,
+                                            columnOrder,
+                                            sortDir,
+                                            start,
+                                            request?.Length ?? 10);
 
-                var response = await HttpService.Send<PageResult<GetDepartmentPagingResponse>>(url,
-                                                                                               null,
-                                                                                               HttpMethod.Get,
-                                                                                               true);
+                    var response = await HttpService.Send<PageResult<GetDepartmentPagingResponse>>(url,
+                                                                                                   null,
+                                                                                                   HttpMethod.Get,
+                                                                                                   true);
 
-                if(response.IsSuccess)
-                    return new DepartmentListModel
-                           {
-                                   Draw = request.Draw,
-                                   RecordsFiltered = response.Data.TotalCount,
-                                   Total = response.Data.TotalCount,
-                                   RecordsTotal = response.Data.TotalCount,
-                                   Data = response.Data.Data.Select(c => new DepartmentModel
-                                                                         {
-                                                                                 Id = c.Id,
-                                                                                 Name = c.Name,
-                                                                                 PageSize = request.PageSize,
-                                                                                 PageSizeOptions = request.AvailablePageSizes
-                                                                         })
-                           };
+                    if(response.IsSuccess)
+                        return new DepartmentListModel
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new DepartmentModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Name = c.Name,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
 
-                throw new PeloException(response.Message);
+                    throw new PeloException(response.Message);
+                }
+
+                throw new PeloException("Request is null");
             }
             catch (Exception exception)
             {

@@ -20,10 +20,12 @@ namespace Pelo.v2.Web.Services.Role
         Task<RoleListModel> GetByPaging(RoleSearchModel request);
     }
 
-    public class RoleService : BaseService, IRoleService
+    public class RoleService : BaseService,
+                               IRoleService
     {
         public RoleService(IHttpService httpService,
-                           ILogger<BaseService> logger) : base(httpService, logger)
+                           ILogger<BaseService> logger) : base(httpService,
+                                                               logger)
         {
         }
 
@@ -51,42 +53,56 @@ namespace Pelo.v2.Web.Services.Role
         {
             try
             {
-                var start = 1;
+                if(request != null)
+                {
+                    var start = request.Start / request.Length + 1;
+                    var columnOrder = "Name";
+                    var sortDir = "ASC";
 
-                if(request != null) start = request.Start / request.Length + 1;
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
-                var columnOrder = request.ColumnOrder??"name";
-                var sortDir = "ASC";
+                    var url = string.Format(ApiUrl.ROLE_PAGING,
+                                            request.Name,
+                                            columnOrder,
+                                            sortDir,
+                                            start,
+                                            request?.Length ?? 10);
 
-                var url = string.Format(ApiUrl.ROLE_PAGING,
-                                        request.Name,
-                                        columnOrder,
-                                        sortDir,
-                                        start,
-                                        request?.Length ?? 10);
+                    var response = await HttpService.Send<PageResult<GetRolePagingResponse>>(url,
+                                                                                             null,
+                                                                                             HttpMethod.Get,
+                                                                                             true);
 
-                var response = await HttpService.Send<PageResult<GetRolePagingResponse>>(url,
-                                                                                         null,
-                                                                                         HttpMethod.Get,
-                                                                                         true);
+                    if(response.IsSuccess)
+                        return new RoleListModel
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new RoleModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Name = c.Name,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
 
-                if(response.IsSuccess)
-                    return new RoleListModel
-                           {
-                                   Draw = request.Draw,
-                                   RecordsFiltered = response.Data.TotalCount,
-                                   Total = response.Data.TotalCount,
-                                   RecordsTotal = response.Data.TotalCount,
-                                   Data = response.Data.Data.Select(c => new RoleModel
-                                                                         {
-                                                                                 Id = c.Id,
-                                                                                 Name = c.Name,
-                                                                                 PageSize = request.PageSize,
-                                                                                 PageSizeOptions = request.AvailablePageSizes
-                                                                         })
-                           };
+                    throw new PeloException(response.Message);
+                }
 
-                throw new PeloException(response.Message);
+                throw new PeloException("Request is null");
             }
             catch (Exception exception)
             {

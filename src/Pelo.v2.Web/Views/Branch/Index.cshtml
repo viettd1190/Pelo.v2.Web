@@ -165,7 +165,6 @@
                 var selectedItem=$(this).val();
                 loadWards(selectedItem);
             });
-            $('#table').DataTable();
             reloadDataWhenEnter('@nameof(Model.Name)');
             reloadDataWhenEnter('@nameof(Model.HotLine)');
             reloadDataWhenSelect('WardId');
