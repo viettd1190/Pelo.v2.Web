@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Pelo.v2.Web.Services.CustomerVip
 {
     public interface ICustomerVipService
     {
+        Task<IEnumerable<CustomerVipModel>> GetAll();
+
         Task<CustomerVipListModel> GetByPaging(CustomerVipSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
@@ -29,6 +32,26 @@ namespace Pelo.v2.Web.Services.CustomerVip
         }
 
         #region ICustomerVipService Members
+
+        public async Task<IEnumerable<CustomerVipModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<CustomerVipModel>>(ApiUrl.CUSTOMER_VIP_GET_ALL,
+                                                                                     null,
+                                                                                     HttpMethod.Get,
+                                                                                     true);
+
+                if(response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
 
         public async Task<CustomerVipListModel> GetByPaging(CustomerVipSearchModel request)
         {

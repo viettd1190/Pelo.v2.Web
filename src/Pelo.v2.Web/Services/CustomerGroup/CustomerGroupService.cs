@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Pelo.v2.Web.Services.CustomerGroup
 {
     public interface ICustomerGroupService
     {
+        Task<IEnumerable<CustomerGroupModel>> GetAll();
+
         Task<CustomerGroupListModel> GetByPaging(CustomerGroupSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
@@ -112,6 +115,26 @@ namespace Pelo.v2.Web.Services.CustomerGroup
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<IEnumerable<CustomerGroupModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<CustomerGroupModel>>(ApiUrl.CUSTOMER_GROUP_GET_ALL,
+                                                                                       null,
+                                                                                       HttpMethod.Get,
+                                                                                       true);
+
+                if(response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
             }
         }
 

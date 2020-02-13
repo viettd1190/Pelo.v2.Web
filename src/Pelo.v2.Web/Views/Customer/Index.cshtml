@@ -1,0 +1,281 @@
+﻿@using Pelo.v2.Web.Models.Customer
+@using Pelo.v2.Web.Models.Datatables
+@using Pelo.v2.Web.Models.Datatables.Render
+@model Pelo.v2.Web.Models.Customer.CustomerSearchModel
+@{
+    ViewBag.Title = "Danh sách khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section cssPlugin{
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{
+    <style>.box-typical.box-typical-dashboard .box-typical-body {height:auto !important;}</style>
+}
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+    <script src="~/startui/js/lib/moment/moment.min.js"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12 dahsboard-column">
+        <section class="box-typical box-typical-dashboard panel panel-default scrollable">
+            <header class="box-typical-header panel-heading">
+                <h3 class="panel-title">Danh sách khách hàng</h3>
+            </header>
+            <div class="box-typical-body panel-body">
+                <div class="row" style="padding:15px;">
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Code" text-display="Mã khách hàng"/>
+                            <input asp-for="Code" class="form-control" type="text" placeholder="Mã khách hàng"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Name" text-display="Tên khách hàng"/>
+                            <input asp-for="Name" class="form-control" type="text" placeholder="Tên khách hàng"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="ProvinceId" text-display="Tỉnh thành"/>
+                            <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="DistrictId" text-display="Quận huyện"/>
+                            <nop-select asp-for="DistrictId" asp-items="Model.AvaiableDistricts"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="WardId" text-display="Phường xã"/>
+                            <nop-select asp-for="WardId" asp-items="Model.AvaiableWards"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Address" text-display="Địa chỉ"/>
+                            <input asp-for="Address" class="form-control" type="text" placeholder="Địa chỉ"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Phone" text-display="Số điện thoại"/>
+                            <input asp-for="Phone" class="form-control" type="text" placeholder="Số điện thoại"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Email" text-display="Email"/>
+                            <input asp-for="Email" class="form-control" type="text" placeholder="Email"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerGroupId" text-display="Nhóm khách hàng"/>
+                            <nop-select asp-for="CustomerGroupId" asp-items="Model.AvaiableCustomerGroups"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerVipId" text-display="Mức độ thân thiết"/>
+                            <nop-select asp-for="CustomerVipId" asp-items="Model.AvaiableCustomerVips"/>
+                        </fieldset>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary" id="search-customer">Tìm kiếm</button>
+                        <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-block">
+        @await Html.PartialAsync("Table",
+                                 new DataTablesModel {
+                                                             Name = "customer-grid",
+                                                             UrlRead = new DataUrl("GetList",
+                                                                                   "Customer",
+                                                                                   null),
+                                                             UrlDelete = new DataUrl("Delete",
+                                                                                     "Customer",
+                                                                                     null),
+                                                             SearchButtonId = "search-customer",
+                                                             Filters = new List<FilterParameter> {
+                                                                                                         new FilterParameter(nameof(Model.Code)),
+                                                                                                         new FilterParameter(nameof(Model.Name)),
+                                                                                                         new FilterParameter(nameof(Model.ProvinceId)),
+                                                                                                         new FilterParameter(nameof(Model.DistrictId)),
+                                                                                                         new FilterParameter(nameof(Model.WardId)),
+                                                                                                         new FilterParameter(nameof(Model.Address)),
+                                                                                                         new FilterParameter(nameof(Model.Phone)),
+                                                                                                         new FilterParameter(nameof(Model.Email)),
+                                                                                                         new FilterParameter(nameof(Model.CustomerGroupId)),
+                                                                                                         new FilterParameter(nameof(Model.CustomerVipId))
+                                                                                                 },
+                                                             ColumnCollection = new List<ColumnProperty> {
+                                                                                                                 new ColumnProperty(nameof(CustomerModel.Code)) {
+                                                                                                                                                                        Title = "Mã khách hàng",
+                                                                                                                                                                        Render = new RenderCustom("displayCode")
+                                                                                                                                                                },
+                                                                                                                 new ColumnProperty(nameof(CustomerModel.Name)) {
+                                                                                                                                                                        Title = "Tên khách hàng",
+                                                                                                                                                                        Render = new RenderCustom("displayName")
+                                                                                                                                                                },
+                                                                                                                 new ColumnProperty(nameof(CustomerModel.Address)) {
+                                                                                                                                                                           Title = "Địa chỉ",
+                                                                                                                                                                           Render = new RenderCustom("displayAddress")
+                                                                                                                                                                   },
+                                                                                                                 new ColumnProperty(nameof(CustomerModel.Description)) {
+                                                                                                                                                                               Title = "Ghi chú"
+                                                                                                                                                                       },
+                                                                                                                 new ColumnProperty(nameof(CustomerModel.DateUpdated)) {
+                                                                                                                                                                               Title = "Ngày cập nhật",
+                                                                                                                                                                               Render = new RenderCustom("displayDateUpdated")
+                                                                                                                                                                       },
+                                                                                                                 new ColumnProperty(nameof(CustomerModel.Id)) {
+                                                                                                                                                                      Title = "",
+                                                                                                                                                                      Width = "40",
+                                                                                                                                                                      Orderable = false,
+                                                                                                                                                                      ClassName = NopColumnClassDefaults.Button,
+                                                                                                                                                                      Render = new RenderButtonEdit(new DataUrl("Customer/Edit"))
+                                                                                                                                                              },
+                                                                                                                 new ColumnProperty(nameof(CustomerModel.Id)) {
+                                                                                                                                                                      Title = "",
+                                                                                                                                                                      Width = "40",
+                                                                                                                                                                      Orderable = false,
+                                                                                                                                                                      ClassName = NopColumnClassDefaults.Button,
+                                                                                                                                                                      Render = new RenderButtonRemove("Remove")
+                                                                                                                                                              }
+                                                                                                         }
+                                                     })
+    </div>
+</section>
+
+@section js{
+    <script>
+        $(document).ready(function() {
+            $('.panel').lobiPanel({
+                    sortable:false,
+                    draggable:false,
+                    resize:'none'
+            });
+            $("#@Html.IdFor(model => model.ProvinceId)").change(function() {
+                var selectedItem=$(this).val();
+                var dllDistricts=$("#@Html.IdFor(model => model.DistrictId)");
+                $.ajax({
+                        cache:true,
+                        type:"POST",
+                        url:"@Url.Action("GetDistrictByProvinceId", "District")",
+                        data:{
+                                "provinceId":selectedItem,
+                                "addAll":"true"
+                            },
+                        success:function(data,textStatus,jqXHR) {
+                            dllDistricts.html('');
+                            $.each(data,
+                                function(id,option) {
+                                    dllDistricts.append($('<option></option>').val(option.Id)
+                                        .html(option.Type+' '+option.Name));
+                                });
+                            loadWards(99999999);
+                        },
+                        error:function(jqXHR,textStatus,errorThrown) {
+                            $("#statesAlert").click();
+                            console.log("jqXHR: "+jqXHR);
+                            console.log("textStatus: "+textStatus);
+                            console.log("errorThrown: "+errorThrown);
+                        }
+                    });
+            });
+            $("#@Html.IdFor(model => model.DistrictId)").change(function() {
+                var selectedItem=$(this).val();
+                loadWards(selectedItem);
+            });
+            reloadDataWhenEnter('@nameof(Model.Code)');
+            reloadDataWhenEnter('@nameof(Model.Name)');
+            reloadDataWhenEnter('@nameof(Model.Address)');
+            reloadDataWhenEnter('@nameof(Model.Phone)');
+            reloadDataWhenEnter('@nameof(Model.Email)');
+            reloadDataWhenSelect('@nameof(Model.ProvinceId)');
+            reloadDataWhenSelect('@nameof(Model.DistrictId)');
+            reloadDataWhenSelect('@nameof(Model.WardId)');
+            reloadDataWhenSelect('@nameof(Model.CustomerGroupId)');
+            reloadDataWhenSelect('@nameof(Model.CustomerVipId)');
+        });
+        function displayCode(data,type,row,meta) {
+            if(data) {
+                return '<div style="text-align:center;margin:auto;"><span class="label label-danger">'+
+                    data+
+                    '</span></div>';
+            }
+            return '';
+        }
+        function displayName(data,type,row,meta) {
+            var name = '<span style="font-weight:600;font-size:16px;">' + data + '</span><br/>';
+            var phone = '<span><a href="tel:' + row.Phone + '">' + row.Phone+'</a></span><br/>';
+            var phone2 = '';
+            if (isNull(row.Phone2)) {
+                phone2 = '<span><a href="tel:' + row.Phone2 + '">' + row.Phone2+'</a></span><br/>';
+            }
+            var phone3 = '';
+            if (isNull(row.Phone3)) {
+                phone3 = '<span><a href="tel:' + row.Phone3 + '">' + row.Phone3 + '</a></span><br/>';
+            }
+            var customerGroup = '<span>Nhóm KH: ' + isNull(row.CustomerGroup) + '</span><br/>';
+            var customerVip = '<span>KHTT: ' + isNull(row.CustomerVip) + '</span><br/>';
+            var email='';
+            if (isNull(row.Email)) {
+                email = '<span>Email: <a href="mailto: ' + row.Email + '">' + row.Email+'</a></span><br/>';
+            }
+            return '<div style="padding:10px;">'+name+phone+phone2+phone3+customerGroup+customerVip+email+'</div>';
+        }
+        function displayAddress(data, type, row, meta) {
+            var address = isNull(data);
+            if(row.Province) {
+                address+=', '+row.Ward+', '+row.District+', '+row.Province;
+            }
+
+            return '<div style="padding:10px;"><span>' + address + '</span></div>';
+        }
+        function displayDateUpdated(data,type,row,meta) {
+            return '<div style="text-align:center;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
+        }
+        function loadWards(districtId) {
+            var dllWards=$("#@Html.IdFor(model => model.WardId)");
+            $.ajax({
+                    cache:true,
+                    type:"POST",
+                    url:"@Url.Action("GetWardByDistrictId", "Ward")",
+                    data:{
+                            "districtId":districtId,
+                            "addAll":"true"
+                        },
+                    success:function(data,textStatus,jqXHR) {
+                        dllWards.html('');
+                        $.each(data,
+                            function(id,option) {
+                                dllWards.append($('<option></option>').val(option.Id)
+                                    .html(option.Type+' '+option.Name));
+                            });
+                    },
+                    error:function(jqXHR,textStatus,errorThrown) {
+                        $("#statesAlert").click();
+                        console.log("jqXHR: "+jqXHR);
+                        console.log("textStatus: "+textStatus);
+                        console.log("errorThrown: "+errorThrown);
+                    }
+                });
+        }
+    </script>
+}

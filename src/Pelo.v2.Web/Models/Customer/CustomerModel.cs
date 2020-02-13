@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace Pelo.v2.Web.Models.Customer
 {
@@ -12,47 +13,50 @@ namespace Pelo.v2.Web.Models.Customer
             }
         }
 
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public int Id { get; set; }
 
-        [JsonProperty("code")]
+        [JsonProperty("Code")]
         public string Code { get; set; }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("phone")]
+        [JsonProperty("Phone")]
         public string Phone { get; set; }
 
-        [JsonProperty("phone_2")]
+        [JsonProperty("Phone2")]
         public string Phone2 { get; set; }
 
-        [JsonProperty("phone_3")]
+        [JsonProperty("Phone3")]
         public string Phone3 { get; set; }
 
-        [JsonProperty("province")]
+        [JsonProperty("Province")]
         public string Province { get; set; }
 
-        [JsonProperty("district")]
+        [JsonProperty("District")]
         public string District { get; set; }
 
-        [JsonProperty("ward")]
+        [JsonProperty("Ward")]
         public string Ward { get; set; }
 
-        [JsonProperty("address")]
+        [JsonProperty("Address")]
         public string Address { get; set; }
 
-        [JsonProperty("email")]
+        [JsonProperty("Email")]
         public string Email { get; set; }
 
-        [JsonProperty("customer_group")]
+        [JsonProperty("CustomerGroup")]
         public string CustomerGroup { get; set; }
 
-        [JsonProperty("customer_vip")]
+        [JsonProperty("CustomerVip")]
         public string CustomerVip { get; set; }
 
-        [JsonProperty("description")]
+        [JsonProperty("Description")]
         public string Description { get; set; }
+
+        [JsonProperty("DateUpdated")]
+        public DateTime DateUpdated { get; set; }
 
         [JsonProperty("PageSize")]
         public int PageSize { get; set; }

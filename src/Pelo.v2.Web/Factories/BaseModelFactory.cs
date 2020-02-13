@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pelo.v2.Web.Services.Branch;
+using Pelo.v2.Web.Services.CustomerGroup;
+using Pelo.v2.Web.Services.CustomerVip;
 using Pelo.v2.Web.Services.Department;
 using Pelo.v2.Web.Services.Province;
 using Pelo.v2.Web.Services.Role;
@@ -79,28 +81,56 @@ namespace Pelo.v2.Web.Factories
         Task PrepareDepartments(IList<SelectListItem> items,
                                 bool withSpecialDefaultItem = true,
                                 string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all customer vips
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareCustomerVips(IList<SelectListItem> items,
+                                 bool withSpecialDefaultItem = true,
+                                 string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all customer groups
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareCustomerGroups(IList<SelectListItem> items,
+                                   bool withSpecialDefaultItem = true,
+                                   string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
     {
         private readonly IBranchService _branchService;
 
+        private readonly IDepartmentService _departmentService;
+
         private readonly IDistrictService _districtService;
 
         private readonly IProvinceService _provinceService;
 
+        private readonly IRoleService _roleService;
+
         private readonly IWardService _wardService;
 
-        private readonly IDepartmentService _departmentService;
+        private readonly ICustomerGroupService _customerGroupService;
 
-        private readonly IRoleService _roleService;
+        private readonly ICustomerVipService _customerVipService;
 
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
                                 IWardService wardService,
                                 IBranchService branchService,
                                 IRoleService roleService,
-                                IDepartmentService departmentService)
+                                IDepartmentService departmentService,
+                                ICustomerVipService customerVipService,
+                                ICustomerGroupService customerGroupService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -108,6 +138,8 @@ namespace Pelo.v2.Web.Factories
             _branchService = branchService;
             _roleService = roleService;
             _departmentService = departmentService;
+            _customerVipService = customerVipService;
+            _customerGroupService = customerGroupService;
         }
 
         #region IBaseModelFactory Members
@@ -258,12 +290,60 @@ namespace Pelo.v2.Web.Factories
 
             //prepare available departments
             var avaiableDepartments = await _departmentService.GetAll();
-            foreach (var role in avaiableDepartments)
+            foreach (var department in avaiableDepartments)
             {
                 items.Add(new SelectListItem
                           {
-                                  Value = role.Id.ToString(),
-                                  Text = $"{role.Name}"
+                                  Value = department.Id.ToString(),
+                                  Text = $"{department.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareCustomerVips(IList<SelectListItem> items,
+                                              bool withSpecialDefaultItem = true,
+                                              string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available customer vips
+            var avaiableCustomerVips = await _customerVipService.GetAll();
+            foreach (var customerVip in avaiableCustomerVips)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = customerVip.Id.ToString(),
+                                  Text = $"{customerVip.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareCustomerGroups(IList<SelectListItem> items,
+                                                bool withSpecialDefaultItem = true,
+                                                string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available customer groups
+            var avaiableCustomerGroups = await _customerGroupService.GetAll();
+            foreach (var customerGroup in avaiableCustomerGroups)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = customerGroup.Id.ToString(),
+                                  Text = $"{customerGroup.Name}"
                           });
             }
 

@@ -20,10 +20,11 @@ namespace Pelo.v2.Web.Services.Customer
     }
 
     public class CustomerService : BaseService,
-                                        ICustomerService
+                                   ICustomerService
     {
         public CustomerService(IHttpService httpService,
-                                    ILogger<BaseService> logger) : base(httpService, logger)
+                               ILogger<BaseService> logger) : base(httpService,
+                                                                   logger)
         {
         }
 
@@ -40,8 +41,21 @@ namespace Pelo.v2.Web.Services.Customer
                 {
                     var start = request.Start / request.Length + 1;
 
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
+
                     var url = string.Format(ApiUrl.CUSTOMER_GET_BY_PAGING,
-                        request.Code,request.Name,
+                                            request.Code,
+                                            request.Name,
                                             request.ProvinceId,
                                             request.DistrictId,
                                             request.WardId,
@@ -56,9 +70,9 @@ namespace Pelo.v2.Web.Services.Customer
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetCustomerPagingResponse>>(url,
-                                                                                                      null,
-                                                                                                      HttpMethod.Get,
-                                                                                                      true);
+                                                                                                 null,
+                                                                                                 HttpMethod.Get,
+                                                                                                 true);
 
                     if(response.IsSuccess)
                         return new CustomerListModel
@@ -83,6 +97,7 @@ namespace Pelo.v2.Web.Services.Customer
                                                                                      Phone3 = c.Phone3,
                                                                                      Province = c.Province,
                                                                                      Ward = c.Ward,
+                                                                                     DateUpdated = c.DateUpdated,
                                                                                      PageSize = request.PageSize,
                                                                                      PageSizeOptions = request.AvailablePageSizes
                                                                              })
