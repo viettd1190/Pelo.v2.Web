@@ -6,6 +6,9 @@ using Pelo.v2.Web.Services.Branch;
 using Pelo.v2.Web.Services.CustomerGroup;
 using Pelo.v2.Web.Services.CustomerVip;
 using Pelo.v2.Web.Services.Department;
+using Pelo.v2.Web.Services.ProductGroup;
+using Pelo.v2.Web.Services.ProductStatus;
+using Pelo.v2.Web.Services.ProductUnit;
 using Pelo.v2.Web.Services.Province;
 using Pelo.v2.Web.Services.Role;
 
@@ -103,11 +106,48 @@ namespace Pelo.v2.Web.Factories
         Task PrepareCustomerGroups(IList<SelectListItem> items,
                                    bool withSpecialDefaultItem = true,
                                    string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all product groups
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareProductGroups(IList<SelectListItem> items,
+                                  bool withSpecialDefaultItem = true,
+                                  string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all product units
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareProductUnits(IList<SelectListItem> items,
+                                 bool withSpecialDefaultItem = true,
+                                 string defaultItemText = null);
+
+        /// <summary>
+        /// Get all product statuses
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareProductStatuses(IList<SelectListItem> items,
+                                  bool withSpecialDefaultItem = true,
+                                  string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
     {
         private readonly IBranchService _branchService;
+
+        private readonly ICustomerGroupService _customerGroupService;
+
+        private readonly ICustomerVipService _customerVipService;
 
         private readonly IDepartmentService _departmentService;
 
@@ -119,9 +159,11 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IWardService _wardService;
 
-        private readonly ICustomerGroupService _customerGroupService;
+        private readonly IProductGroupService _productGroupService;
 
-        private readonly ICustomerVipService _customerVipService;
+        private readonly IProductUnitService _productUnitService;
+
+        private IProductStatusService _productStatusService;
 
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
@@ -130,7 +172,10 @@ namespace Pelo.v2.Web.Factories
                                 IRoleService roleService,
                                 IDepartmentService departmentService,
                                 ICustomerVipService customerVipService,
-                                ICustomerGroupService customerGroupService)
+                                ICustomerGroupService customerGroupService,
+                                IProductGroupService productGroupService,
+                                IProductUnitService productUnitService,
+                                IProductStatusService productStatusService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -140,6 +185,9 @@ namespace Pelo.v2.Web.Factories
             _departmentService = departmentService;
             _customerVipService = customerVipService;
             _customerGroupService = customerGroupService;
+            _productGroupService = productGroupService;
+            _productUnitService = productUnitService;
+            _productStatusService = productStatusService;
         }
 
         #region IBaseModelFactory Members
@@ -344,6 +392,78 @@ namespace Pelo.v2.Web.Factories
                           {
                                   Value = customerGroup.Id.ToString(),
                                   Text = $"{customerGroup.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareProductGroups(IList<SelectListItem> items,
+                                               bool withSpecialDefaultItem = true,
+                                               string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available product groups
+            var avaiableProductGroups = await _productGroupService.GetAll();
+            foreach (var productGroup in avaiableProductGroups)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = productGroup.Id.ToString(),
+                                  Text = $"{productGroup.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareProductUnits(IList<SelectListItem> items,
+                                              bool withSpecialDefaultItem = true,
+                                              string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available product groups
+            var avaiableProductUnits = await _productUnitService.GetAll();
+            foreach (var productUnit in avaiableProductUnits)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = productUnit.Id.ToString(),
+                                  Text = $"{productUnit.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareProductStatuses(IList<SelectListItem> items,
+                                               bool withSpecialDefaultItem = true,
+                                               string defaultItemText = null)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available product groups
+            var avaiableProductStatuses = await _productStatusService.GetAll();
+            foreach (var productStatus in avaiableProductStatuses)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = productStatus.Id.ToString(),
+                                  Text = $"{productStatus.Name}"
                           });
             }
 

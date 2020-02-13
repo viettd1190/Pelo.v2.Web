@@ -42,6 +42,9 @@
     <Folder Include="Services\Task\" />
     <Folder Include="Services\Warranty\" />
     <Folder Include="Services\Product\" />
+    <Folder Include="Views\ProductStatus\" />
+    <Folder Include="Views\ProductUnit\" />
+    <Folder Include="Views\ProductGroup\" />
     <Folder Include="Views\CustomerVip\" />
     <Folder Include="Views\CustomerGroup\" />
     <Folder Include="Views\Customer\" />

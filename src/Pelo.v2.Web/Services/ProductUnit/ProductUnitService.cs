@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Pelo.v2.Web.Services.ProductUnit
 {
     public interface IProductUnitService
     {
+        Task<IEnumerable<ProductUnitModel>> GetAll();
+
         Task<ProductUnitListModel> GetByPaging(ProductUnitSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
@@ -23,7 +26,8 @@ namespace Pelo.v2.Web.Services.ProductUnit
                                       IProductUnitService
     {
         public ProductUnitService(IHttpService httpService,
-                                  ILogger<BaseService> logger) : base(httpService, logger)
+                                  ILogger<BaseService> logger) : base(httpService,
+                                                                      logger)
         {
         }
 
@@ -39,6 +43,18 @@ namespace Pelo.v2.Web.Services.ProductUnit
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.PRODUCT_UNIT_GET_BY_PAGING,
                                             request.Name,
@@ -99,6 +115,26 @@ namespace Pelo.v2.Web.Services.ProductUnit
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<IEnumerable<ProductUnitModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<ProductUnitModel>>(ApiUrl.PRODUCT_UNIT_GET_ALL,
+                                                                                     null,
+                                                                                     HttpMethod.Get,
+                                                                                     true);
+
+                if(response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
             }
         }
 

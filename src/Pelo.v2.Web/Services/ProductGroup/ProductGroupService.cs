@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Pelo.v2.Web.Services.ProductGroup
 {
     public interface IProductGroupService
     {
+        Task<IEnumerable<ProductGroupModel>> GetAll();
+
         Task<ProductGroupListModel> GetByPaging(ProductGroupSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
@@ -23,7 +26,8 @@ namespace Pelo.v2.Web.Services.ProductGroup
                                        IProductGroupService
     {
         public ProductGroupService(IHttpService httpService,
-                                   ILogger<BaseService> logger) : base(httpService, logger)
+                                   ILogger<BaseService> logger) : base(httpService,
+                                                                       logger)
         {
         }
 
@@ -39,6 +43,18 @@ namespace Pelo.v2.Web.Services.ProductGroup
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.PRODUCT_GROUP_GET_BY_PAGING,
                                             request.Name,
@@ -99,6 +115,26 @@ namespace Pelo.v2.Web.Services.ProductGroup
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<IEnumerable<ProductGroupModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<ProductGroupModel>>(ApiUrl.PRODUCT_GROUP_GET_ALL,
+                                                                                      null,
+                                                                                      HttpMethod.Get,
+                                                                                      true);
+
+                if(response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
             }
         }
 
