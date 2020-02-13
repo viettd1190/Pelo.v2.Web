@@ -464,6 +464,7 @@
         public const string TASK_TYPE_GET_BY_PAGING = BASE_API_URL + "/api/task_type?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
 
         #endregion
+
         #region Task Loop
 
         public const string TASK_LOOP_GET_ALL = BASE_API_URL + "/api/task_loop/all";
@@ -476,6 +477,18 @@
 
         public const string TASK_LOOP_GET_BY_PAGING = BASE_API_URL + "/api/task_loop?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
 
+        #endregion
+
+        #region Recruitment Status
+        public const string RECRUITMENT_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/recruiment_status?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
+
+        public const string RECRUITMENT_STATUS_GET_ALL = BASE_API_URL + "/api/recruiment_status/all";
+
+        public const string RECRUITMENT_STATUS_DELETE = BASE_API_URL + "/api/recruiment_status/{0}";
+
+        public const string RECRUITMENT_STATUS_GET_BY_ID = BASE_API_URL + "/api/recruiment_status/{0}";
+
+        public const string RECRUITMENT_STATUS_UPDATE = BASE_API_URL + "/api/recruiment_status";
         #endregion
     }
 }

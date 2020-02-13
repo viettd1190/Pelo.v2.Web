@@ -23,7 +23,6 @@
     <Folder Include="Models\Crm\" />
     <Folder Include="Models\ReceiptStatusInRole\" />
     <Folder Include="Models\Receipt\" />
-    <Folder Include="Models\RecruitmentStatus\" />
     <Folder Include="Models\Recruitment\" />
     <Folder Include="Models\TaskStatusInRole\" />
     <Folder Include="Models\WarrantyStatusInRole\" />
@@ -36,7 +35,6 @@
     <Folder Include="Services\ReceiptStatusInRole\" />
     <Folder Include="Services\WarrantyStatusInRole\" />
     <Folder Include="Services\Recruitment\" />
-    <Folder Include="Services\RecruitmentStatus\" />
     <Folder Include="Services\Receipt\" />
     <Folder Include="Services\Task\" />
     <Folder Include="Services\Warranty\" />
