@@ -23,7 +23,8 @@ namespace Pelo.v2.Web.Services.CustomerGroup
                                         ICustomerGroupService
     {
         public CustomerGroupService(IHttpService httpService,
-                                    ILogger<BaseService> logger) : base(httpService, logger)
+                                    ILogger<BaseService> logger) : base(httpService,
+                                                                        logger)
         {
         }
 
@@ -33,12 +34,24 @@ namespace Pelo.v2.Web.Services.CustomerGroup
         {
             try
             {
-                var columnOrder = "name";
+                var columnOrder = "Name";
                 var sortDir = "ASC";
 
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.CUSTOMER_GROUP_GET_BY_PAGING,
                                             request.Name,

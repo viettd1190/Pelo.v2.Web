@@ -42,6 +42,7 @@
     <Folder Include="Services\Task\" />
     <Folder Include="Services\Warranty\" />
     <Folder Include="Services\Product\" />
+    <Folder Include="Views\CustomerGroup\" />
   </ItemGroup>
 
 
