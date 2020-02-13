@@ -1,0 +1,107 @@
+﻿@using Microsoft.AspNetCore.Routing
+@using Pelo.v2.Web.Models.CustomerVip
+@using Pelo.v2.Web.Models.Datatables
+@using Pelo.v2.Web.Models.Datatables.Render
+@model Pelo.v2.Web.Models.CustomerVip.CustomerVipSearchModel
+@{
+  ViewBag.Title = "Danh sách mức độ thân thiết";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section cssPlugin{ 
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{ 
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height:auto !important;
+        }
+    </style>
+}
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12 dahsboard-column">
+        <section class="box-typical box-typical-dashboard panel panel-default scrollable">
+            <header class="box-typical-header panel-heading">
+                <h3 class="panel-title">Danh sách mức độ thân thiết</h3>
+            </header>
+            <div class="box-typical-body panel-body">
+                <div class="row" style="padding:15px;">
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary" id="search-customerVip">Tìm kiếm</button>
+                        <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-block">
+        @await Html.PartialAsync("Table",new DataTablesModel
+   {
+       Name="customerVip-grid",
+       UrlRead = new DataUrl("GetList","CustomerVip",null),
+       UrlDelete = new DataUrl("Delete","CustomerVip",null),
+       SearchButtonId = "search-customerVip",
+       ColumnCollection = new List<ColumnProperty> {
+                                                           new ColumnProperty(nameof(CustomerVipModel.Name))
+                                                           {
+                                                                   Title = "Tên"
+                                                           },
+                                                           new ColumnProperty(nameof(CustomerVipModel.Color))
+                                                           {
+                                                                   Title = "Màu sắc",
+                                                                   Render = new RenderCustom("displayColor")
+                                                           },
+                                                           new ColumnProperty(nameof(CustomerVipModel.Profit))
+                                                           {
+                                                                   Title = "Mức độ lợi nhuận",
+                                                                   Render = new RenderCustom("displayAmount")
+                                                           },
+                                                           new ColumnProperty(nameof(CustomerVipModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "40",
+                                                                   Orderable = false,
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonEdit(new DataUrl("CustomerVip/Edit"))
+                                                           },
+                                                           new ColumnProperty(nameof(CustomerVipModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "40",
+                                                                   Orderable = false,
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonRemove("Remove")
+                                                           }
+                                                   }
+   })
+    </div>
+</section>
+
+@section js{ 
+    <script>
+        $(document).ready(function() {
+            $('.panel').lobiPanel({
+                    sortable:false,
+                    draggable:false,
+                    resize:'none'
+                });
+        });
+        function displayColor(data,type,row,meta) {
+            return '<div style="text-align:center;margin:auto;"><span class="label" style="width:70px;background-color:'+
+                data+
+                '">'+
+                data+
+                '</span></div>';
+        }
+    </script>
+}

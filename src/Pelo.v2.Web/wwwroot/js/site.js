@@ -288,3 +288,6 @@ var Util = {
         }
     }
 };
+function displayAmount(data, type, row, meta) {
+    return '<div style="text-align:right;padding-right:10px;">' + Util.number.format(data) + '</div>';
+}
