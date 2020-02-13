@@ -61,3 +61,7 @@
     top: 5px;
     width: 7px;
 }
+
+tr.inactive {
+    background-color: #c2c2c2;
+}

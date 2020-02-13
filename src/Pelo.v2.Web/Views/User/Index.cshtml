@@ -4,25 +4,26 @@
 @using Pelo.v2.Web.Models.Datatables.Render
 @model Pelo.v2.Web.Models.User.UserSearchModel
 @{
-  ViewBag.Title = "Danh sách nhân viên";
-  Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Danh sách nhân viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section cssPlugin{ 
+@section cssPlugin{
     <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
     <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
 }
 
-@section css{ 
+@section css{
     <style>
         .box-typical.box-typical-dashboard .box-typical-body {
-            height:auto !important;
+            height: auto !important;
         }
     </style>
 }
 
 @section jsPlugin {
     <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+    <script src="~/startui/js/lib/moment/moment.min.js"></script>
 }
 
 <div class="row">
@@ -99,6 +100,7 @@
        UrlRead = new DataUrl("GetList","User",null),
        UrlDelete = new DataUrl("Delete","User",null),
        SearchButtonId = "search-user",
+       RowCallback = "formatRow",
        Filters = new List<FilterParameter> {
                                                    new FilterParameter(nameof(Model.Code)),
                                                    new FilterParameter(nameof(Model.Username)),
@@ -132,7 +134,8 @@
                                                            new ColumnProperty(nameof(UserModel.DateCreated))
                                                            {
                                                                    Title = "Ngày tạo",
-                                                                   Width = "150"
+                                                                   Width = "150",
+                                                                   Render=new RenderCustom("displayDateCreated")
                                                            },
                                                            new ColumnProperty(nameof(UserModel.Id))
                                                            {
@@ -155,9 +158,10 @@
     </div>
 </section>
 
-@section js{ 
+@section js{
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            $('#@nameof(Model.Status)').val(1).trigger('change');
             $('.panel').lobiPanel({
                     sortable:false,
                     draggable:false,
@@ -173,13 +177,25 @@
             reloadDataWhenSelect('@nameof(Model.Status)');
         });
         function displayCode(data,type,row,meta) {
-            return data;
+            return '<div style="text-align:center;margin:auto;"><span class="label label-danger">'+data+'</span></div>';
         }
         function displayName(data,type,row,meta) {
-            return data;
+            return '<div style="padding:10px;"><span>'+data+'</span><br/><div style="padding-top:10px;"><a href="tel:'+row.PhoneNumber+'" style="font-weight:800;">'+row.PhoneNumber+'</a></div></div>';
         }
         function displayDepartment(data,type,row,meta) {
-            return data;
+            return '<div style="padding:10px;"><span>Phòng ban: <span style="font-weight:800;">'+
+                isNull(data)+
+                '</span></span><br/><div style="padding-top:10px;"><span>Nhóm quyền: <span style="font-weight:800">'+
+                isNull(row.Role)+
+                '</span></span></div></div>';
+        }
+        function displayDateCreated(data,type,row,meta) {
+            return '<div style="text-align:center;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
+        }
+        function formatRow(row,data) {
+            if (data.IsActive===false) {
+                $(row).addClass('inactive');
+            }
         }
     </script>
 }

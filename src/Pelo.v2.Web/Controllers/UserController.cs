@@ -30,13 +30,12 @@ namespace Pelo.v2.Web.Controllers
             await _baseModelFactory.PrepareDepartments(searchModel.AvaiableDepartments);
             searchModel.AvaiableStatuses = new List<SelectListItem>
                                            {
-                                                   new SelectListItem("Tất cả tình trạng",
-                                                                      "-1",
-                                                                      true),
-                                                   new SelectListItem("Vẫn còn làm",
-                                                                      "1"),
                                                    new SelectListItem("Đã nghỉ việc",
-                                                                      "0")
+                                                                      "0"),
+                                                   new SelectListItem("Tất cả tình trạng",
+                                                                      "-1"),
+                                                   new SelectListItem("Vẫn còn làm",
+                                                                      "1",true)
                                            };
 
             return View(searchModel);

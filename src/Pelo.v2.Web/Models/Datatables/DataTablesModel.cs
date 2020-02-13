@@ -129,6 +129,11 @@ namespace Pelo.v2.Web.Models.Datatables
         public string HeaderCallback { get; set; }
 
         /// <summary>
+        /// Gets or sets custom render row call back function name(js)
+        /// </summary>
+        public string RowCallback { get; set; }
+
+        /// <summary>
         /// Gets or sets a number of columns to generate in a footer. Set 0 to disable footer
         /// </summary>
         public int FooterColumns { get; set; }
