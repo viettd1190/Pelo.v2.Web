@@ -1,9 +1,7 @@
-﻿namespace Pelo.v2.Web.Models.Branch
+﻿namespace Pelo.v2.Web.Models.Manufacturer
 {
     public class ManufacturerSearchModel : BaseSearchModel
     {
         public string Name { get; set; }
-
-        public string ColumnOrder{ get; set; }
     }
 }

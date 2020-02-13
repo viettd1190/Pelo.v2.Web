@@ -6,6 +6,7 @@ using Pelo.v2.Web.Services.Branch;
 using Pelo.v2.Web.Services.CustomerGroup;
 using Pelo.v2.Web.Services.CustomerVip;
 using Pelo.v2.Web.Services.Department;
+using Pelo.v2.Web.Services.Manufacturer;
 using Pelo.v2.Web.Services.ProductGroup;
 using Pelo.v2.Web.Services.ProductStatus;
 using Pelo.v2.Web.Services.ProductUnit;
@@ -130,13 +131,24 @@ namespace Pelo.v2.Web.Factories
                                  string defaultItemText = null);
 
         /// <summary>
-        /// Get all product statuses
+        ///     Get all product statuses
         /// </summary>
         /// <param name="items"></param>
         /// <param name="withSpecialDefaultItem"></param>
         /// <param name="defaultItemText"></param>
         /// <returns></returns>
         Task PrepareProductStatuses(IList<SelectListItem> items,
+                                    bool withSpecialDefaultItem = true,
+                                    string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all manufacturers
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareManufacturers(IList<SelectListItem> items,
                                   bool withSpecialDefaultItem = true,
                                   string defaultItemText = null);
     }
@@ -153,17 +165,19 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IDistrictService _districtService;
 
+        private readonly IProductGroupService _productGroupService;
+
+        private readonly IProductUnitService _productUnitService;
+
         private readonly IProvinceService _provinceService;
 
         private readonly IRoleService _roleService;
 
         private readonly IWardService _wardService;
 
-        private readonly IProductGroupService _productGroupService;
+        private readonly IManufacturerService _manufacturerService;
 
-        private readonly IProductUnitService _productUnitService;
-
-        private IProductStatusService _productStatusService;
+        private readonly IProductStatusService _productStatusService;
 
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
@@ -175,7 +189,8 @@ namespace Pelo.v2.Web.Factories
                                 ICustomerGroupService customerGroupService,
                                 IProductGroupService productGroupService,
                                 IProductUnitService productUnitService,
-                                IProductStatusService productStatusService)
+                                IProductStatusService productStatusService,
+                                IManufacturerService manufacturerService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -188,6 +203,7 @@ namespace Pelo.v2.Web.Factories
             _productGroupService = productGroupService;
             _productUnitService = productUnitService;
             _productStatusService = productStatusService;
+            _manufacturerService = manufacturerService;
         }
 
         #region IBaseModelFactory Members
@@ -450,10 +466,10 @@ namespace Pelo.v2.Web.Factories
         }
 
         public async Task PrepareProductStatuses(IList<SelectListItem> items,
-                                               bool withSpecialDefaultItem = true,
-                                               string defaultItemText = null)
+                                                 bool withSpecialDefaultItem = true,
+                                                 string defaultItemText = null)
         {
-            if (items == null)
+            if(items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available product groups
@@ -464,6 +480,30 @@ namespace Pelo.v2.Web.Factories
                           {
                                   Value = productStatus.Id.ToString(),
                                   Text = $"{productStatus.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareManufacturers(IList<SelectListItem> items,
+                                               bool withSpecialDefaultItem = true,
+                                               string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available product groups
+            var avaiableManufacturers = await _manufacturerService.GetAll();
+            foreach (var manufacturer in avaiableManufacturers)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = manufacturer.Id.ToString(),
+                                  Text = $"{manufacturer.Name}"
                           });
             }
 
