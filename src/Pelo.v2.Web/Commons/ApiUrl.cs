@@ -311,7 +311,7 @@
 
         public const string PRODUCT_GET_ALL = BASE_API_URL + "/api/product/all";
 
-        public const string PRODUCT_GET_BY_PAGING = BASE_API_URL + "/api/product?name={0}&product_status_id={1}&product_group_id={2}&product_unit_id={3}manufacturer_id={4}&country_id={5}&description{6}&warranty_month={7}&column_order={8}&sort_dir={9}&page={10}&page_size={11}&column_order={12}";
+        public const string PRODUCT_GET_BY_PAGING = BASE_API_URL + "/api/product?name={0}&product_status_id={1}&product_group_id={2}&product_unit_id={3}manufacturer_id={4}&country_id={5}&description{6}&warranty_month={7}&column_order={8}&sort_dir={9}&page={10}&page_size={11}";
 
         public const string PRODUCT_DELETE = BASE_API_URL + "/api/product/{0}";
 

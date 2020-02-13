@@ -1,0 +1,180 @@
+﻿@using Microsoft.AspNetCore.Routing
+@using Pelo.v2.Web.Models.Product
+@using Pelo.v2.Web.Models.Datatables
+@using Pelo.v2.Web.Models.Datatables.Render
+@model Pelo.v2.Web.Models.Product.ProductSearchModel
+@{
+  ViewBag.Title = "Danh sách sản phẩm";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section cssPlugin{ 
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{ 
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height:auto !important;
+        }
+    </style>
+}
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12 dahsboard-column">
+        <section class="box-typical box-typical-dashboard panel panel-default scrollable">
+            <header class="box-typical-header panel-heading">
+                <h3 class="panel-title">Danh sách sản phẩm</h3>
+            </header>
+            <div class="box-typical-body panel-body">
+                <div class="row" style="padding:15px;">
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Name" text-display="Tên sản phẩm" />
+                            <input asp-for="Name" class="form-control" type="text" placeholder="Tên sản phẩm" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="WarrantyMonth" text-display="Bảo hành" />
+                            <input asp-for="WarrantyMonth" class="form-control" type="number" placeholder="Số tháng bảo hành" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="ProductGroupId" text-display="Nhóm sản phẩm" />
+                            <nop-select asp-for="ProductGroupId" asp-items="Model.AvaiableProductGroups" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="ProductStatusId" text-display="Tình trạng sản phẩm" />
+                            <nop-select asp-for="ProductStatusId" asp-items="Model.AvaiableProductStatuses" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="ProductUnitId" text-display="Đơn vị tính" />
+                            <nop-select asp-for="ProductUnitId" asp-items="Model.AvaiableProductUnits" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="ManufacturerId" text-display="Thương hiệu" />
+                            <nop-select asp-for="ManufacturerId" asp-items="Model.AvaiableManufacturers" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Description" text-display="Mô tả" />
+                            <input asp-for="Description" class="form-control" type="text" placeholder="Mô tả" />
+                        </fieldset>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary" id="search-product">Tìm kiếm</button>
+                        <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-block">
+        @await Html.PartialAsync("Table",new DataTablesModel
+   {
+       Name="product-grid",
+       UrlRead = new DataUrl("GetList","Product",null),
+       UrlDelete = new DataUrl("Delete","Product",null),
+       SearchButtonId = "search-product",
+       Filters = new List<FilterParameter> {
+                                                   new FilterParameter(nameof(Model.Name)),
+                                                   new FilterParameter(nameof(Model.WarrantyMonth)),
+                                                   new FilterParameter(nameof(Model.ProductGroupId)),
+                                                   new FilterParameter(nameof(Model.ProductUnitId)),
+                                                   new FilterParameter(nameof(Model.ProductStatusId)),
+                                                   new FilterParameter(nameof(Model.ManufacturerId)),
+                                                   new FilterParameter(nameof(Model.Description))
+                                           },
+       ColumnCollection = new List<ColumnProperty> {
+                                                           new ColumnProperty(nameof(ProductModel.Name))
+                                                           {
+                                                                   Title = "Tên sản phẩm"
+                                                           },
+                                                           new ColumnProperty(nameof(ProductModel.ProductGroup))
+                                                           {
+                                                                   Title = "Nhóm sản phẩm",
+                                                                   Orderable = false,
+                                                                   Render = new RenderCustom("displayProductGroup")
+                                                           },
+                                                           new ColumnProperty(nameof(ProductModel.ImportPrice))
+                                                           {
+                                                                   Title = "Giá nhập",
+                                                                   Render = new RenderCustom("displayAmount")
+                                                           },
+                                                           new ColumnProperty(nameof(ProductModel.SellPrice))
+                                                           {
+                                                                   Title = "Giá bán",
+                                                                   Render = new RenderCustom("displayAmount")
+                                                           },
+                                                           new ColumnProperty(nameof(ProductModel.Manufacturer))
+                                                           {
+                                                                   Title = "Thương hiệu",
+                                                                   Orderable = false
+                                                           },
+                                                           new ColumnProperty(nameof(ProductModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "40",
+                                                                   Orderable = false,
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonEdit(new DataUrl("Product/Edit"))
+                                                           },
+                                                           new ColumnProperty(nameof(ProductModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "40",
+                                                                   Orderable = false,
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonRemove("Remove")
+                                                           }
+                                                   }
+   })
+    </div>
+</section>
+
+@section js{ 
+    <script>
+        $(document).ready(function() {
+            $('.panel').lobiPanel({
+                    sortable:false,
+                    draggable:false,
+                    resize:'none'
+                });
+            reloadDataWhenEnter('@nameof(Model.Name)');
+            reloadDataWhenEnter('@nameof(Model.WarrantyMonth)');
+            reloadDataWhenEnter('@nameof(Model.Description)');
+            reloadDataWhenSelect('@nameof(Model.ProductGroupId)');
+            reloadDataWhenSelect('@nameof(Model.ProductUnitId)');
+            reloadDataWhenSelect('@nameof(Model.ProductStatusId)');
+            reloadDataWhenSelect('@nameof(Model.ManufacturerId)');
+        });
+        function displayProductGroup(data,type,row,meta) {
+            return '<div style="padding:10px;"><span><span style="font-weight:800">Nhóm sản phẩm: </span>'+
+                isNull(row.ProductGroup)+
+                '</span><br/><span><span style="font-weight:800">Đơn vị tính: </span>'+
+                isNull(row.ProductUnit)+
+                '</span><br/><span><span style="font-weight:800">Tình trạng sản phẩm: </span>'+
+                isNull(row.ProductStatus)+
+                '</span><br/><span><span style="font-weight:800">Thời gian bảo hành: </span>'+
+                isNull(row.WarrantyMonth)+
+                ' tháng</span></div>';
+        }
+    </script>
+}

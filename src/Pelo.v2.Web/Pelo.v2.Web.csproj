@@ -21,7 +21,6 @@
   <ItemGroup>
     <Folder Include="Models\Candidate\" />
     <Folder Include="Models\Crm\" />
-    <Folder Include="Models\Product\" />
     <Folder Include="Models\ReceiptStatusInRole\" />
     <Folder Include="Models\Receipt\" />
     <Folder Include="Models\RecruitmentStatus\" />
@@ -41,7 +40,7 @@
     <Folder Include="Services\Receipt\" />
     <Folder Include="Services\Task\" />
     <Folder Include="Services\Warranty\" />
-    <Folder Include="Services\Product\" />
+    <Folder Include="Views\Product\" />
     <Folder Include="Views\Manufacturer\" />
     <Folder Include="Views\ProductStatus\" />
     <Folder Include="Views\ProductUnit\" />

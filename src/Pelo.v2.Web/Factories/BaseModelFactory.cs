@@ -7,6 +7,7 @@ using Pelo.v2.Web.Services.CustomerGroup;
 using Pelo.v2.Web.Services.CustomerVip;
 using Pelo.v2.Web.Services.Department;
 using Pelo.v2.Web.Services.Manufacturer;
+using Pelo.v2.Web.Services.Product;
 using Pelo.v2.Web.Services.ProductGroup;
 using Pelo.v2.Web.Services.ProductStatus;
 using Pelo.v2.Web.Services.ProductUnit;
@@ -151,6 +152,17 @@ namespace Pelo.v2.Web.Factories
         Task PrepareManufacturers(IList<SelectListItem> items,
                                   bool withSpecialDefaultItem = true,
                                   string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all products
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareProducts(IList<SelectListItem> items,
+                             bool withSpecialDefaultItem = true,
+                             string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
@@ -165,7 +177,11 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IDistrictService _districtService;
 
+        private readonly IManufacturerService _manufacturerService;
+
         private readonly IProductGroupService _productGroupService;
+
+        private readonly IProductStatusService _productStatusService;
 
         private readonly IProductUnitService _productUnitService;
 
@@ -175,9 +191,7 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IWardService _wardService;
 
-        private readonly IManufacturerService _manufacturerService;
-
-        private readonly IProductStatusService _productStatusService;
+        private readonly IProductService _productService;
 
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
@@ -190,7 +204,8 @@ namespace Pelo.v2.Web.Factories
                                 IProductGroupService productGroupService,
                                 IProductUnitService productUnitService,
                                 IProductStatusService productStatusService,
-                                IManufacturerService manufacturerService)
+                                IManufacturerService manufacturerService,
+                                IProductService productService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -204,6 +219,7 @@ namespace Pelo.v2.Web.Factories
             _productUnitService = productUnitService;
             _productStatusService = productStatusService;
             _manufacturerService = manufacturerService;
+            _productService = productService;
         }
 
         #region IBaseModelFactory Members
@@ -504,6 +520,30 @@ namespace Pelo.v2.Web.Factories
                           {
                                   Value = manufacturer.Id.ToString(),
                                   Text = $"{manufacturer.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareProducts(IList<SelectListItem> items,
+                                          bool withSpecialDefaultItem = true,
+                                          string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available product groups
+            var avaiableProducts = await _productService.GetAll();
+            foreach (var product in avaiableProducts)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = product.Id.ToString(),
+                                  Text = $"{product.Name}"
                           });
             }
 
