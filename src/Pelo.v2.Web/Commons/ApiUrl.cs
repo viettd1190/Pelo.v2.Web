@@ -210,6 +210,7 @@
         public const string PRODUCT_GROUP_GET_BY_PAGING = BASE_API_URL + "/api/product_group?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
 
         #endregion
+
         #region ProductStatus
 
         public const string PRODUCT_STATUS_GET_ALL = BASE_API_URL + "/api/product_status/all";
@@ -223,6 +224,7 @@
         public const string PRODUCT_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/product_status?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
 
         #endregion
+
         #region Crm
 
         public const string CRM_GET_BY_PAGING = BASE_API_URL + "/api/crm?code={0}&customer_code={1}&customer_name={2}&customer_phone={3}&customer_address={4}&province_id={5}&district_id={6}&ward_id={7}&customer_group_id={8}&customer_vip_id={9}&customer_source_id={10}&product_group_id={11}&crm_status_id={12}&crm_type_id={13}&crm_priority_id={14}&visit={15}&from_date={16}&to_date={17}&user_created_id={18}&date_created={19}&user_care_id={20}&need={21}&page={22}&page_size={23}";
@@ -320,6 +322,7 @@
         public const string PRODUCT_UPDATE = BASE_API_URL + "/api/product";
 
         #endregion
+
         #region ProductUnit
 
         public const string PRODUCT_UNIT_GET_ALL = BASE_API_URL + "/api/product_unit/all";
@@ -333,6 +336,7 @@
         public const string PRODUCT_UNIT_GET_BY_PAGING = BASE_API_URL + "/api/product_unit?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
 
         #endregion
+
         #region PayMethod
 
         public const string PAY_METHOD_GET_ALL = BASE_API_URL + "/api/pay_method/all";
@@ -371,6 +375,18 @@
         public const string CANDIDATE_STATUS_GET_BY_ID = BASE_API_URL + "/api/candidate_status/{0}";
 
         public const string CANDIDATE_STATUS_UPDATE = BASE_API_URL + "/api/candidate_status";
+        #endregion
+
+        #region Candidate
+        public const string CANDIDATE_GET_BY_PAGING = BASE_API_URL + "/api/candidate?name={0}&from_date={1}&to_date={2}&phone={3}&code={4}&candidate_statusId={5}&column_order={6}&sort_dir={7}&page={8}&page_size={9}";
+
+        public const string CANDIDATE_GET_ALL = BASE_API_URL + "/api/candidate/all";
+
+        public const string CANDIDATE_DELETE = BASE_API_URL + "/api/candidate/{0}";
+
+        public const string CANDIDATE_GET_BY_ID = BASE_API_URL + "/api/candidate/{0}";
+
+        public const string CANDIDATE_UPDATE = BASE_API_URL + "/api/candidate";
         #endregion
 
         #region Receipt Status
