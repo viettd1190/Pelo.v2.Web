@@ -495,6 +495,20 @@
 
         #endregion
 
+        #region Task
+
+        public const string TASK_GET_ALL = BASE_API_URL + "/api/task/all";
+
+        public const string TASK_DELETE = BASE_API_URL + "/api/task/{0}";
+
+        public const string TASK_GET_BY_ID = BASE_API_URL + "/api/task/{0}";
+
+        public const string TASK_UPDATE = BASE_API_URL + "/api/task";
+
+        public const string TASK_GET_BY_PAGING = BASE_API_URL + "/api/task?name={0}&customer_name={1}&phone={2}&code={3}&task_status_id={4}&task_priority_id={5}&task_loop_id={6}&task_type_id={7}&user_created_id={8}&user_care_id={9}&from_date={10}&to_date={11}&column_order={12}&sort_dir={13}&page={14}&page_size={15}";
+
+        #endregion
+
         #region Recruitment Status
         public const string RECRUITMENT_STATUS_GET_BY_PAGING = BASE_API_URL + "/api/recruiment_status?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
 
@@ -505,6 +519,18 @@
         public const string RECRUITMENT_STATUS_GET_BY_ID = BASE_API_URL + "/api/recruiment_status/{0}";
 
         public const string RECRUITMENT_STATUS_UPDATE = BASE_API_URL + "/api/recruiment_status";
+        #endregion
+
+        #region Recruitment
+        public const string RECRUITMENT_GET_BY_PAGING = BASE_API_URL + "/api/recruiment?name={0}&candidate_status_id={1}&from_date={2}&to_date={3}&column_order={4}&sort_dir={5}&page={6}&page_size={7}";
+
+        public const string RECRUITMENT_GET_ALL = BASE_API_URL + "/api/recruiment/all";
+
+        public const string RECRUITMENT_DELETE = BASE_API_URL + "/api/recruiment/{0}";
+
+        public const string RECRUITMENT_GET_BY_ID = BASE_API_URL + "/api/recruiment/{0}";
+
+        public const string RECRUITMENT_UPDATE = BASE_API_URL + "/api/recruiment";
         #endregion
     }
 }
