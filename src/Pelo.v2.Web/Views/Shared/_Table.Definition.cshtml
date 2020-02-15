@@ -153,7 +153,7 @@ columns: [
     <text>
         {
         @if (!string.IsNullOrEmpty(column.Title)
- && !column.IsMasterCheckBox)
+&& !column.IsMasterCheckBox)
         {
             <text>
             title: '@JavaScriptEncoder.Default.Encode(column.Title)',
@@ -254,26 +254,26 @@ else
                 <text>
                     render: function (data, type, row, meta) {
                     return (data === true)
-                    ? '<div class="checkbox" style="margin:auto;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" checked="checked" /><label></label></div>'
-                    : '<div class="checkbox" style="margin:auto;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" /><label></label></div>';
-                           },
+                    ? '<div class="checkbox" style="margin:auto;text-align:center;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" checked="checked" /><label></label></div>'
+                    : '<div class="checkbox" style="margin:auto;text-align:center"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" /><label></label></div>';
+                    },
                 </text>
                 break;
 
-                case RenderCustom custom:
-<text>
-    render: function (data, type, row, meta) {
-    return @(custom.FunctionName)(data, type, row, meta);
-    },
-</text>
-break;
-}
-                    data: '@column.Data'
-                    }
-                    @if (i != Model.ColumnCollection.Count - 1)
-                    {
-                        <text>,</text>
-                    }
-                    </text>
-                    }
+            case RenderCustom custom:
+                <text>
+                    render: function (data, type, row, meta) {
+                    return @(custom.FunctionName)(data, type, row, meta);
+                    },
+                </text>
+                break;
+        }
+        data: '@column.Data'
+        }
+        @if (i != Model.ColumnCollection.Count - 1)
+        {
+            <text>,</text>
+        }
+        </text>
+    }
                     ]
