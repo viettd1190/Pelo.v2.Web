@@ -1,9 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Pelo.v2.Web.Models.Crm
 {
     public class CrmSearchModel : BaseSearchModel
     {
+        public CrmSearchModel()
+        {
+            AvaiableCustomerGroups = new List<SelectListItem>();
+            AvaiableCrmStatuses = new List<SelectListItem>();
+            AvaiableCustomerSources = new List<SelectListItem>();
+            AvaiableCustomerVips = new List<SelectListItem>();
+            AvaiableProvinces = new List<SelectListItem>();
+            AvaiableDistricts = new List<SelectListItem>();
+            AvaiableWards = new List<SelectListItem>();
+            AvaiableCrmTypes = new List<SelectListItem>();
+            AvaiableCrmPriorities = new List<SelectListItem>();
+            AvaiableUserCares = new List<SelectListItem>();
+            AvaiableProductGroups = new List<SelectListItem>();
+            AvaiableVisits = new List<SelectListItem>
+                             {
+                                     new SelectListItem("Tất cả",
+                                                        "-1",
+                                                        selected: true),
+                                     new SelectListItem("Đã đến cửa hàng",
+                                                        "1"),
+                                     new SelectListItem("Chưa đến cửa hàng",
+                                                        "0")
+                             };
+            AvaiableUserCreateds = new List<SelectListItem>();
+        }
+
         public string CustomerCode { get; set; }
 
         public int CustomerGroupId { get; set; }
@@ -47,5 +75,31 @@ namespace Pelo.v2.Web.Models.Crm
         public int UserCreatedId { get; set; }
 
         public DateTime? DateCreated { get; set; }
+
+        public IList<SelectListItem> AvaiableCustomerGroups { get; set; }
+
+        public IList<SelectListItem> AvaiableCustomerSources { get; set; }
+
+        public IList<SelectListItem> AvaiableCustomerVips { get; set; }
+
+        public IList<SelectListItem> AvaiableProvinces { get; set; }
+
+        public IList<SelectListItem> AvaiableDistricts { get; set; }
+
+        public IList<SelectListItem> AvaiableWards { get; set; }
+
+        public IList<SelectListItem> AvaiableCrmTypes { get; set; }
+
+        public IList<SelectListItem> AvaiableCrmStatuses { get; set; }
+
+        public IList<SelectListItem> AvaiableCrmPriorities { get; set; }
+
+        public IList<SelectListItem> AvaiableUserCares { get; set; }
+
+        public IList<SelectListItem> AvaiableProductGroups { get; set; }
+
+        public IList<SelectListItem> AvaiableVisits { get; set; }
+
+        public IList<SelectListItem> AvaiableUserCreateds { get; set; }
     }
 }

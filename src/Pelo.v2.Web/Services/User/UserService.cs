@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Pelo.v2.Web.Services.User
 {
     public interface IUserService
     {
+        Task<IEnumerable<UserDisplaySimpleModel>> GetAll();
+
         Task<UserListModel> GetByPaging(UserSearchModel request);
 
         //Task<TResponse<bool>> Insert(UserInsert request);
@@ -33,6 +36,26 @@ namespace Pelo.v2.Web.Services.User
         }
 
         #region IUserService Members
+
+        public async Task<IEnumerable<UserDisplaySimpleModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<UserDisplaySimpleModel>>(ApiUrl.USER_GET_ALL,
+                                                                                 null,
+                                                                                 HttpMethod.Get,
+                                                                                 true);
+
+                if (response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
 
         public async Task<UserListModel> GetByPaging(UserSearchModel request)
         {

@@ -17,6 +17,7 @@ using Pelo.v2.Web.Services.ProductStatus;
 using Pelo.v2.Web.Services.ProductUnit;
 using Pelo.v2.Web.Services.Province;
 using Pelo.v2.Web.Services.Role;
+using Pelo.v2.Web.Services.User;
 
 namespace Pelo.v2.Web.Factories
 {
@@ -211,6 +212,17 @@ namespace Pelo.v2.Web.Factories
         Task PrepareCustomerSources(IList<SelectListItem> items,
                                     bool withSpecialDefaultItem = true,
                                     string defaultItemText = null);
+
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareUsers(IList<SelectListItem> items,
+                                    bool withSpecialDefaultItem = true,
+                                    string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
@@ -249,6 +261,8 @@ namespace Pelo.v2.Web.Factories
 
         private readonly ICustomerSourceService _customerSourceService;
 
+        private IUserService _userService;
+
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
                                 IWardService wardService,
@@ -265,7 +279,8 @@ namespace Pelo.v2.Web.Factories
                                 ICrmStatusService crmStatusService,
                                 ICrmPriorityService crmPriorityService,
                                 ICrmTypeService crmTypeService,
-                                ICustomerSourceService customerSourceService)
+                                ICustomerSourceService customerSourceService,
+                                IUserService userService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -284,6 +299,7 @@ namespace Pelo.v2.Web.Factories
             _crmPriorityService = crmPriorityService;
             _crmTypeService = crmTypeService;
             _customerSourceService = customerSourceService;
+            _userService = userService;
         }
 
         #region IBaseModelFactory Members
@@ -704,6 +720,30 @@ namespace Pelo.v2.Web.Factories
                           {
                                   Value = customerSource.Id.ToString(),
                                   Text = $"{customerSource.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareUsers(IList<SelectListItem> items,
+                                 bool withSpecialDefaultItem = true,
+                                 string defaultItemText = null)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available customer sources
+            var avaiableUsers = await _userService.GetAll();
+            foreach (var user in avaiableUsers)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = user.Id.ToString(),
+                                  Text = $"{user.DisplayName}"
                           });
             }
 

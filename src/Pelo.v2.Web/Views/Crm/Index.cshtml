@@ -1,0 +1,478 @@
+﻿@using Microsoft.AspNetCore.Routing
+@using Pelo.v2.Web.Models.Crm
+@using Pelo.v2.Web.Models.Datatables
+@using Pelo.v2.Web.Models.Datatables.Render
+@model Pelo.v2.Web.Models.Crm.CrmSearchModel
+@{
+    ViewBag.Title = "Danh sách CRM";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section cssPlugin{
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height: auto !important;
+        }
+    </style>
+}
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+    <script src="~/startui/js/lib/moment/moment.min.js"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12 dahsboard-column">
+        <section class="box-typical box-typical-dashboard panel panel-default scrollable">
+            <header class="box-typical-header panel-heading">
+                <h3 class="panel-title">Danh sách CRM</h3>
+            </header>
+            <div class="box-typical-body panel-body">
+                <div class="row" style="padding:15px;">
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerCode" text-display="Mã khách hàng" />
+                            <input asp-for="CustomerCode" class="form-control" type="text" placeholder="Mã khách hàng" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerGroupId" text-display="Nhóm khách hàng" />
+                            <nop-select asp-for="CustomerGroupId" asp-items="Model.AvaiableCustomerGroups" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerName" text-display="Tên khách hàng" />
+                            <input asp-for="CustomerName" class="form-control" type="text" placeholder="Tên khách hàng" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerVipId" text-display="Mức độ thân thiết" />
+                            <nop-select asp-for="CustomerVipId" asp-items="Model.AvaiableCustomerVips" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerPhone" text-display="Số điện thoại" />
+                            <input asp-for="CustomerPhone" class="form-control" type="text" placeholder="Số điện thoại" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerAddress" text-display="Địa chỉ" />
+                            <input asp-for="CustomerAddress" class="form-control" type="text" placeholder="Địa chỉ" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="ProvinceId" text-display="Tỉnh thành" />
+                            <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="DistrictId" text-display="Quận huyện" />
+                            <nop-select asp-for="DistrictId" asp-items="Model.AvaiableDistricts" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="WardId" text-display="Phường xã" />
+                            <nop-select asp-for="WardId" asp-items="Model.AvaiableWards" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Need" text-display="Nhu cầu" />
+                            <input asp-for="Need" class="form-control" type="text" placeholder="Nhu cầu" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CrmTypeId" text-display="Kiểu chốt" />
+                            <nop-select asp-for="CrmTypeId" asp-items="Model.AvaiableCrmTypes" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CrmStatusId" text-display="Trạng thái" />
+                            <nop-select asp-for="CrmStatusId" asp-items="Model.AvaiableCrmStatuses" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CrmPriorityId" text-display="Mức độ khẩn cấp" />
+                            <nop-select asp-for="CrmPriorityId" asp-items="Model.AvaiableCrmPriorities" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerSourceId" text-display="Nguồn khách hàng" />
+                            <nop-select asp-for="CustomerSourceId" asp-items="Model.AvaiableCustomerSources" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Code" text-display="Mã cơ hội" />
+                            <input asp-for="Code" class="form-control" type="text" placeholder="Mã cơ hội" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="UserCareId" text-display="Người phụ trách" />
+                            <nop-select asp-for="UserCareId" asp-items="Model.AvaiableUserCares" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="ProductGroupId" text-display="Nhóm sản phẩm" />
+                            <nop-select asp-for="ProductGroupId" asp-items="Model.AvaiableProductGroups" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="IsVisit" text-display="Đến cửa hàng" />
+                            <nop-select asp-for="IsVisit" asp-items="Model.AvaiableVisits" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="FromDate" text-display="Ngày liên hệ từ" />
+                            <input asp-for="FromDate" class="form-control" type="text" placeholder="Ngày liên hệ từ" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="ToDate" text-display="Ngày liên hệ đến" />
+                            <input asp-for="ToDate" class="form-control" type="text" placeholder="Ngày liên hệ đến" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="UserCreatedId" text-display="Người tạo" />
+                            <nop-select asp-for="UserCreatedId" asp-items="Model.AvaiableUserCreateds" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="DateCreated" text-display="Ngày tạo" />
+                            <input asp-for="DateCreated" class="form-control" type="text" placeholder="Ngày tạo" />
+                        </fieldset>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary" id="search-crm">Tìm kiếm</button>
+                        <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-block">
+        @await Html.PartialAsync("Table", new DataTablesModel
+   {
+       Name = "crm-grid",
+       UrlRead = new DataUrl("GetList", "Crm", null),
+       SearchButtonId = "search-crm",
+       Ordering = false,
+       Filters = new List<FilterParameter> {
+                                                   new FilterParameter(nameof(Model.CustomerCode)),
+                                                   new FilterParameter(nameof(Model.CustomerName)),
+                                                   new FilterParameter(nameof(Model.CustomerGroupId)),
+                                                   new FilterParameter(nameof(Model.CustomerVipId)),
+                                                   new FilterParameter(nameof(Model.CustomerPhone)),
+                                                   new FilterParameter(nameof(Model.CustomerAddress)),
+                                                   new FilterParameter(nameof(Model.ProvinceId)),
+                                                   new FilterParameter(nameof(Model.DistrictId)),
+                                                   new FilterParameter(nameof(Model.WardId)),
+                                                   new FilterParameter(nameof(Model.Need)),
+                                                   new FilterParameter(nameof(Model.CrmTypeId)),
+                                                   new FilterParameter(nameof(Model.CrmStatusId)),
+                                                   new FilterParameter(nameof(Model.CrmPriorityId)),
+                                                   new FilterParameter(nameof(Model.CustomerSourceId)),
+                                                   new FilterParameter(nameof(Model.Code)),
+                                                   new FilterParameter(nameof(Model.UserCareId)),
+                                                   new FilterParameter(nameof(Model.ProductGroupId)),
+                                                   new FilterParameter(nameof(Model.IsVisit)),
+                                                   new FilterParameter(nameof(Model.FromDate)),
+                                                   new FilterParameter(nameof(Model.ToDate)),
+                                                   new FilterParameter(nameof(Model.UserCreatedId)),
+                                                   new FilterParameter(nameof(Model.DateCreated)),
+                                           },
+       ColumnCollection = new List<ColumnProperty> {
+                                                           new ColumnProperty(nameof(CrmModel.CrmStatus))
+                                                           {
+                                                                   Title = "Trạng thái",
+                                                                   Width = "150",
+                                                                   Render = new RenderCustom("displayCrmStatus")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.Code))
+                                                           {
+                                                                   Title = "Mã cơ hội",
+                                                                   Render = new RenderLink(new DataUrl("Crm/Detail","Id"))
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.CustomerName))
+                                                           {
+                                                                   Title = "Khách hàng",
+                                                                   Render = new RenderCustom("displayCustomer")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.Need))
+                                                           {
+                                                                   Title = "Nhu cầu",
+                                                                   Render = new RenderCustom("displayNeed")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.CrmPriority))
+                                                           {
+                                                                   Title = "Thông tin thêm",
+                                                                   Render = new RenderCustom("displayCrmPriority")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.UserCares))
+                                                           {
+                                                                   Title = "Phụ trách",
+                                                                   Render = new RenderCustom("displayUserCare")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.ContactDate))
+                                                           {
+                                                                   Title = "Ngày liên hệ",
+                                                                   Render = new RenderCustom("displayContactDate")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.DateCreated))
+                                                           {
+                                                                   Title = "Ngày tạo",
+                                                                   Render = new RenderCustom("displayDateCreated")
+                                                           }
+                                                   }
+   })
+    </div>
+</section>
+
+@section js{
+    <script>
+        $(document).ready(function() {
+            $('.panel').lobiPanel({
+                    sortable:false,
+                    draggable:false,
+                    resize:'none'
+                });
+            $("#@Html.IdFor(model => model.ProvinceId)").change(function() {
+                var selectedItem=$(this).val();
+                var dllDistricts=$("#@Html.IdFor(model => model.DistrictId)");
+                $.ajax({
+                        cache:true,
+                        type:"POST",
+                        url:"@Url.Action("GetDistrictByProvinceId", "District")",
+                        data:{
+                                "provinceId":selectedItem,
+                                "addAll":"true"
+                            },
+                        success:function(data,textStatus,jqXHR) {
+                            dllDistricts.html('');
+                            $.each(data,
+                                function(id,option) {
+                                    dllDistricts.append($('<option></option>').val(option.Id)
+                                        .html(option.Type+' '+option.Name));
+                                });
+                            loadWards(99999999);
+                        },
+                        error:function(jqXHR,textStatus,errorThrown) {
+                            $("#statesAlert").click();
+                            console.log("jqXHR: "+jqXHR);
+                            console.log("textStatus: "+textStatus);
+                            console.log("errorThrown: "+errorThrown);
+                        }
+                    });
+            });
+            $("#@Html.IdFor(model => model.DistrictId)").change(function() {
+                var selectedItem=$(this).val();
+                loadWards(selectedItem);
+            });
+            reloadDataWhenEnter('@nameof(Model.CustomerCode)');
+            reloadDataWhenEnter('@nameof(Model.CustomerName)');
+            reloadDataWhenEnter('@nameof(Model.CustomerPhone)');
+            reloadDataWhenEnter('@nameof(Model.CustomerAddress)');
+            reloadDataWhenEnter('@nameof(Model.Need)');
+            reloadDataWhenEnter('@nameof(Model.Code)');
+            reloadDataWhenEnter('@nameof(Model.FromDate)');
+            reloadDataWhenEnter('@nameof(Model.ToDate)');
+            reloadDataWhenEnter('@nameof(Model.DateCreated)');
+            reloadDataWhenSelect('@nameof(Model.CustomerGroupId)');
+            reloadDataWhenSelect('@nameof(Model.CustomerVipId)');
+            reloadDataWhenSelect('@nameof(Model.ProvinceId)');
+            reloadDataWhenSelect('@nameof(Model.DistrictId)');
+            reloadDataWhenSelect('@nameof(Model.WardId)');
+            reloadDataWhenSelect('@nameof(Model.CrmTypeId)');
+            reloadDataWhenSelect('@nameof(Model.CrmStatusId)');
+            reloadDataWhenSelect('@nameof(Model.CrmPriorityId)');
+            reloadDataWhenSelect('@nameof(Model.CustomerSourceId)');
+            reloadDataWhenSelect('@nameof(Model.UserCareId)');
+            reloadDataWhenSelect('@nameof(Model.ProductGroupId)');
+            reloadDataWhenSelect('@nameof(Model.IsVisit)');
+            reloadDataWhenSelect('@nameof(Model.UserCreatedId)');
+        });
+        function loadWards(districtId) {
+            var dllWards=$("#@Html.IdFor(model => model.WardId)");
+            $.ajax({
+                    cache:true,
+                    type:"POST",
+                    url:"@Url.Action("GetWardByDistrictId", "Ward")",
+                    data:{
+                            "districtId":districtId,
+                            "addAll":"true"
+                        },
+                    success:function(data,textStatus,jqXHR) {
+                        dllWards.html('');
+                        $.each(data,
+                            function(id,option) {
+                                dllWards.append($('<option></option>').val(option.Id)
+                                    .html(option.Type+' '+option.Name));
+                            });
+                    },
+                    error:function(jqXHR,textStatus,errorThrown) {
+                        $("#statesAlert").click();
+                        console.log("jqXHR: "+jqXHR);
+                        console.log("textStatus: "+textStatus);
+                        console.log("errorThrown: "+errorThrown);
+                    }
+                });
+        }
+        function displayCrmStatus(data,type,row,meta) {
+            return '<div style="text-align:center;margin:auto;"><span class="label" style="width:150px;background-color:'+
+                row.CrmStatusColor+
+                '">'+
+                row.CrmStatus+
+                '</span></div>';
+        }
+        function displayContactDate(data, type, row, meta) {
+            return '<div style="text-align:center;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
+        }
+        function displayDateCreated(data, type, row, meta) {
+            return '<div style="text-align:center;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
+        }
+        function displayUserCare(data, type, row, meta) {
+            var userCreated = '';
+
+            if(isNull(row.UserCreatedPhone)) {
+                userCreated='<span>Người tạo: <span style="font-weight:700;"><a href="tel:'+
+                    row.UserCreatedPhone+
+                    '">'+
+                    row.UserCreated+
+                    '</a></span></span><br/>';
+            } else {
+                userCreated='<span>Người tạo: <span style="font-weight:700;">'+
+                    row.UserCreated+
+                    '</span></span><br/>';
+            }
+            var userCares = '';
+            var condition='';
+            if(row.UserCares) {
+                if(row.UserCares.length>0) {
+                    for(var i=0;i<row.UserCares.length;i++) {
+                        userCares=userCares+
+                            condition+
+                            '<a href="tel:'+
+                            row.UserCares[i].phone+
+                            '">'+
+                            row.UserCares[i].name+
+                            '</a>';
+                        condition=', ';
+                    }
+                }
+            }
+            if(userCares) {
+                userCares='<span>Phụ trách: <span style="font-weight:700;">'+userCares+'</span></span><br/>';
+            }
+            return '<div style="padding:10px;">' + userCreated + userCares + '</div></div>';
+        }
+        function displayCrmPriority(data, type, row, meta) {
+            var crmPriority = '';
+            if (isNull(row.CrmPriority)) {
+                crmPriority = '<span>Mức độ khẩn cấp: <span style="font-weight:700;">' + row.CrmPriority + '</span></span><br/>';
+            }
+            var customerSource = '';
+            if (isNull(row.CustomerSource)) {
+                customerSource = '<span>Nguồn khách hàng: <span style="font-weight:700;">' +
+                    row.CustomerSource +
+                    '</span></span><br/>';
+            }
+            var crmType = '';
+            if (isNull(row.CrmType)) {
+                crmType = '<span>Kiểu chốt: <span style="font-weight:700;">' +
+                    row.CrmType +
+                    '</span></span><br/>';
+            }
+            visit = '<span>Đến cửa hàng: <span style="font-weight:700;">' + row.Visit + '</span></span><br/>';
+            return '<div style="padding:10px;">' + crmPriority + customerSource + crmType + visit + '</div></div>';
+        }
+        function displayNeed(data, type, row, meta) {
+            var need = '';
+            if(isNull(row.Need)) {
+                need = '<span>Nhu cầu: <span style="font-weight:700;">' + row.Need + '</span></span><br/>';
+            }
+            var description = '';
+            if(isNull(row.Description)) {
+                description='<span>Ghi chú: <span style="font-weight:700;">'+
+                    row.Description+
+                    '</span></span><br/>';
+            }
+            var productGroup = '';
+            if(isNull(row.ProductGroup)) {
+                productGroup='<span>Nhóm sản phẩm: <span style="font-weight:700;">'+
+                    row.ProductGroup+
+                    '</span></span><br/>';
+            }
+            return '<div style="padding:10px;">'+need+description+productGroup+'</div></div>';
+        }
+        function displayCustomer(data,type,row,meta) {
+            var customerName = '<span style="font-weight:600;font-size:16px;">' + data + '</span><br/>';
+                    var phone = '<span><a href="tel:' + row.CustomerPhone1 + '">' + row.CustomerPhone1 + '</a></span><br/>';
+                    var phone2 = '';
+                    if (isNull(row.CustomerPhone2)) {
+                        phone2 = '<span><a href="tel:' + row.CustomerPhone2 + '">' + row.CustomerPhone2 + '</a></span><br/>';
+                    }
+                    var phone3 = '';
+                    if (isNull(row.CustomerPhone3)) {
+                        phone3 = '<span><a href="tel:' + row.CustomerPhone3 + '">' + row.CustomerPhone3 + '</a></span><br/>';
+                    }
+                    var address = '';
+                    if(isNull(row.CustomerAddress)) {
+                        address = row.CustomerAddress;
+                    }
+                    if(isNull(row.Province)) {
+                        address=address+', '+row.Ward+', '+row.District+', '+row.Province;
+                    }
+                    if(isNull(address)) {
+                        address = '<span>Địa chỉ: <span style="font-weight:700;">' + address + '</span></span><br/>';
+                    }
+                    var customerGroup='';
+                    if(isNull(row.CustomerGroup)) {
+                        customerGroup='<span>Nhóm khách hàng: <span style="font-weight:700;">'+
+                            row.CustomerGroup+
+                            '</span></span><br/>';
+                    }
+                    var customerVip = '';
+                    if(isNull(row.CustomerVip)) {
+                        customerVip='<span>Mức độ thân thiết: <span style="font-weight:700;">'+
+                            row.CustomerVip+
+                            '</span></span><br/>';
+                    }
+                    return '<div style="padding:10px;">'+
+                        customerName+
+                        phone+
+                        phone2+
+                        phone3+
+                        address+
+                        customerGroup+
+                        customerVip+
+                        '</div>';
+        }
+    </script>
+}

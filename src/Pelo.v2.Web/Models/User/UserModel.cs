@@ -25,6 +25,9 @@ namespace Pelo.v2.Web.Models.User
         [JsonProperty("FullName")]
         public string FullName { get; set; }
 
+        [JsonProperty("DisplayName")]
+        public string DisplayName { get; set; }
+
         [JsonProperty("PhoneNumber")]
         public string PhoneNumber { get; set; }
 
