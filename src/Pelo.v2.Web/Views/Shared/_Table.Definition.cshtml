@@ -16,18 +16,18 @@
 @functions
 {
 
-string GetUrl(DataUrl dataUrl)
-{
-    return !string.IsNullOrEmpty(dataUrl?.ActionName) && !string.IsNullOrEmpty(dataUrl.ControllerName)
-                   ? Url.Action(dataUrl.ActionName,
-                                dataUrl.ControllerName,
-                                dataUrl.RouteValues)
-                   : !string.IsNullOrEmpty(dataUrl.Url)
-                             ? $"{(dataUrl.Url.StartsWith("~/", StringComparison.Ordinal) ? Url.Content(dataUrl.Url) : dataUrl.Url).TrimEnd('/')}" + (!dataUrl.TrimEnd
-                                                                                                                                                              ? "/"
-                                                                                                                                                              : "")
-                             : string.Empty;
-}
+    string GetUrl(DataUrl dataUrl)
+    {
+        return !string.IsNullOrEmpty(dataUrl?.ActionName) && !string.IsNullOrEmpty(dataUrl.ControllerName)
+                       ? Url.Action(dataUrl.ActionName,
+                                    dataUrl.ControllerName,
+                                    dataUrl.RouteValues)
+                       : !string.IsNullOrEmpty(dataUrl.Url)
+                                 ? $"{(dataUrl.Url.StartsWith("~/", StringComparison.Ordinal) ? Url.Content(dataUrl.Url) : dataUrl.Url).TrimEnd('/')}" + (!dataUrl.TrimEnd
+                                                                                                                                                                  ? "/"
+                                                                                                                                                                  : "")
+                                 : string.Empty;
+    }
 
 }
 
@@ -153,7 +153,7 @@ columns: [
     <text>
         {
         @if (!string.IsNullOrEmpty(column.Title)
-   && !column.IsMasterCheckBox)
+ && !column.IsMasterCheckBox)
         {
             <text>
             title: '@JavaScriptEncoder.Default.Encode(column.Title)',
@@ -250,33 +250,30 @@ else
                     </text>
                 }
                 break;
-
             case RenderCheckBox checkBox:
                 <text>
                     render: function (data, type, row, meta) {
-                    return (data === 'true')
-                    ? '
-                    <input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" class="checkboxGroups" checked="checked" />'
-                    : '
-                    <input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" class="checkboxGroups" />';
-                    },
+                    return (data === true)
+                    ? '<div class="checkbox" style="margin:auto;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" checked="checked" /><label></label></div>'
+                    : '<div class="checkbox" style="margin:auto;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" /><label></label></div>';
+                           },
                 </text>
                 break;
 
-            case RenderCustom custom:
-                <text>
-                    render: function (data, type, row, meta) {
-                    return @(custom.FunctionName)(data, type, row, meta);
-                    },
-                </text>
-                break;
-        }
-        data: '@column.Data'
-        }
-        @if (i != Model.ColumnCollection.Count - 1)
-        {
-            <text>,</text>
-        }
-        </text>
-    }
-]
+                case RenderCustom custom:
+<text>
+    render: function (data, type, row, meta) {
+    return @(custom.FunctionName)(data, type, row, meta);
+    },
+</text>
+break;
+}
+                    data: '@column.Data'
+                    }
+                    @if (i != Model.ColumnCollection.Count - 1)
+                    {
+                        <text>,</text>
+                    }
+                    </text>
+                    }
+                    ]

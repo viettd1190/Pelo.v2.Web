@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pelo.v2.Web.Services.Branch;
+using Pelo.v2.Web.Services.CrmStatus;
 using Pelo.v2.Web.Services.CustomerGroup;
 using Pelo.v2.Web.Services.CustomerVip;
 using Pelo.v2.Web.Services.Department;
@@ -163,6 +164,17 @@ namespace Pelo.v2.Web.Factories
         Task PrepareProducts(IList<SelectListItem> items,
                              bool withSpecialDefaultItem = true,
                              string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all crm statuses
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareCrmStatuses(IList<SelectListItem> items,
+                                bool withSpecialDefaultItem = true,
+                                string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
@@ -181,6 +193,8 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IProductGroupService _productGroupService;
 
+        private readonly IProductService _productService;
+
         private readonly IProductStatusService _productStatusService;
 
         private readonly IProductUnitService _productUnitService;
@@ -191,7 +205,7 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IWardService _wardService;
 
-        private readonly IProductService _productService;
+        private readonly ICrmStatusService _crmStatusService;
 
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
@@ -205,7 +219,8 @@ namespace Pelo.v2.Web.Factories
                                 IProductUnitService productUnitService,
                                 IProductStatusService productStatusService,
                                 IManufacturerService manufacturerService,
-                                IProductService productService)
+                                IProductService productService,
+                                ICrmStatusService crmStatusService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -220,6 +235,7 @@ namespace Pelo.v2.Web.Factories
             _productStatusService = productStatusService;
             _manufacturerService = manufacturerService;
             _productService = productService;
+            _crmStatusService = crmStatusService;
         }
 
         #region IBaseModelFactory Members
@@ -536,7 +552,7 @@ namespace Pelo.v2.Web.Factories
             if(items == null)
                 throw new ArgumentNullException(nameof(items));
 
-            //prepare available product groups
+            //prepare available product
             var avaiableProducts = await _productService.GetAll();
             foreach (var product in avaiableProducts)
             {
@@ -544,6 +560,30 @@ namespace Pelo.v2.Web.Factories
                           {
                                   Value = product.Id.ToString(),
                                   Text = $"{product.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareCrmStatuses(IList<SelectListItem> items,
+                                             bool withSpecialDefaultItem = true,
+                                             string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available crmStatus
+            var avaiableCrmStatuses = await _crmStatusService.GetAll();
+            foreach (var crmStatus in avaiableCrmStatuses)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = crmStatus.Id.ToString(),
+                                  Text = $"{crmStatus.Name}"
                           });
             }
 

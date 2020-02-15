@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 
-namespace Pelo.v2.Web.Models.CrmStatus
+namespace Pelo.v2.Web.Models.Crm
 {
-    public class CrmStatusModel
+    public class CrmModel
     {
-        public CrmStatusModel()
+        public CrmModel()
         {
             if(PageSize < 1)
             {
@@ -18,11 +18,11 @@ namespace Pelo.v2.Web.Models.CrmStatus
         [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("Color")]
-        public string Color { get; set; }
+        [JsonProperty("Value")]
+        public string Value { get; set; }
 
-        [JsonProperty("IsSendSms")]
-        public bool IsSendSms{ get; set; }
+        [JsonProperty("Description")]
+        public string Description { get; set; }
 
         [JsonProperty("PageSize")]
         public int PageSize { get; set; }

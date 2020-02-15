@@ -19,7 +19,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Models\Crm\" />
     <Folder Include="Models\ReceiptStatusInRole\" />
     <Folder Include="Models\Receipt\" />
     <Folder Include="Models\TaskStatusInRole\" />

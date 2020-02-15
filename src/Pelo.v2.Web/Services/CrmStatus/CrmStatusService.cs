@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Pelo.v2.Web.Services.CrmStatus
 {
     public interface ICrmStatusService
     {
+        Task<IEnumerable<CrmStatusModel>> GetAll();
+
         Task<CrmStatusListModel> GetByPaging(CrmStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
@@ -23,11 +26,32 @@ namespace Pelo.v2.Web.Services.CrmStatus
                                     ICrmStatusService
     {
         public CrmStatusService(IHttpService httpService,
-                                ILogger<BaseService> logger) : base(httpService, logger)
+                                ILogger<BaseService> logger) : base(httpService,
+                                                                    logger)
         {
         }
 
         #region ICrmStatusService Members
+
+        public async Task<IEnumerable<CrmStatusModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<CrmStatusModel>>(ApiUrl.CRM_STATUS_GET_ALL,
+                                                                                      null,
+                                                                                      HttpMethod.Get,
+                                                                                      true);
+
+                if (response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
 
         public async Task<CrmStatusListModel> GetByPaging(CrmStatusSearchModel request)
         {
@@ -39,6 +63,18 @@ namespace Pelo.v2.Web.Services.CrmStatus
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.CRM_STATUS_GET_BY_PAGING,
                                             request.Name,
@@ -65,7 +101,6 @@ namespace Pelo.v2.Web.Services.CrmStatus
                                                                                      Name = c.Name,
                                                                                      Color = c.Color,
                                                                                      IsSendSms = c.IsSendSms,
-                                                                                     SmsContent = c.SmsContent,
                                                                                      PageSize = request.PageSize,
                                                                                      PageSizeOptions = request.AvailablePageSizes
                                                                              })
