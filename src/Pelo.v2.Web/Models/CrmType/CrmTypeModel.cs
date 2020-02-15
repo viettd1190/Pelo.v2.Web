@@ -12,10 +12,10 @@ namespace Pelo.v2.Web.Models.CrmType
             }
         }
 
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public int Id { get; set; }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }        
 
         [JsonProperty("PageSize")]

@@ -1,10 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Routing
-@using Pelo.v2.Web.Models.CrmStatus
+@using Pelo.v2.Web.Models.CrmPriority
 @using Pelo.v2.Web.Models.Datatables
 @using Pelo.v2.Web.Models.Datatables.Render
-@model Pelo.v2.Web.Models.CrmStatus.CrmStatusSearchModel
+@model Pelo.v2.Web.Models.CrmPriority.CrmPrioritySearchModel
 @{
-  ViewBag.Title = "Danh sách trạng thái CRM";
+  ViewBag.Title = "Danh sách mức độ khẩn cấp CRM";
   Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -29,18 +29,18 @@
     <div class="col-xl-12 dahsboard-column">
         <section class="box-typical box-typical-dashboard panel panel-default scrollable">
             <header class="box-typical-header panel-heading">
-                <h3 class="panel-title">Danh sách trạng thái CRM</h3>
+                <h3 class="panel-title">Danh sách mức độ khẩn cấp CRM</h3>
             </header>
             <div class="box-typical-body panel-body">
                 <div class="row" style="padding:15px;">
                     <div class="col-lg-12">
                         <fieldset class="form-group">
-                            <label class="form-label semibold" for="Name">Tên trạng thái CRM</label>
-                            <input asp-for="Name" class="form-control" type="text" placeholder="Tên trạng thái"/>
+                            <label class="form-label semibold" for="Name">Tên mức độ</label>
+                            <input asp-for="Name" class="form-control" type="text" placeholder="Tên mức độ"/>
                         </fieldset>
                     </div>
                     <div class="col-xs-12">
-                        <button class="btn btn-primary" id="search-crmStatus">Tìm kiếm</button>
+                        <button class="btn btn-primary" id="search-crmPriority">Tìm kiếm</button>
                         <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
                     </div>
                 </div>
@@ -53,37 +53,32 @@
     <div class="card-block">
         @await Html.PartialAsync("Table",new DataTablesModel
    {
-       Name="crmStatus-grid",
-       UrlRead = new DataUrl("GetList","CrmStatus",null),
-       UrlDelete = new DataUrl("Delete","CrmStatus",null),
-       SearchButtonId = "search-crmStatus",
+       Name="crmPriority-grid",
+       UrlRead = new DataUrl("GetList","CrmPriority",null),
+       UrlDelete = new DataUrl("Delete","CrmPriority",null),
+       SearchButtonId = "search-crmPriority",
        Filters = new List<FilterParameter> {
                                                    new FilterParameter(nameof(Model.Name)),
                                            },
        ColumnCollection = new List<ColumnProperty> {
-                                                           new ColumnProperty(nameof(CrmStatusModel.Name))
+                                                           new ColumnProperty(nameof(CrmPriorityModel.Name))
                                                            {
                                                                    Title = "Tên"
                                                            },
-                                                           new ColumnProperty(nameof(CrmStatusModel.Color))
+                                                           new ColumnProperty(nameof(CrmPriorityModel.Color))
                                                            {
                                                                    Title = "Màu sắc",
                                                                    Render = new RenderCustom("displayColor")
                                                            },
-                                                           new ColumnProperty(nameof(CrmStatusModel.IsSendSms))
-                                                           {
-                                                                   Title = "Gửi SMS khi thay đổi trạng thái",
-                                                                   Render = new RenderCheckBox("IsSendSms")
-                                                           },
-                                                           new ColumnProperty(nameof(CrmStatusModel.Id))
+                                                           new ColumnProperty(nameof(CrmPriorityModel.Id))
                                                            {
                                                                    Title = "",
                                                                    Width = "40",
                                                                    Orderable = false,
                                                                    ClassName =  NopColumnClassDefaults.Button,
-                                                                   Render = new RenderButtonEdit(new DataUrl("CrmStatus/Edit"))
+                                                                   Render = new RenderButtonEdit(new DataUrl("CrmPriority/Edit"))
                                                            },
-                                                           new ColumnProperty(nameof(CrmStatusModel.Id))
+                                                           new ColumnProperty(nameof(CrmPriorityModel.Id))
                                                            {
                                                                    Title = "",
                                                                    Width = "40",

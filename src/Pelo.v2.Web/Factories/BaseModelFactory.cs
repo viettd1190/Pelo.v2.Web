@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pelo.v2.Web.Services.Branch;
+using Pelo.v2.Web.Services.CrmPriority;
 using Pelo.v2.Web.Services.CrmStatus;
+using Pelo.v2.Web.Services.CrmType;
 using Pelo.v2.Web.Services.CustomerGroup;
+using Pelo.v2.Web.Services.CustomerSource;
 using Pelo.v2.Web.Services.CustomerVip;
 using Pelo.v2.Web.Services.Department;
 using Pelo.v2.Web.Services.Manufacturer;
@@ -175,11 +178,50 @@ namespace Pelo.v2.Web.Factories
         Task PrepareCrmStatuses(IList<SelectListItem> items,
                                 bool withSpecialDefaultItem = true,
                                 string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all crm priorities
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareCrmPriorities(IList<SelectListItem> items,
+                                  bool withSpecialDefaultItem = true,
+                                  string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all crm types
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareCrmTypes(IList<SelectListItem> items,
+                             bool withSpecialDefaultItem = true,
+                             string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all customer sources
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareCustomerSources(IList<SelectListItem> items,
+                                    bool withSpecialDefaultItem = true,
+                                    string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
     {
         private readonly IBranchService _branchService;
+
+        private readonly ICrmPriorityService _crmPriorityService;
+
+        private readonly ICrmStatusService _crmStatusService;
+
+        private readonly ICrmTypeService _crmTypeService;
 
         private readonly ICustomerGroupService _customerGroupService;
 
@@ -205,7 +247,7 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IWardService _wardService;
 
-        private readonly ICrmStatusService _crmStatusService;
+        private readonly ICustomerSourceService _customerSourceService;
 
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
@@ -220,7 +262,10 @@ namespace Pelo.v2.Web.Factories
                                 IProductStatusService productStatusService,
                                 IManufacturerService manufacturerService,
                                 IProductService productService,
-                                ICrmStatusService crmStatusService)
+                                ICrmStatusService crmStatusService,
+                                ICrmPriorityService crmPriorityService,
+                                ICrmTypeService crmTypeService,
+                                ICustomerSourceService customerSourceService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -236,6 +281,9 @@ namespace Pelo.v2.Web.Factories
             _manufacturerService = manufacturerService;
             _productService = productService;
             _crmStatusService = crmStatusService;
+            _crmPriorityService = crmPriorityService;
+            _crmTypeService = crmTypeService;
+            _customerSourceService = customerSourceService;
         }
 
         #region IBaseModelFactory Members
@@ -584,6 +632,78 @@ namespace Pelo.v2.Web.Factories
                           {
                                   Value = crmStatus.Id.ToString(),
                                   Text = $"{crmStatus.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareCrmPriorities(IList<SelectListItem> items,
+                                               bool withSpecialDefaultItem = true,
+                                               string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available crm priorities
+            var avaiableCrmPriorities = await _crmPriorityService.GetAll();
+            foreach (var crmPriority in avaiableCrmPriorities)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = crmPriority.Id.ToString(),
+                                  Text = $"{crmPriority.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareCrmTypes(IList<SelectListItem> items,
+                                          bool withSpecialDefaultItem = true,
+                                          string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available crm types
+            var avaiableCrmTypes = await _crmTypeService.GetAll();
+            foreach (var crmType in avaiableCrmTypes)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = crmType.Id.ToString(),
+                                  Text = $"{crmType.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareCustomerSources(IList<SelectListItem> items,
+                                                 bool withSpecialDefaultItem = true,
+                                                 string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available customer sources
+            var avaiableCustomerSources = await _customerSourceService.GetAll();
+            foreach (var customerSource in avaiableCustomerSources)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = customerSource.Id.ToString(),
+                                  Text = $"{customerSource.Name}"
                           });
             }
 

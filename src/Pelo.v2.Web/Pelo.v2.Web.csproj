@@ -5,6 +5,13 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Services\Crm\**" />
+    <Content Remove="Services\Crm\**" />
+    <EmbeddedResource Remove="Services\Crm\**" />
+    <None Remove="Services\Crm\**" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.0" />
@@ -24,7 +31,6 @@
     <Folder Include="Models\TaskStatusInRole\" />
     <Folder Include="Models\WarrantyStatusInRole\" />
     <Folder Include="Models\Warranty\" />
-    <Folder Include="Services\Crm\" />
     <Folder Include="Services\InvoiceStatusInRole\" />
     <Folder Include="Services\ReceiptStatusInRole\" />
     <Folder Include="Services\TaskStatusInRole\" />

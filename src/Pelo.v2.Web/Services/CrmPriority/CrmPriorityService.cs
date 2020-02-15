@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Pelo.v2.Web.Services.CrmPriority
 {
     public interface ICrmPriorityService
     {
+        Task<IEnumerable<CrmPriorityModel>> GetAll();
+
         Task<CrmPriorityListModel> GetByPaging(CrmPrioritySearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
@@ -29,6 +32,26 @@ namespace Pelo.v2.Web.Services.CrmPriority
 
         #region ICrmPriorityService Members
 
+        public async Task<IEnumerable<CrmPriorityModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<CrmPriorityModel>>(ApiUrl.CRM_PRIORITY_GET_ALL,
+                                                                                   null,
+                                                                                   HttpMethod.Get,
+                                                                                   true);
+
+                if (response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
         public async Task<CrmPriorityListModel> GetByPaging(CrmPrioritySearchModel request)
         {
             try
@@ -39,6 +62,18 @@ namespace Pelo.v2.Web.Services.CrmPriority
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if (request.Columns != null
+                        && request.Columns.Any()
+                        && request.Order != null
+                        && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.CRM_PRIORITY_GET_BY_PAGING,
                                             request.Name,
@@ -63,6 +98,7 @@ namespace Pelo.v2.Web.Services.CrmPriority
                                                                              {
                                                                                      Id = c.Id,
                                                                                      Name = c.Name,
+                                                                                     Color=c.Color,
                                                                                      PageSize = request.PageSize,
                                                                                      PageSizeOptions = request.AvailablePageSizes
                                                                              })

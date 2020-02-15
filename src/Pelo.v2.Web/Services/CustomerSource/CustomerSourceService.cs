@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Pelo.v2.Web.Services.CustomerSource
 {
     public interface ICustomerSourceService
     {
+        Task<IEnumerable<CustomerSourceModel>> GetAll();
+
         Task<CustomerSourceListModel> GetByPaging(CustomerSourceSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
@@ -29,6 +32,26 @@ namespace Pelo.v2.Web.Services.CustomerSource
 
         #region ICustomerSourceService Members
 
+        public async Task<IEnumerable<CustomerSourceModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<CustomerSourceModel>>(ApiUrl.CUSTOMER_SOURCE_GET_ALL,
+                                                                                      null,
+                                                                                      HttpMethod.Get,
+                                                                                      true);
+
+                if (response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
         public async Task<CustomerSourceListModel> GetByPaging(CustomerSourceSearchModel request)
         {
             try
@@ -39,6 +62,18 @@ namespace Pelo.v2.Web.Services.CustomerSource
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if (request.Columns != null
+                        && request.Columns.Any()
+                        && request.Order != null
+                        && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.CUSTOMER_SOURCE_GET_BY_PAGING,
                                             request.Name,
