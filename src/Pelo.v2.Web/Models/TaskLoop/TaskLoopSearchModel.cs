@@ -3,7 +3,5 @@
     public class TaskLoopSearchModel : BaseSearchModel
     {
         public string Name { get; set; }
-
-        public string ColumnOrder{ get; set; }
     }
 }

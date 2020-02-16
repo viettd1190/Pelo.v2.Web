@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 
-namespace Pelo.v2.Web.Models.Paymethod
+namespace Pelo.v2.Web.Models.PayMethod
 {
-    public class PaymethodModel
+    public class PayMethodModel
     {
-        public PaymethodModel()
+        public PayMethodModel()
         {
             if(PageSize < 1)
             {
@@ -12,10 +12,10 @@ namespace Pelo.v2.Web.Models.Paymethod
             }
         }
 
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public int Id { get; set; }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }        
 
         [JsonProperty("PageSize")]

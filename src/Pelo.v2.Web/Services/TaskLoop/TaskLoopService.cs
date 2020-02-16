@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,31 +15,66 @@ namespace Pelo.v2.Web.Services.TaskLoop
 {
     public interface ITaskLoopService
     {
+        Task<IEnumerable<TaskLoopModel>> GetAll();
+
         Task<TaskLoopListModel> GetByPaging(TaskLoopSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
     }
 
     public class TaskLoopService : BaseService,
-                                      ITaskLoopService
+                                   ITaskLoopService
     {
         public TaskLoopService(IHttpService httpService,
-                                  ILogger<BaseService> logger) : base(httpService, logger)
+                               ILogger<BaseService> logger) : base(httpService,
+                                                                   logger)
         {
         }
 
         #region ITaskLoopService Members
 
+        public async Task<IEnumerable<TaskLoopModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<TaskLoopModel>>(ApiUrl.TASK_LOOP_GET_ALL,
+                                                                                  null,
+                                                                                  HttpMethod.Get,
+                                                                                  true);
+
+                if(response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
         public async Task<TaskLoopListModel> GetByPaging(TaskLoopSearchModel request)
         {
             try
             {
-                var columnOrder = "name";
+                var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.TASK_LOOP_GET_BY_PAGING,
                                             request.Name,
@@ -48,27 +84,27 @@ namespace Pelo.v2.Web.Services.TaskLoop
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetTaskLoopPagingResponse>>(url,
-                                                                                                    null,
-                                                                                                    HttpMethod.Get,
-                                                                                                    true);
+                                                                                                 null,
+                                                                                                 HttpMethod.Get,
+                                                                                                 true);
 
-                    if (response.IsSuccess)
+                    if(response.IsSuccess)
                         return new TaskLoopListModel
-                        {
-                            Draw = request.Draw,
-                            RecordsFiltered = response.Data.TotalCount,
-                            Total = response.Data.TotalCount,
-                            RecordsTotal = response.Data.TotalCount,
-                            Data = response.Data.Data.Select(c => new TaskLoopModel
-                            {
-                                Id = c.Id,
-                                Name = c.Name,
-                                DayCount = c.DayCount,
-                                SortOrder = c.SortOrder,
-                                PageSize = request.PageSize,
-                                PageSizeOptions = request.AvailablePageSizes
-                            })
-                        };
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new TaskLoopModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Name = c.Name,
+                                                                                     DayCount = c.DayCount,
+                                                                                     SortOrder = c.SortOrder,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
 
                     throw new PeloException(response.Message);
                 }
@@ -85,7 +121,7 @@ namespace Pelo.v2.Web.Services.TaskLoop
         {
             try
             {
-                var url = string.Format(ApiUrl.TASK_LOOP_GET_ALL,
+                var url = string.Format(ApiUrl.TASK_LOOP_DELETE,
                                         id);
                 var response = await HttpService.Send<bool>(url,
                                                             null,

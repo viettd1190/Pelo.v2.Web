@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,31 +15,66 @@ namespace Pelo.v2.Web.Services.TaskType
 {
     public interface ITaskTypeService
     {
+        Task<IEnumerable<TaskTypeModel>> GetAll();
+
         Task<TaskTypeListModel> GetByPaging(TaskTypeSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
     }
 
     public class TaskTypeService : BaseService,
-                                      ITaskTypeService
+                                   ITaskTypeService
     {
         public TaskTypeService(IHttpService httpService,
-                                  ILogger<BaseService> logger) : base(httpService, logger)
+                               ILogger<BaseService> logger) : base(httpService,
+                                                                   logger)
         {
         }
 
         #region ITaskTypeService Members
 
+        public async Task<IEnumerable<TaskTypeModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<TaskTypeModel>>(ApiUrl.TASK_TYPE_GET_ALL,
+                                                                                  null,
+                                                                                  HttpMethod.Get,
+                                                                                  true);
+
+                if(response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
         public async Task<TaskTypeListModel> GetByPaging(TaskTypeSearchModel request)
         {
             try
             {
-                var columnOrder = "name";
+                var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.TASK_TYPE_GET_BY_PAGING,
                                             request.Name,
@@ -48,26 +84,26 @@ namespace Pelo.v2.Web.Services.TaskType
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetTaskTypePagingResponse>>(url,
-                                                                                                    null,
-                                                                                                    HttpMethod.Get,
-                                                                                                    true);
+                                                                                                 null,
+                                                                                                 HttpMethod.Get,
+                                                                                                 true);
 
-                    if (response.IsSuccess)
+                    if(response.IsSuccess)
                         return new TaskTypeListModel
-                        {
-                            Draw = request.Draw,
-                            RecordsFiltered = response.Data.TotalCount,
-                            Total = response.Data.TotalCount,
-                            RecordsTotal = response.Data.TotalCount,
-                            Data = response.Data.Data.Select(c => new TaskTypeModel
-                            {
-                                Id = c.Id,
-                                Name = c.Name,
-                                SortOrder = c.SortOrder,
-                                PageSize = request.PageSize,
-                                PageSizeOptions = request.AvailablePageSizes
-                            })
-                        };
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new TaskTypeModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Name = c.Name,
+                                                                                     SortOrder = c.SortOrder,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
 
                     throw new PeloException(response.Message);
                 }

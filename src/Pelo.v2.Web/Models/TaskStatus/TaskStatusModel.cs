@@ -12,23 +12,20 @@ namespace Pelo.v2.Web.Models.TaskStatus
             }
         }
 
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public int Id { get; set; }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("sort_order")]
+        [JsonProperty("SortOrder")]
         public int SortOrder { get; set; }
 
-        [JsonProperty("color")]
+        [JsonProperty("Color")]
         public string Color { get; set; }
 
-        [JsonProperty("send_sms")]
+        [JsonProperty("IsSendSms")]
         public bool IsSendSms{ get; set; }
-
-        [JsonProperty("sms_content")]
-        public string SmsContent { get; set; }
 
         [JsonProperty("PageSize")]
         public int PageSize { get; set; }

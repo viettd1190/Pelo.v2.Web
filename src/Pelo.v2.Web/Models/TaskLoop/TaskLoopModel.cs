@@ -12,16 +12,16 @@ namespace Pelo.v2.Web.Models.TaskLoop
             }
         }
 
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public int Id { get; set; }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("day_count")]
+        [JsonProperty("DayCount")]
         public int DayCount { get; set; }
 
-        [JsonProperty("sort_order")]
+        [JsonProperty("SortOrder")]
         public int SortOrder { get; set; }
 
         [JsonProperty("PageSize")]

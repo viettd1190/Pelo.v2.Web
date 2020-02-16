@@ -1,8 +1,8 @@
 ﻿using Pelo.v2.Web.Models.Datatables;
 
-namespace Pelo.v2.Web.Models.Paymethod
+namespace Pelo.v2.Web.Models.PayMethod
 {
-    public class PaymethodListModel : BasePagedListModel<PaymethodModel>
+    public class PayMethodListModel : BasePagedListModel<PayMethodModel>
     {
         
     }

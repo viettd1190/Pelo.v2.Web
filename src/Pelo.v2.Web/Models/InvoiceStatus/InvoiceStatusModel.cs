@@ -12,20 +12,17 @@ namespace Pelo.v2.Web.Models.InvoiceStatus
             }
         }
 
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public int Id { get; set; }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("color")]
+        [JsonProperty("Color")]
         public string Color { get; set; }
 
-        [JsonProperty("send_sms")]
+        [JsonProperty("IsSendSms")]
         public bool IsSendSms{ get; set; }
-
-        [JsonProperty("sms_content")]
-        public string SmsContent { get; set; }
 
         [JsonProperty("PageSize")]
         public int PageSize { get; set; }

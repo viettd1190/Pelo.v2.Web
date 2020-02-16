@@ -3,7 +3,5 @@
     public class TaskTypeSearchModel : BaseSearchModel
     {
         public string Name { get; set; }
-
-        public string ColumnOrder{ get; set; }
     }
 }

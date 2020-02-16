@@ -3,7 +3,5 @@
     public class TaskPrioritySearchModel : BaseSearchModel
     {
         public string Name { get; set; }
-
-        public string ColumnOrder{ get; set; }
     }
 }

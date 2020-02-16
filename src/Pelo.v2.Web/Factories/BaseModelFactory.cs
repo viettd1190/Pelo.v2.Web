@@ -10,13 +10,19 @@ using Pelo.v2.Web.Services.CustomerGroup;
 using Pelo.v2.Web.Services.CustomerSource;
 using Pelo.v2.Web.Services.CustomerVip;
 using Pelo.v2.Web.Services.Department;
+using Pelo.v2.Web.Services.InvoiceStatus;
 using Pelo.v2.Web.Services.Manufacturer;
+using Pelo.v2.Web.Services.PayMethod;
 using Pelo.v2.Web.Services.Product;
 using Pelo.v2.Web.Services.ProductGroup;
 using Pelo.v2.Web.Services.ProductStatus;
 using Pelo.v2.Web.Services.ProductUnit;
 using Pelo.v2.Web.Services.Province;
 using Pelo.v2.Web.Services.Role;
+using Pelo.v2.Web.Services.TaskLoop;
+using Pelo.v2.Web.Services.TaskPriority;
+using Pelo.v2.Web.Services.TaskStatus;
+using Pelo.v2.Web.Services.TaskType;
 using Pelo.v2.Web.Services.User;
 
 namespace Pelo.v2.Web.Factories
@@ -214,13 +220,79 @@ namespace Pelo.v2.Web.Factories
                                     string defaultItemText = null);
 
         /// <summary>
-        /// Get all users
+        ///     Get all users
         /// </summary>
         /// <param name="items"></param>
         /// <param name="withSpecialDefaultItem"></param>
         /// <param name="defaultItemText"></param>
         /// <returns></returns>
         Task PrepareUsers(IList<SelectListItem> items,
+                          bool withSpecialDefaultItem = true,
+                          string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all task types
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareTaskTypes(IList<SelectListItem> items,
+                              bool withSpecialDefaultItem = true,
+                              string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all task statuses
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareTaskStatuses(IList<SelectListItem> items,
+                                 bool withSpecialDefaultItem = true,
+                                 string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all task priorities
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareTaskPriorities(IList<SelectListItem> items,
+                                   bool withSpecialDefaultItem = true,
+                                   string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all task loops
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareTaskLoops(IList<SelectListItem> items,
+                              bool withSpecialDefaultItem = true,
+                              string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all pay methods
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PreparePayMethods(IList<SelectListItem> items,
+                               bool withSpecialDefaultItem = true,
+                               string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all invoice statuses
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareInvoiceStatuses(IList<SelectListItem> items,
                                     bool withSpecialDefaultItem = true,
                                     string defaultItemText = null);
     }
@@ -236,6 +308,8 @@ namespace Pelo.v2.Web.Factories
         private readonly ICrmTypeService _crmTypeService;
 
         private readonly ICustomerGroupService _customerGroupService;
+
+        private readonly ICustomerSourceService _customerSourceService;
 
         private readonly ICustomerVipService _customerVipService;
 
@@ -257,11 +331,21 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IRoleService _roleService;
 
+        private readonly ITaskLoopService _taskLoopService;
+
+        private readonly ITaskPriorityService _taskPriorityService;
+
+        private readonly ITaskStatusService _taskStatusService;
+
+        private readonly ITaskTypeService _taskTypeService;
+
+        private readonly IUserService _userService;
+
         private readonly IWardService _wardService;
 
-        private readonly ICustomerSourceService _customerSourceService;
+        private readonly IInvoiceStatusService _invoiceStatusService;
 
-        private IUserService _userService;
+        private readonly IPayMethodService _payMethodService;
 
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
@@ -280,7 +364,13 @@ namespace Pelo.v2.Web.Factories
                                 ICrmPriorityService crmPriorityService,
                                 ICrmTypeService crmTypeService,
                                 ICustomerSourceService customerSourceService,
-                                IUserService userService)
+                                IUserService userService,
+                                ITaskTypeService taskTypeService,
+                                ITaskStatusService taskStatusService,
+                                ITaskPriorityService taskPriorityService,
+                                ITaskLoopService taskLoopService,
+                                IPayMethodService payMethodService,
+                                IInvoiceStatusService invoiceStatusService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -300,6 +390,12 @@ namespace Pelo.v2.Web.Factories
             _crmTypeService = crmTypeService;
             _customerSourceService = customerSourceService;
             _userService = userService;
+            _taskTypeService = taskTypeService;
+            _taskStatusService = taskStatusService;
+            _taskPriorityService = taskPriorityService;
+            _taskLoopService = taskLoopService;
+            _payMethodService = payMethodService;
+            _invoiceStatusService = invoiceStatusService;
         }
 
         #region IBaseModelFactory Members
@@ -730,10 +826,10 @@ namespace Pelo.v2.Web.Factories
         }
 
         public async Task PrepareUsers(IList<SelectListItem> items,
-                                 bool withSpecialDefaultItem = true,
-                                 string defaultItemText = null)
+                                       bool withSpecialDefaultItem = true,
+                                       string defaultItemText = null)
         {
-            if (items == null)
+            if(items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available customer sources
@@ -744,6 +840,150 @@ namespace Pelo.v2.Web.Factories
                           {
                                   Value = user.Id.ToString(),
                                   Text = $"{user.DisplayName}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareTaskTypes(IList<SelectListItem> items,
+                                           bool withSpecialDefaultItem = true,
+                                           string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available task types
+            var avaiableTaskTypes = await _taskTypeService.GetAll();
+            foreach (var taskType in avaiableTaskTypes)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = taskType.Id.ToString(),
+                                  Text = $"{taskType.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareTaskStatuses(IList<SelectListItem> items,
+                                              bool withSpecialDefaultItem = true,
+                                              string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available taskStatus
+            var avaiableTaskStatuses = await _taskStatusService.GetAll();
+            foreach (var taskStatus in avaiableTaskStatuses)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = taskStatus.Id.ToString(),
+                                  Text = $"{taskStatus.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareTaskPriorities(IList<SelectListItem> items,
+                                                bool withSpecialDefaultItem = true,
+                                                string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available taskPriority
+            var avaiableTaskPriorities = await _taskPriorityService.GetAll();
+            foreach (var taskPriority in avaiableTaskPriorities)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = taskPriority.Id.ToString(),
+                                  Text = $"{taskPriority.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareTaskLoops(IList<SelectListItem> items,
+                                           bool withSpecialDefaultItem = true,
+                                           string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available task loops
+            var avaiableTaskLoops = await _taskLoopService.GetAll();
+            foreach (var taskLoop in avaiableTaskLoops)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = taskLoop.Id.ToString(),
+                                  Text = $"{taskLoop.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PreparePayMethods(IList<SelectListItem> items,
+                                            bool withSpecialDefaultItem = true,
+                                            string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available pay methods
+            var avaiablePayMethods = await _payMethodService.GetAll();
+            foreach (var payMethod in avaiablePayMethods)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = payMethod.Id.ToString(),
+                                  Text = $"{payMethod.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareInvoiceStatuses(IList<SelectListItem> items,
+                                                 bool withSpecialDefaultItem = true,
+                                                 string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available invoice statuses
+            var avaiableInvoiceStatuses = await _invoiceStatusService.GetAll();
+            foreach (var invoiceStatus in avaiableInvoiceStatuses)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = invoiceStatus.Id.ToString(),
+                                  Text = $"{invoiceStatus.Name}"
                           });
             }
 

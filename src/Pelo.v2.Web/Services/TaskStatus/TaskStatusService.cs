@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,31 +15,66 @@ namespace Pelo.v2.Web.Services.TaskStatus
 {
     public interface ITaskStatusService
     {
+        Task<IEnumerable<TaskStatusModel>> GetAll();
+
         Task<TaskStatusListModel> GetByPaging(TaskStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
     }
 
     public class TaskStatusService : BaseService,
-                                    ITaskStatusService
+                                     ITaskStatusService
     {
         public TaskStatusService(IHttpService httpService,
-                                ILogger<BaseService> logger) : base(httpService, logger)
+                                 ILogger<BaseService> logger) : base(httpService,
+                                                                     logger)
         {
         }
 
         #region ITaskStatusService Members
 
+        public async Task<IEnumerable<TaskStatusModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<TaskStatusModel>>(ApiUrl.TASK_STATUS_GET_ALL,
+                                                                                    null,
+                                                                                    HttpMethod.Get,
+                                                                                    true);
+
+                if(response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
         public async Task<TaskStatusListModel> GetByPaging(TaskStatusSearchModel request)
         {
             try
             {
-                var columnOrder = "name";
+                var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
                 if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.TASK_STATUS_GET_BY_PAGING,
                                             request.Name,
@@ -48,29 +84,28 @@ namespace Pelo.v2.Web.Services.TaskStatus
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetTaskStatusPagingResponse>>(url,
-                                                                                                  null,
-                                                                                                  HttpMethod.Get,
-                                                                                                  true);
+                                                                                                   null,
+                                                                                                   HttpMethod.Get,
+                                                                                                   true);
 
-                    if (response.IsSuccess)
+                    if(response.IsSuccess)
                         return new TaskStatusListModel
-                        {
-                            Draw = request.Draw,
-                            RecordsFiltered = response.Data.TotalCount,
-                            Total = response.Data.TotalCount,
-                            RecordsTotal = response.Data.TotalCount,
-                            Data = response.Data.Data.Select(c => new TaskStatusModel
-                            {
-                                Id = c.Id,
-                                Name = c.Name,
-                                Color = c.Color,
-                                SortOrder = c.SortOrder,
-                                IsSendSms = c.IsSendSms,
-                                SmsContent = c.SmsContent,
-                                PageSize = request.PageSize,
-                                PageSizeOptions = request.AvailablePageSizes
-                            })
-                        };
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new TaskStatusModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Name = c.Name,
+                                                                                     Color = c.Color,
+                                                                                     IsSendSms = c.IsSendSms,
+                                                                                     SortOrder = c.SortOrder,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
 
                     throw new PeloException(response.Message);
                 }

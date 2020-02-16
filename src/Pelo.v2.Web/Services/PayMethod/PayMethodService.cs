@@ -8,9 +8,9 @@ using Pelo.Common.Dtos.PayMethod;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
-using Pelo.v2.Web.Models.Branch;
-using Pelo.v2.Web.Models.Paymethod;
+using Pelo.v2.Web.Models.PayMethod;
 using Pelo.v2.Web.Services.Http;
+using PayMethodModel = Pelo.v2.Web.Models.PayMethod.PayMethodModel;
 
 namespace Pelo.v2.Web.Services.PayMethod
 {
@@ -18,13 +18,15 @@ namespace Pelo.v2.Web.Services.PayMethod
     {
         Task<IEnumerable<PayMethodSimpleModel>> GetAll();
 
-        Task<PaymethodListModel> GetByPaging(PaymethodSearchModel request);
+        Task<PayMethodListModel> GetByPaging(PayMethodSearchModel request);
     }
 
-    public class PayMethodService : BaseService, IPayMethodService
+    public class PayMethodService : BaseService,
+                                    IPayMethodService
     {
         public PayMethodService(IHttpService httpService,
-                                ILogger<BaseService> logger) : base(httpService, logger)
+                                ILogger<BaseService> logger) : base(httpService,
+                                                                    logger)
         {
         }
 
@@ -39,7 +41,7 @@ namespace Pelo.v2.Web.Services.PayMethod
                                                                                          HttpMethod.Get,
                                                                                          true);
 
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                     return response.Data;
 
                 throw new PeloException(response.Message);
@@ -50,46 +52,60 @@ namespace Pelo.v2.Web.Services.PayMethod
             }
         }
 
-        public async Task<PaymethodListModel> GetByPaging(PaymethodSearchModel request)
+        public async Task<PayMethodListModel> GetByPaging(PayMethodSearchModel request)
         {
             try
             {
-                var start = 1;
+                if(request != null)
+                {
+                    var start = request.Start / request.Length + 1;
+                    var columnOrder = "Name";
+                    var sortDir = "ASC";
 
-                if (request != null) start = request.Start / request.Length + 1;
-
-                var columnOrder = request.ColumnOrder ?? "name";
-                var sortDir = "ASC";
-
-                var url = string.Format(ApiUrl.PAY_METHOD_GET_BY_PAGING,
-                                        request.Name,
-                                        columnOrder,
-                                        sortDir,
-                                        start,
-                                        request?.Length ?? 10);
-
-                var response = await HttpService.Send<PageResult<GetPayMethodPagingResponse>>(url,
-                                                                                              null,
-                                                                                              HttpMethod.Get,
-                                                                                              true);
-
-                if (response.IsSuccess)
-                    return new PaymethodListModel
+                    if(request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
                     {
-                        Draw = request.Draw,
-                        RecordsFiltered = response.Data.TotalCount,
-                        Total = response.Data.TotalCount,
-                        RecordsTotal = response.Data.TotalCount,
-                        Data = response.Data.Data.Select(c => new PaymethodModel
-                        {
-                            Id = c.Id,
-                            Name = c.Name,
-                            PageSize = request.PageSize,
-                            PageSizeOptions = request.AvailablePageSizes
-                        })
-                    };
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
-                throw new PeloException(response.Message);
+                    var url = string.Format(ApiUrl.PAY_METHOD_GET_BY_PAGING,
+                                            request.Name,
+                                            columnOrder,
+                                            sortDir,
+                                            start,
+                                            request?.Length ?? 10);
+
+                    var response = await HttpService.Send<PageResult<GetPayMethodPagingResponse>>(url,
+                                                                                                  null,
+                                                                                                  HttpMethod.Get,
+                                                                                                  true);
+
+                    if(response.IsSuccess)
+                        return new PayMethodListModel
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new PayMethodModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Name = c.Name,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
+
+                    throw new PeloException(response.Message);
+                }
+
+                throw new PeloException("Request is null");
             }
             catch (Exception exception)
             {
