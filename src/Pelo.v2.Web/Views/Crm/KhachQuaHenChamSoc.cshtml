@@ -1,0 +1,233 @@
+﻿@using Microsoft.AspNetCore.Routing
+@using Pelo.v2.Web.Models.Crm
+@using Pelo.v2.Web.Models.Datatables
+@using Pelo.v2.Web.Models.Datatables.Render
+@model Pelo.v2.Web.Models.Crm.CrmKhachQuaHenChamSocSearchModel
+@{
+    ViewBag.Title = "Danh sách CRM khách quá hẹn chăm sóc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section cssPlugin{
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height: auto !important;
+        }
+    </style>
+}
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+    <script src="~/startui/js/lib/moment/moment.min.js"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12 dahsboard-column">
+        <section class="box-typical box-typical-dashboard panel panel-default scrollable">
+            <header class="box-typical-header panel-heading">
+                <h3 class="panel-title">Danh sách khách quá hẹn chăm sóc</h3>
+            </header>
+        </section>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-block">
+        @await Html.PartialAsync("Table", new DataTablesModel
+   {
+       Name = "khachtoihencanchamsoc-grid",
+       UrlRead = new DataUrl("GetKhachQuaHenChamSoc", "Crm", null),
+       Ordering = false,
+       ColumnCollection = new List<ColumnProperty> {
+                                                           new ColumnProperty(nameof(CrmModel.CrmStatus))
+                                                           {
+                                                                   Title = "Trạng thái",
+                                                                   Width = "150",
+                                                                   Render = new RenderCustom("displayCrmStatus")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.Code))
+                                                           {
+                                                                   Title = "Mã cơ hội",
+                                                                   Render = new RenderLink(new DataUrl("Crm/Detail","Id"))
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.CustomerName))
+                                                           {
+                                                                   Title = "Khách hàng",
+                                                                   Render = new RenderCustom("displayCustomer")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.Need))
+                                                           {
+                                                                   Title = "Nhu cầu",
+                                                                   Render = new RenderCustom("displayNeed")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.CrmPriority))
+                                                           {
+                                                                   Title = "Thông tin thêm",
+                                                                   Render = new RenderCustom("displayCrmPriority")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.UserCares))
+                                                           {
+                                                                   Title = "Phụ trách",
+                                                                   Render = new RenderCustom("displayUserCare")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.ContactDate))
+                                                           {
+                                                                   Title = "Ngày liên hệ",
+                                                                   Render = new RenderCustom("displayContactDate")
+                                                           },
+                                                           new ColumnProperty(nameof(CrmModel.DateCreated))
+                                                           {
+                                                                   Title = "Ngày tạo",
+                                                                   Render = new RenderCustom("displayDateCreated")
+                                                           }
+                                                   }
+   })
+    </div>
+</section>
+
+@section js{
+    <script>
+        $(document).ready(function() {
+            $('.panel').lobiPanel({
+                    sortable:false,
+                    draggable:false,
+                    resize:'none'
+                });
+        });
+        function displayCrmStatus(data,type,row,meta) {
+            return '<div style="text-align:center;margin:auto;"><span class="label" style="width:150px;background-color:'+
+                row.CrmStatusColor+
+                '">'+
+                row.CrmStatus+
+                '</span></div>';
+        }
+        function displayContactDate(data, type, row, meta) {
+            return '<div style="text-align:center;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
+        }
+        function displayDateCreated(data, type, row, meta) {
+            return '<div style="text-align:center;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
+        }
+        function displayUserCare(data, type, row, meta) {
+            var userCreated = '';
+
+            if(isNull(row.UserCreatedPhone)) {
+                userCreated='<span>Người tạo: <span style="font-weight:700;"><a href="tel:'+
+                    row.UserCreatedPhone+
+                    '">'+
+                    row.UserCreated+
+                    '</a></span></span><br/>';
+            } else {
+                userCreated='<span>Người tạo: <span style="font-weight:700;">'+
+                    row.UserCreated+
+                    '</span></span><br/>';
+            }
+            var userCares = '';
+            var condition='';
+            if(row.UserCares) {
+                if(row.UserCares.length>0) {
+                    for(var i=0;i<row.UserCares.length;i++) {
+                        userCares=userCares+
+                            condition+
+                            '<a href="tel:'+
+                            row.UserCares[i].phone+
+                            '">'+
+                            row.UserCares[i].name+
+                            '</a>';
+                        condition=', ';
+                    }
+                }
+            }
+            if(userCares) {
+                userCares='<span>Phụ trách: <span style="font-weight:700;">'+userCares+'</span></span><br/>';
+            }
+            return '<div style="padding:10px;">' + userCreated + userCares + '</div></div>';
+        }
+        function displayCrmPriority(data, type, row, meta) {
+            var crmPriority = '';
+            if (isNull(row.CrmPriority)) {
+                crmPriority = '<span>Mức độ khẩn cấp: <span style="font-weight:700;">' + row.CrmPriority + '</span></span><br/>';
+            }
+            var customerSource = '';
+            if (isNull(row.CustomerSource)) {
+                customerSource = '<span>Nguồn khách hàng: <span style="font-weight:700;">' +
+                    row.CustomerSource +
+                    '</span></span><br/>';
+            }
+            var crmType = '';
+            if (isNull(row.CrmType)) {
+                crmType = '<span>Kiểu chốt: <span style="font-weight:700;">' +
+                    row.CrmType +
+                    '</span></span><br/>';
+            }
+            visit = '<span>Đến cửa hàng: <span style="font-weight:700;">' + row.Visit + '</span></span><br/>';
+            return '<div style="padding:10px;">' + crmPriority + customerSource + crmType + visit + '</div></div>';
+        }
+        function displayNeed(data, type, row, meta) {
+            var need = '';
+            if(isNull(row.Need)) {
+                need = '<span>Nhu cầu: <span style="font-weight:700;">' + row.Need + '</span></span><br/>';
+            }
+            var description = '';
+            if(isNull(row.Description)) {
+                description='<span>Ghi chú: <span style="font-weight:700;">'+
+                    row.Description+
+                    '</span></span><br/>';
+            }
+            var productGroup = '';
+            if(isNull(row.ProductGroup)) {
+                productGroup='<span>Nhóm sản phẩm: <span style="font-weight:700;">'+
+                    row.ProductGroup+
+                    '</span></span><br/>';
+            }
+            return '<div style="padding:10px;">'+need+description+productGroup+'</div></div>';
+        }
+        function displayCustomer(data,type,row,meta) {
+            var customerName = '<span style="font-weight:600;font-size:16px;">' + data + '</span><br/>';
+            var phone = '<span><a href="tel:' + row.CustomerPhone1 + '">' + row.CustomerPhone1 + '</a></span><br/>';
+            var phone2 = '';
+            if (isNull(row.CustomerPhone2)) {
+                phone2 = '<span><a href="tel:' + row.CustomerPhone2 + '">' + row.CustomerPhone2 + '</a></span><br/>';
+            }
+            var phone3 = '';
+            if (isNull(row.CustomerPhone3)) {
+                phone3 = '<span><a href="tel:' + row.CustomerPhone3 + '">' + row.CustomerPhone3 + '</a></span><br/>';
+            }
+            var address = '';
+            if(isNull(row.CustomerAddress)) {
+                address = row.CustomerAddress;
+            }
+            if(isNull(row.Province)) {
+                address=address+', '+row.Ward+', '+row.District+', '+row.Province;
+            }
+            if(isNull(address)) {
+                address = '<span>Địa chỉ: <span style="font-weight:700;">' + address + '</span></span><br/>';
+            }
+            var customerGroup='';
+            if(isNull(row.CustomerGroup)) {
+                customerGroup='<span>Nhóm khách hàng: <span style="font-weight:700;">'+
+                    row.CustomerGroup+
+                    '</span></span><br/>';
+            }
+            var customerVip = '';
+            if(isNull(row.CustomerVip)) {
+                customerVip='<span>Mức độ thân thiết: <span style="font-weight:700;">'+
+                    row.CustomerVip+
+                    '</span></span><br/>';
+            }
+            return '<div style="padding:10px;">'+
+                customerName+
+                phone+
+                phone2+
+                phone3+
+                address+
+                customerGroup+
+                customerVip+
+                '</div>';
+        }
+    </script>
+}

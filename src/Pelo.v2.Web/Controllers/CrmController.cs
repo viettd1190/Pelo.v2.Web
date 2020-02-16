@@ -45,5 +45,61 @@ namespace Pelo.v2.Web.Controllers
             var result = await _crmService.GetByPaging(model);
             return Json(result);
         }
+
+        public async Task<IActionResult> KhachChuaXuLyTrongNgay()
+        {
+            var searchModel = new CrmKhachChuaXuLyTrongNgaySearchModel();
+
+            return View(searchModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetKhachChuaXuLyTrongNgay(CrmKhachChuaXuLyTrongNgaySearchModel model)
+        {
+            var result = await _crmService.KhachChuaXuLyTrongNgay(model);
+            return Json(result);
+        }
+
+        public async Task<IActionResult> KhachToiHenCanChamSoc()
+        {
+            var searchModel = new CrmKhachToiHenCanChamSocSearchModel();
+
+            return View(searchModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetKhachToiHenCanChamSoc(CrmKhachToiHenCanChamSocSearchModel model)
+        {
+            var result = await _crmService.KhachToiHenCanChamSoc(model);
+            return Json(result);
+        }
+
+        public async Task<IActionResult> KhachQuaHenChamSoc()
+        {
+            var searchModel = new CrmKhachQuaHenChamSocSearchModel();
+
+            return View(searchModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetKhachQuaHenChamSoc(CrmKhachQuaHenChamSocSearchModel model)
+        {
+            var result = await _crmService.KhachQuaHenChamSoc(model);
+            return Json(result);
+        }
+
+        public async Task<IActionResult> KhachToiHenNgayMai()
+        {
+            var searchModel = new CrmKhachToiHenNgayMaiSearchModel();
+
+            return View(searchModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetKhachToiHenNgayMai(CrmKhachToiHenNgayMaiSearchModel model)
+        {
+            var result = await _crmService.KhachToiHenNgayMai(model);
+            return Json(result);
+        }
     }
 }

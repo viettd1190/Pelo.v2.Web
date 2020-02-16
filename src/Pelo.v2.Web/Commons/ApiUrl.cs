@@ -241,6 +241,14 @@
 
         public const string CRM_COMMENT_UPDATE = BASE_API_URL + "/api/crm/comment";
 
+        public const string CRM_KHACH_CHUA_XU_LY_TRONG_NGAY = BASE_API_URL + "/api/crm/khach_chua_xu_ly_trong_ngay?page={0}&page_size={1}";
+
+        public const string CRM_KHACH_TOI_HEN_CAN_CHAM_SOC = BASE_API_URL + "/api/crm/khach_toi_hen_can_cham_soc?page={0}&page_size={1}";
+
+        public const string CRM_KHACH_QUA_HEN_CHAM_SOC = BASE_API_URL + "/api/crm/khach_qua_hen_cham_soc?page={0}&page_size={1}";
+
+        public const string CRM_KHACH_TOI_HEN_NGAY_MAI = BASE_API_URL + "/api/crm/khach_toi_hen_ngay_mai?page={0}&page_size={1}";
+
         #endregion
 
         #region Province / District / Ward
