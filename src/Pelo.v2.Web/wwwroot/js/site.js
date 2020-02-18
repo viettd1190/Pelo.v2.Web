@@ -291,3 +291,6 @@ var Util = {
 function displayAmount(data, type, row, meta) {
     return '<div style="text-align:right;padding-right:10px;">' + Util.number.format(data) + '</div>';
 }
+function displayDate(data, type, row, meta) {
+    return '<div style="text-align:center;">' + moment(data).format('DD-MM-YYYY hh:mm') + '</div>';
+}
