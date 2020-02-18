@@ -37,7 +37,6 @@
     <Folder Include="Views\ProductGroup\" />
     <Folder Include="Views\CustomerVip\" />
     <Folder Include="Views\CustomerGroup\" />
-    <Folder Include="Views\Customer\" />
   </ItemGroup>
 
 
