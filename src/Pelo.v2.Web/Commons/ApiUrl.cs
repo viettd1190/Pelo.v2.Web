@@ -420,7 +420,7 @@
 
         public const string RECEIPT_DESCRIPTION_DELETE = BASE_API_URL + "/api/receipt_description/{0}";
 
-        public const string GET_RECEIPT_DESCRIPTION_ID = BASE_API_URL + "/api/receipt_description/{0}";
+        public const string RECEIPT_DESCRIPTION_GET_BY_ID = BASE_API_URL + "/api/receipt_description/{0}";
         #endregion
 
         #region Warranty Status

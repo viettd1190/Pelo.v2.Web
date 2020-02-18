@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,31 +15,66 @@ namespace Pelo.v2.Web.Services.ReceiptStatus
 {
     public interface IReceiptStatusService
     {
+        Task<IEnumerable<ReceiptStatusModel>> GetAll();
+
         Task<ReceiptStatusListModel> GetByPaging(ReceiptStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
     }
 
     public class ReceiptStatusService : BaseService,
-                                    IReceiptStatusService
+                                     IReceiptStatusService
     {
         public ReceiptStatusService(IHttpService httpService,
-                                ILogger<BaseService> logger) : base(httpService, logger)
+                                 ILogger<BaseService> logger) : base(httpService,
+                                                                     logger)
         {
         }
 
         #region IReceiptStatusService Members
 
+        public async Task<IEnumerable<ReceiptStatusModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<ReceiptStatusModel>>(ApiUrl.RECEIPT_STATUS_GET_ALL,
+                                                                                    null,
+                                                                                    HttpMethod.Get,
+                                                                                    true);
+
+                if (response.IsSuccess)
+                    return response.Data;
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
         public async Task<ReceiptStatusListModel> GetByPaging(ReceiptStatusSearchModel request)
         {
             try
             {
-                var columnOrder = "name";
+                var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
+
+                    if (request.Columns != null
+                       && request.Columns.Any()
+                       && request.Order != null
+                       && request.Order.Any())
+                    {
+                        sortDir = request.Order[0]
+                                         .Dir;
+                        columnOrder = request.Columns[request.Order[0]
+                                                             .Column]
+                                             .Data;
+                    }
 
                     var url = string.Format(ApiUrl.RECEIPT_STATUS_GET_BY_PAGING,
                                             request.Name,
@@ -48,9 +84,9 @@ namespace Pelo.v2.Web.Services.ReceiptStatus
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetReceiptStatusPagingResponse>>(url,
-                                                                                                  null,
-                                                                                                  HttpMethod.Get,
-                                                                                                  true);
+                                                                                                   null,
+                                                                                                   HttpMethod.Get,
+                                                                                                   true);
 
                     if (response.IsSuccess)
                         return new ReceiptStatusListModel
@@ -64,9 +100,7 @@ namespace Pelo.v2.Web.Services.ReceiptStatus
                                 Id = c.Id,
                                 Name = c.Name,
                                 Color = c.Color,
-                                SortOrder = c.SortOrder,
                                 IsSendSms = c.IsSendSms,
-                                SmsContent = c.SmsContent,
                                 PageSize = request.PageSize,
                                 PageSizeOptions = request.AvailablePageSizes
                             })
@@ -93,7 +127,7 @@ namespace Pelo.v2.Web.Services.ReceiptStatus
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }

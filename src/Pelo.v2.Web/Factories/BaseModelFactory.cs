@@ -18,6 +18,8 @@ using Pelo.v2.Web.Services.ProductGroup;
 using Pelo.v2.Web.Services.ProductStatus;
 using Pelo.v2.Web.Services.ProductUnit;
 using Pelo.v2.Web.Services.Province;
+using Pelo.v2.Web.Services.ReceiptDescription;
+using Pelo.v2.Web.Services.ReceiptStatus;
 using Pelo.v2.Web.Services.Role;
 using Pelo.v2.Web.Services.TaskLoop;
 using Pelo.v2.Web.Services.TaskPriority;
@@ -295,6 +297,28 @@ namespace Pelo.v2.Web.Factories
         Task PrepareInvoiceStatuses(IList<SelectListItem> items,
                                     bool withSpecialDefaultItem = true,
                                     string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all receipt statuses
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareReceiptStatuses(IList<SelectListItem> items,
+                                    bool withSpecialDefaultItem = true,
+                                    string defaultItemText = null);
+
+        /// <summary>
+        ///     Get all receipt description
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareReceiptDescriptions(IList<SelectListItem> items,
+                                        bool withSpecialDefaultItem = true,
+                                        string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
@@ -317,7 +341,11 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IDistrictService _districtService;
 
+        private readonly IInvoiceStatusService _invoiceStatusService;
+
         private readonly IManufacturerService _manufacturerService;
+
+        private readonly IPayMethodService _payMethodService;
 
         private readonly IProductGroupService _productGroupService;
 
@@ -328,6 +356,8 @@ namespace Pelo.v2.Web.Factories
         private readonly IProductUnitService _productUnitService;
 
         private readonly IProvinceService _provinceService;
+
+        private readonly IReceiptStatusService _receiptStatusService;
 
         private readonly IRoleService _roleService;
 
@@ -343,9 +373,7 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IWardService _wardService;
 
-        private readonly IInvoiceStatusService _invoiceStatusService;
-
-        private readonly IPayMethodService _payMethodService;
+        private readonly IReceiptDescriptionService _receiptDescriptionService;
 
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
@@ -370,7 +398,9 @@ namespace Pelo.v2.Web.Factories
                                 ITaskPriorityService taskPriorityService,
                                 ITaskLoopService taskLoopService,
                                 IPayMethodService payMethodService,
-                                IInvoiceStatusService invoiceStatusService)
+                                IInvoiceStatusService invoiceStatusService,
+                                IReceiptStatusService receiptStatusService,
+                                IReceiptDescriptionService receiptDescriptionService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -396,6 +426,8 @@ namespace Pelo.v2.Web.Factories
             _taskLoopService = taskLoopService;
             _payMethodService = payMethodService;
             _invoiceStatusService = invoiceStatusService;
+            _receiptStatusService = receiptStatusService;
+            _receiptDescriptionService = receiptDescriptionService;
         }
 
         #region IBaseModelFactory Members
@@ -984,6 +1016,54 @@ namespace Pelo.v2.Web.Factories
                           {
                                   Value = invoiceStatus.Id.ToString(),
                                   Text = $"{invoiceStatus.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareReceiptStatuses(IList<SelectListItem> items,
+                                                 bool withSpecialDefaultItem = true,
+                                                 string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available receipt statuses
+            var avaiableReceiptStatuses = await _receiptStatusService.GetAll();
+            foreach (var receiptStatus in avaiableReceiptStatuses)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = receiptStatus.Id.ToString(),
+                                  Text = $"{receiptStatus.Name}"
+                          });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareReceiptDescriptions(IList<SelectListItem> items,
+                                                     bool withSpecialDefaultItem = true,
+                                                     string defaultItemText = null)
+        {
+            if(items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available pay methods
+            var avaiableReceiptDescriptions = await _receiptDescriptionService.GetAll();
+            foreach (var receiptDescription in avaiableReceiptDescriptions)
+            {
+                items.Add(new SelectListItem
+                          {
+                                  Value = receiptDescription.Id.ToString(),
+                                  Text = $"{receiptDescription.Name}"
                           });
             }
 

@@ -3,7 +3,5 @@
     public class ReceiptDescriptionSearchModel : BaseSearchModel
     {
         public string Name { get; set; }
-
-        public string ColumnOrder{ get; set; }
     }
 }

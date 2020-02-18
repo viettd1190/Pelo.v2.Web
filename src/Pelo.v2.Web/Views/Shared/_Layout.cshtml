@@ -297,16 +297,16 @@
                     <li><a href="@Url.Action("Index","TaskStatusInRole")"><span class="lbl">Quyền trạng thái công việc</span></a></li>
                 </ul>
             </li>
-            <li class="blue with-sub">
+            <li class="blue with-sub" id="liReceipt">
                 <span>
                     <i class="font-icon font-icon-notebook-bird"></i>
                     <span class="lbl">Biên nhận</span>
                 </span>
                 <ul>
-                    <li><a href="@Url.Action("Index","Receipt")"><span class="lbl">Biên nhận</span></a></li>
-                    <li><a href="@Url.Action("Index","ReceiptDescription")"><span class="lbl">Dịch vụ</span></a></li>
-                    <li><a href="@Url.Action("Index","ReceiptStatus")"><span class="lbl">Trạng thái biên nhận</span></a></li>
-                    <li><a href="@Url.Action("Index","ReceiptStatusInRole")"><span class="lbl">Quyền trạng thái biên nhận</span></a></li>
+                    <li id="liListReceipt"><a href="@Url.Action("Index","Receipt")"><span class="lbl">Biên nhận</span></a></li>
+                    <li id="liReceiptDescription"><a href="@Url.Action("Index","ReceiptDescription")"><span class="lbl">Dịch vụ</span></a></li>
+                    <li id="liReceiptStatus"><a href="@Url.Action("Index","ReceiptStatus")"><span class="lbl">Trạng thái biên nhận</span></a></li>
+                    <li id="liReceiptPermission"><a href="@Url.Action("Index","ReceiptStatusInRole")"><span class="lbl">Quyền trạng thái biên nhận</span></a></li>
                 </ul>
             </li>
             <li class="purple with-sub">
