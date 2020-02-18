@@ -61,6 +61,24 @@ namespace Pelo.v2.Web.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> Edit(AppConfigUpdate model)
+        {
+            if(ModelState.IsValid)
+            {
+                var result = await _appConfigService.Update(model);
+                if (result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", result.Message);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _appConfigService.Delete(id);

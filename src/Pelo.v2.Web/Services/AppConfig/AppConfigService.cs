@@ -20,6 +20,8 @@ namespace Pelo.v2.Web.Services.AppConfig
 
         Task<TResponse<AppConfigUpdate>> GetById(int id);
 
+        Task<TResponse<bool>> Update(AppConfigUpdate request);
+
         Task<TResponse<bool>> Delete(int id);
     }
 
@@ -140,6 +142,28 @@ namespace Pelo.v2.Web.Services.AppConfig
             catch (Exception exception)
             {
                 return await Fail<AppConfigUpdate>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(AppConfigUpdate request)
+        {
+            try
+            {
+                var url = ApiUrl.APP_CONFIG_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            request,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 

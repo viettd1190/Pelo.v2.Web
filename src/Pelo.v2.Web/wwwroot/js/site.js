@@ -1,4 +1,18 @@
-﻿function showNotification(data) {
+﻿$(document).ready(function() {
+    $('.panel').lobiPanel({
+            sortable:false,
+            draggable:false,
+            resize:'none'
+    });
+    var html = $('.notification-box').html();
+    if (html) {
+        if (html.length > 0) {
+            showNotification($.parseJSON(html));
+            $('.notification-box').html('');
+        }
+    }
+});
+function showNotification(data) {
     if (data.length == 0) {
         return;
     }
