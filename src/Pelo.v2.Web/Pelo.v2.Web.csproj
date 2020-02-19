@@ -37,6 +37,7 @@
     <Folder Include="Views\ProductGroup\" />
     <Folder Include="Views\CustomerVip\" />
     <Folder Include="Views\CustomerGroup\" />
+    <Folder Include="wwwroot\lib\spectrum\" />
   </ItemGroup>
 
 
