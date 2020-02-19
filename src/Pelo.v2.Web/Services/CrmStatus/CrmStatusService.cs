@@ -20,6 +20,10 @@ namespace Pelo.v2.Web.Services.CrmStatus
         Task<CrmStatusListModel> GetByPaging(CrmStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<bool>> Add(CrmStatusModel model);
+
+        Task<TResponse<CrmStatusModel>> GetById(int id);
     }
 
     public class CrmStatusService : BaseService,
@@ -60,11 +64,11 @@ namespace Pelo.v2.Web.Services.CrmStatus
                 var columnOrder = "name";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
-                    if(request.Columns != null
+                    if (request.Columns != null
                        && request.Columns.Any()
                        && request.Order != null
                        && request.Order.Any())
@@ -88,23 +92,23 @@ namespace Pelo.v2.Web.Services.CrmStatus
                                                                                                   HttpMethod.Get,
                                                                                                   true);
 
-                    if(response.IsSuccess)
+                    if (response.IsSuccess)
                         return new CrmStatusListModel
-                               {
-                                       Draw = request.Draw,
-                                       RecordsFiltered = response.Data.TotalCount,
-                                       Total = response.Data.TotalCount,
-                                       RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new CrmStatusModel
-                                                                             {
-                                                                                     Id = c.Id,
-                                                                                     Name = c.Name,
-                                                                                     Color = c.Color,
-                                                                                     IsSendSms = c.IsSendSms,
-                                                                                     PageSize = request.PageSize,
-                                                                                     PageSizeOptions = request.AvailablePageSizes
-                                                                             })
-                               };
+                        {
+                            Draw = request.Draw,
+                            RecordsFiltered = response.Data.TotalCount,
+                            Total = response.Data.TotalCount,
+                            RecordsTotal = response.Data.TotalCount,
+                            Data = response.Data.Data.Select(c => new CrmStatusModel
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                                Color = c.Color,
+                                IsSendSms = c.IsSendSms,
+                                PageSize = request.PageSize,
+                                PageSizeOptions = request.AvailablePageSizes
+                            })
+                        };
 
                     throw new PeloException(response.Message);
                 }
@@ -127,7 +131,7 @@ namespace Pelo.v2.Web.Services.CrmStatus
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -140,6 +144,53 @@ namespace Pelo.v2.Web.Services.CrmStatus
             }
         }
 
+        public async Task<TResponse<bool>> Add(CrmStatusModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_STATUS_UPDATE,
+                                                            new InsertCrmStatus
+                                                            {
+                                                                Color = model.Color,
+                                                                IsSendSms = model.IsSendSms,
+                                                                SmsContent = model.SmsContent,
+                                                                Name = model.Name
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<CrmStatusModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CRM_STATUS_GET_BY_ID, id);
+                var response = await HttpService.Send<GetCrmStatusResponse>(url, null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new CrmStatusModel { Color = response.Data.Color, Id = response.Data.Id, IsSendSms = response.Data.IsSendSms, Name = response.Data.Name, SmsContent = response.Data.SmsContent });
+                }
+
+                return await Fail<CrmStatusModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<CrmStatusModel>(exception);
+            }
+        }
         #endregion
     }
 }

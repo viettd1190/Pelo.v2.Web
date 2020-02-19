@@ -230,7 +230,7 @@
                     <span class="lbl">Trang chủ</span>
                 </a>
             </li>
-            <li class="blue with-sub">
+            <li class="blue with-sub" id="liCrm">
                 <span>
                     <i class="font-icon font-icon-lamp"></i>
                     <span class="lbl">Crm</span>
@@ -241,60 +241,60 @@
                     <li><a href="@Url.Action("KhachToiHenCanChamSoc","Crm")"><span class="lbl">Khách tới hẹn cần chăm sóc</span></a></li>
                     <li><a href="@Url.Action("KhachQuaHenChamSoc","Crm")"><span class="lbl">Khách quá hẹn chăm sóc</span></a></li>
                     <li><a href="@Url.Action("KhachToiHenNgayMai","Crm")"><span class="lbl">Khách tới hẹn ngày mai</span></a></li>
-                    <li><a href="@Url.Action("Index","CrmStatus")"><span class="lbl">Trạng thái</span></a></li>
-                    <li><a href="@Url.Action("Index","CrmPriority")"><span class="lbl">Mức độ khẩn cấp</span></a></li>
-                    <li><a href="@Url.Action("Index","CrmType")"><span class="lbl">Loại chốt</span></a></li>
-                    <li><a href="@Url.Action("Index","CustomerSource")"><span class="lbl">Nguồn khách hàng</span></a></li>
+                    <li id="liCrmStatus"><a href="@Url.Action("Index","CrmStatus")"><span class="lbl">Trạng thái</span></a></li>
+                    <li id="liCrmPriority"><a href="@Url.Action("Index","CrmPriority")"><span class="lbl">Mức độ khẩn cấp</span></a></li>
+                    <li id="liCrmType"><a href="@Url.Action("Index","CrmType")"><span class="lbl">Loại chốt</span></a></li>
+                    <li id="liCustomerSource"><a href="@Url.Action("Index","CustomerSource")"><span class="lbl">Nguồn khách hàng</span></a></li>
                 </ul>
             </li>
-            <li class="purple with-sub">
+            <li class="purple with-sub" id="liProducts">
                 <span>
                     <i class="font-icon font-icon-cart"></i>
                     <span class="lbl">Sản phẩm</span>
                 </span>
                 <ul>
-                    <li><a href="@Url.Action("Index","Product")"><span class="lbl">Sản phẩm</span></a></li>
-                    <li><a href="@Url.Action("Index","ProductGroup")"><span class="lbl">Nhóm sản phẩm</span></a></li>
-                    <li><a href="@Url.Action("Index","ProductUnit")"><span class="lbl">Đơn vị tính</span></a></li>
-                    <li><a href="@Url.Action("Index","ProductStatus")"><span class="lbl">Tình trạng sản phẩm</span></a></li>
-                    <li><a href="@Url.Action("Index","Manufacturer")"><span class="lbl">Thương hiệu</span></a></li>
+                    <li id="liProduct"><a href="@Url.Action("Index","Product")"><span class="lbl">Sản phẩm</span></a></li>
+                    <li id="liProductGroup"><a href="@Url.Action("Index","ProductGroup")"><span class="lbl">Nhóm sản phẩm</span></a></li>
+                    <li id="liProductUnit"><a href="@Url.Action("Index","ProductUnit")"><span class="lbl">Đơn vị tính</span></a></li>
+                    <li id="liProductStatus"><a href="@Url.Action("Index","ProductStatus")"><span class="lbl">Tình trạng sản phẩm</span></a></li>
+                    <li id="liManufacturer"><a href="@Url.Action("Index","Manufacturer")"><span class="lbl">Thương hiệu</span></a></li>
                 </ul>
             </li>
-            <li class="brown with-sub">
+            <li class="brown with-sub" id="liInvoices">
                 <span>
                     <i class="font-icon glyphicon glyphicon-tint"></i>
                     <span class="lbl">Đơn hàng</span>
                 </span>
                 <ul>
-                    <li><a href="@Url.Action("Index","Invoice")"><span class="lbl">Đơn hàng</span></a></li>
-                    <li><a href="@Url.Action("Index","PayMethod")"><span class="lbl">Hình thức thanh toán</span></a></li>
-                    <li><a href="@Url.Action("Index","InvoiceStatus")"><span class="lbl">Trạng thái đơn hàng</span></a></li>
-                    <li><a href="@Url.Action("Index","InvoiceStatusInRole")"><span class="lbl">Quyền trạng thái đơn hàng</span></a></li>
+                    <li id="liInvoice"><a href="@Url.Action("Index","Invoice")"><span class="lbl">Đơn hàng</span></a></li>
+                    <li id="liPayMethod"><a href="@Url.Action("Index","PayMethod")"><span class="lbl">Hình thức thanh toán</span></a></li>
+                    <li id="liInvoiceStatus"><a href="@Url.Action("Index","InvoiceStatus")"><span class="lbl">Trạng thái đơn hàng</span></a></li>
+                    <li id="liInvoiceStatusInRole"><a href="@Url.Action("Index","InvoiceStatusInRole")"><span class="lbl">Quyền trạng thái đơn hàng</span></a></li>
                 </ul>
             </li>
-            <li class="green with-sub">
+            <li class="green with-sub" id="liCustomers">
                 <span>
                     <i class="font-icon font-icon-users"></i>
                     <span class="lbl">Khách hàng</span>
                 </span>
                 <ul>
-                    <li><a href="@Url.Action("Index","Customer")"><span class="lbl">Khách hàng</span></a></li>
-                    <li><a href="@Url.Action("Index","CustomerGroup")"><span class="lbl">Nhóm khách hàng</span></a></li>
-                    <li><a href="@Url.Action("Index","CustomerVip")"><span class="lbl">Mức độ thân thiết</span></a></li>
+                    <li id="liCustomer"><a href="@Url.Action("Index","Customer")"><span class="lbl">Khách hàng</span></a></li>
+                    <li id="liCustomerGroup"><a href="@Url.Action("Index","CustomerGroup")"><span class="lbl">Nhóm khách hàng</span></a></li>
+                    <li id="liCustomerVip"><a href="@Url.Action("Index","CustomerVip")"><span class="lbl">Mức độ thân thiết</span></a></li>
                 </ul>
             </li>
-            <li class="red with-sub">
+            <li class="red with-sub" id="liTasks">
                 <span>
                     <i class="font-icon fa fa-tasks"></i>
                     <span class="lbl">Công việc</span>
                 </span>
                 <ul>
-                    <li><a href="@Url.Action("Index","Task")"><span class="lbl">Công việc</span></a></li>
-                    <li><a href="@Url.Action("Index","TaskType")"><span class="lbl">Loại công việc</span></a></li>
-                    <li><a href="@Url.Action("Index","TaskStatus")"><span class="lbl">Trạng thái công việc</span></a></li>
-                    <li><a href="@Url.Action("Index","TaskPriority")"><span class="lbl">Mức độ gấp</span></a></li>
-                    <li><a href="@Url.Action("Index","TaskLoop")"><span class="lbl">Thời gian lặp lại</span></a></li>
-                    <li><a href="@Url.Action("Index","TaskStatusInRole")"><span class="lbl">Quyền trạng thái công việc</span></a></li>
+                    <li id="liTask"><a href="@Url.Action("Index","Task")"><span class="lbl">Công việc</span></a></li>
+                    <li id="liTaskType"><a href="@Url.Action("Index","TaskType")"><span class="lbl">Loại công việc</span></a></li>
+                    <li id="liTaskStatus"><a href="@Url.Action("Index","TaskStatus")"><span class="lbl">Trạng thái công việc</span></a></li>
+                    <li id="liTaskPriority"><a href="@Url.Action("Index","TaskPriority")"><span class="lbl">Mức độ gấp</span></a></li>
+                    <li id="liTaskLoop"><a href="@Url.Action("Index","TaskLoop")"><span class="lbl">Thời gian lặp lại</span></a></li>
+                    <li id="liTaskStatusInRole"><a href="@Url.Action("Index","TaskStatusInRole")"><span class="lbl">Quyền trạng thái công việc</span></a></li>
                 </ul>
             </li>
             <li class="blue with-sub" id="liReceipt">
@@ -306,31 +306,31 @@
                     <li id="liListReceipt"><a href="@Url.Action("Index","Receipt")"><span class="lbl">Biên nhận</span></a></li>
                     <li id="liReceiptDescription"><a href="@Url.Action("Index","ReceiptDescription")"><span class="lbl">Dịch vụ</span></a></li>
                     <li id="liReceiptStatus"><a href="@Url.Action("Index","ReceiptStatus")"><span class="lbl">Trạng thái biên nhận</span></a></li>
-                    <li id="liReceiptPermission"><a href="@Url.Action("Index","ReceiptStatusInRole")"><span class="lbl">Quyền trạng thái biên nhận</span></a></li>
+                    <li id="liReceiptStatusInRole"><a href="@Url.Action("Index","ReceiptStatusInRole")"><span class="lbl">Quyền trạng thái biên nhận</span></a></li>
                 </ul>
             </li>
-            <li class="purple with-sub">
+            <li class="purple with-sub" id="liWarranties">
                 <span>
                     <i class="font-icon font-icon-post"></i>
                     <span class="lbl">Bảo hành</span>
                 </span>
                 <ul>
-                    <li><a href="@Url.Action("Index","Warranty")"><span class="lbl">Bảo hành</span></a></li>
-                    <li><a href="@Url.Action("Index","WarrantyDescription")"><span class="lbl">Mô tả bảo hành</span></a></li>
-                    <li><a href="@Url.Action("Index","WarrantyStatus")"><span class="lbl">Trạng thái bảo hành</span></a></li>
-                    <li><a href="@Url.Action("Index","WarrantyStatusInRole")"><span class="lbl">Quyền trạng thái bảo hành</span></a></li>
+                    <li id="liWarranty"><a href="@Url.Action("Index","Warranty")"><span class="lbl">Bảo hành</span></a></li>
+                    <li id="liWarrantyDescription"><a href="@Url.Action("Index","WarrantyDescription")"><span class="lbl">Mô tả bảo hành</span></a></li>
+                    <li id="liWarrantyStatus"><a href="@Url.Action("Index","WarrantyStatus")"><span class="lbl">Trạng thái bảo hành</span></a></li>
+                    <li id="liWarrantyStatusInRole"><a href="@Url.Action("Index","WarrantyStatusInRole")"><span class="lbl">Quyền trạng thái bảo hành</span></a></li>
                 </ul>
             </li>
-            <li class="brown with-sub">
+            <li class="brown with-sub" id="liRecruitments">
                 <span>
                     <i class="font-icon font-icon-twitter"></i>
                     <span class="lbl">Tuyển dụng</span>
                 </span>
                 <ul>
-                    <li><a href="@Url.Action("Index","Candidate")"><span class="lbl">Danh sách ứng viên</span></a></li>
-                    <li><a href="@Url.Action("Index","Recruitment")"><span class="lbl">Danh sách tuyển dụng</span></a></li>
-                    <li><a href="@Url.Action("Index","CandidateStatus")"><span class="lbl">Trạng thái ứng viên</span></a></li>
-                    <li><a href="@Url.Action("Index","RecruitmentStatus")"><span class="lbl">Trạng thái tuyển dụng</span></a></li>
+                    <li id="liCadidate"><a href="@Url.Action("Index","Candidate")"><span class="lbl">Danh sách ứng viên</span></a></li>
+                    <li id="liRecruitment"><a href="@Url.Action("Index","Recruitment")"><span class="lbl">Danh sách tuyển dụng</span></a></li>
+                    <li id="liCandidateStatus"><a href="@Url.Action("Index","CandidateStatus")"><span class="lbl">Trạng thái ứng viên</span></a></li>
+                    <li id="liRecruitmentStatus"><a href="@Url.Action("Index","RecruitmentStatus")"><span class="lbl">Trạng thái tuyển dụng</span></a></li>
                 </ul>
             </li>
             <li class="green with-sub" id="liSystem">
