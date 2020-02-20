@@ -66,7 +66,7 @@ namespace Pelo.v2.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(CrmStatusModel model)
         {
-            var result = await _crmStatusService.Add(model);
+            var result = await _crmStatusService.Edit(model);
             if (result.IsSuccess)
             {
                 TempData["Update"] = result;

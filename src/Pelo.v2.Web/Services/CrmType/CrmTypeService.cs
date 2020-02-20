@@ -20,6 +20,12 @@ namespace Pelo.v2.Web.Services.CrmType
         Task<CrmTypeListModel> GetByPaging(CrmTypeSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<bool>> Add(CrmTypeModel model);
+
+        Task<TResponse<bool>> Edit(CrmTypeModel model);
+
+        Task<TResponse<CrmTypeModel>> GetById(int id);
     }
 
     public class CrmTypeService : BaseService,
@@ -59,7 +65,7 @@ namespace Pelo.v2.Web.Services.CrmType
                 var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
@@ -87,21 +93,21 @@ namespace Pelo.v2.Web.Services.CrmType
                                                                                                 HttpMethod.Get,
                                                                                                 true);
 
-                    if(response.IsSuccess)
+                    if (response.IsSuccess)
                         return new CrmTypeListModel
-                               {
-                                       Draw = request.Draw,
-                                       RecordsFiltered = response.Data.TotalCount,
-                                       Total = response.Data.TotalCount,
-                                       RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new CrmTypeModel
-                                                                             {
-                                                                                     Id = c.Id,
-                                                                                     Name = c.Name,
-                                                                                     PageSize = request.PageSize,
-                                                                                     PageSizeOptions = request.AvailablePageSizes
-                                                                             })
-                               };
+                        {
+                            Draw = request.Draw,
+                            RecordsFiltered = response.Data.TotalCount,
+                            Total = response.Data.TotalCount,
+                            RecordsTotal = response.Data.TotalCount,
+                            Data = response.Data.Data.Select(c => new CrmTypeModel
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                                PageSize = request.PageSize,
+                                PageSizeOptions = request.AvailablePageSizes
+                            })
+                        };
 
                     throw new PeloException(response.Message);
                 }
@@ -124,7 +130,7 @@ namespace Pelo.v2.Web.Services.CrmType
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -138,5 +144,75 @@ namespace Pelo.v2.Web.Services.CrmType
         }
 
         #endregion
+
+        public async Task<TResponse<bool>> Add(CrmTypeModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_TYPE_UPDATE,
+                                                            new InsertCrmType
+                                                            {
+                                                                Name = model.Name
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(CrmTypeModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_TYPE_UPDATE,
+                                                            new UpdateCrmType
+                                                            {
+                                                                Id = model.Id,
+                                                                Name = model.Name
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<CrmTypeModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CRM_TYPE_GET_BY_ID, id);
+                var response = await HttpService.Send<GetCrmTypeResponse>(url, null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new CrmTypeModel { Id = response.Data.Id, Name = response.Data.Name });
+                }
+
+                return await Fail<CrmTypeModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<CrmTypeModel>(exception);
+            }
+        }
     }
 }

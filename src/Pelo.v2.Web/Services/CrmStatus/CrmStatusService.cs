@@ -23,6 +23,8 @@ namespace Pelo.v2.Web.Services.CrmStatus
 
         Task<TResponse<bool>> Add(CrmStatusModel model);
 
+        Task<TResponse<bool>> Edit(CrmStatusModel model);
+
         Task<TResponse<CrmStatusModel>> GetById(int id);
     }
 
@@ -151,6 +153,34 @@ namespace Pelo.v2.Web.Services.CrmStatus
                 var response = await HttpService.Send<bool>(ApiUrl.CRM_STATUS_UPDATE,
                                                             new InsertCrmStatus
                                                             {
+                                                                Color = model.Color,
+                                                                IsSendSms = model.IsSendSms,
+                                                                SmsContent = model.SmsContent,
+                                                                Name = model.Name
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(CrmStatusModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_STATUS_UPDATE,
+                                                            new UpdateCrmStatus
+                                                            {
+                                                                Id = model.Id,
                                                                 Color = model.Color,
                                                                 IsSendSms = model.IsSendSms,
                                                                 SmsContent = model.SmsContent,

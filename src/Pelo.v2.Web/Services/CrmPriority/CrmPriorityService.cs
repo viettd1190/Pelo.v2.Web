@@ -20,6 +20,11 @@ namespace Pelo.v2.Web.Services.CrmPriority
         Task<CrmPriorityListModel> GetByPaging(CrmPrioritySearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<bool>> Add(CrmPriorityModel model);
+
+        Task<TResponse<bool>> Edit(CrmPriorityModel model);
+        
+        Task<TResponse<CrmPriorityModel>> GetById(int id);
     }
 
     public class CrmPriorityService : BaseService,
@@ -139,5 +144,77 @@ namespace Pelo.v2.Web.Services.CrmPriority
         }
 
         #endregion
+
+        public async Task<TResponse<bool>> Add(CrmPriorityModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_PRIORITY_UPDATE,
+                                                            new InsertCrmPriority
+                                                            {
+                                                                Color = model.Color,
+                                                                Name = model.Name
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(CrmPriorityModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_PRIORITY_UPDATE,
+                                                            new UpdateCrmPriority
+                                                            {
+                                                                Id = model.Id,
+                                                                Color = model.Color,
+                                                                Name = model.Name
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<CrmPriorityModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CRM_PRIORITY_GET_BY_ID, id);
+                var response = await HttpService.Send<GetCrmPriorityResponse>(url, null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new CrmPriorityModel { Color = response.Data.Color, Id = response.Data.Id, Name = response.Data.Name});
+                }
+
+                return await Fail<CrmPriorityModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<CrmPriorityModel>(exception);
+            }
+        }
     }
 }

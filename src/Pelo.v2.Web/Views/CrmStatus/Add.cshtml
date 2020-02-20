@@ -16,9 +16,8 @@
 
 <section class="card">
     <div class="card-block">
-        <form asp-controller="AppConfig" asp-action="Add" method="post" id="appconfig-form">
+        <form asp-controller="CrmStatus" asp-action="Add" method="post" id="appconfig-form">
             @Html.ValidationSummary()
-            @Html.HiddenFor(c => c.Color)
             <div class="row">
                 <div class="col-lg-12">
                     <fieldset class="form-group">

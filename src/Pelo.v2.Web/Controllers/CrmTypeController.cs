@@ -32,5 +32,44 @@ namespace Pelo.v2.Web.Controllers
             var result = await _crmTypeService.Delete(id);
             return Json(result);
         }
+        public IActionResult Add()
+        {
+            return View(new CrmTypeModel());
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add(CrmTypeModel model)
+        {
+            var result = await _crmTypeService.Add(model);
+            if (result.IsSuccess)
+            {
+                TempData["Update"] = result;
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+        public async Task<IActionResult> Edit(int id)
+        {
+            var result = await _crmTypeService.GetById(id);
+            if (result.IsSuccess)
+            {
+                return View(new CrmTypeModel
+                {
+                    Id = result.Data.Id,
+                    Name = result.Data.Name,
+                });
+            }
+            return View("Notfound");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(CrmTypeModel model)
+        {
+            var result = await _crmTypeService.Edit(model);
+            TempData["Update"] = result;
+            if (result.IsSuccess)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
     }
 }
