@@ -16,6 +16,8 @@ namespace Pelo.v2.Web.Services.Customer
     {
         Task<CustomerListModel> GetByPaging(CustomerSearchModel request);
 
+        Task<TResponse<bool>> Insert(CustomerInsertModel request);
+
         Task<TResponse<GetCustomerDetailResponse>> GetDetail(int id);
 
         Task<TResponse<bool>> Delete(int id);
@@ -113,6 +115,28 @@ namespace Pelo.v2.Web.Services.Customer
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(CustomerInsertModel request)
+        {
+            try
+            {
+                var url = ApiUrl.CUSTOMER_INSERT;
+                var response = await HttpService.Send<bool>(url,
+                                                            request,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 

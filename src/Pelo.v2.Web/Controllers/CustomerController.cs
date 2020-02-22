@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Pelo.Common.Extensions;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Customer;
 using Pelo.v2.Web.Services.Customer;
@@ -75,6 +76,35 @@ namespace Pelo.v2.Web.Controllers
             }
 
             return View("Notfound");
+        }
+
+        public async Task<IActionResult> Add()
+        {
+            var model=new CustomerInsertModel();
+
+            await _baseModelFactory.PrepareCustomerGroups(model.AvaiableCustomerGroups);
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
+            await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts);
+            await _baseModelFactory.PrepareWards(model.AvaiableWards);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(CustomerInsertModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _customerService.Insert(model);
+                if (result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", result.Message);
+            }
+            return View(model);
         }
 
         [HttpPost]

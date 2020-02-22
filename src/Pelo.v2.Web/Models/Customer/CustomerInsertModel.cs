@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Pelo.v2.Web.Models.Customer
@@ -13,8 +14,10 @@ namespace Pelo.v2.Web.Models.Customer
             AvaiableCustomerGroups = new List<SelectListItem>();
         }
 
+        [Required(ErrorMessage = "Tên khách hàng không được để trống")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "Số điện thoại khách hàng không được để trống")]
         public string Phone { get; set; }
 
         public string Phone2 { get; set; }
@@ -22,6 +25,8 @@ namespace Pelo.v2.Web.Models.Customer
         public string Phone3 { get; set; }
 
         public string Address { get; set; }
+
+        public string Email { get; set; }
 
         public int ProvinceId { get; set; }
 
