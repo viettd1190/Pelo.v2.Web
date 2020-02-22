@@ -13,7 +13,11 @@
 }
 
 @section css{
-    <style>.box-typical.box-typical-dashboard .box-typical-body {height:auto !important;}</style>
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height:auto !important;
+          }
+    </style>
 }
 
 @section jsPlugin {
@@ -148,7 +152,7 @@
                                                                                                                                                                       Width = "40",
                                                                                                                                                                       Orderable = false,
                                                                                                                                                                       ClassName = NopColumnClassDefaults.Button,
-                                                                                                                                                                      Render = new RenderButtonEdit(new DataUrl("Customer/Edit"))
+                                                                                                                                                                      Render = new RenderButtonEdit(new DataUrl("Customer/Detail"))
                                                                                                                                                               },
                                                                                                                  new ColumnProperty(nameof(CustomerModel.Id)) {
                                                                                                                                                                       Title = "",
@@ -164,7 +168,12 @@
 
 @section js{
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liCustomers').addClass('opened');
+            $('#liCustomer').addClass('row-active');
+
             $('.panel').lobiPanel({
                     sortable:false,
                     draggable:false,
