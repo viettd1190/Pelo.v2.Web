@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Pelo.v2.Web.Models.CrmType;
 using Pelo.v2.Web.Services.CrmType;
 
@@ -42,7 +43,7 @@ namespace Pelo.v2.Web.Controllers
             var result = await _crmTypeService.Add(model);
             if (result.IsSuccess)
             {
-                TempData["Update"] = result;
+                TempData["Update"] = JsonConvert.SerializeObject(result);
                 return RedirectToAction("Index");
             }
             return View(model);
@@ -64,7 +65,7 @@ namespace Pelo.v2.Web.Controllers
         public async Task<IActionResult> Edit(CrmTypeModel model)
         {
             var result = await _crmTypeService.Edit(model);
-            TempData["Update"] = result;
+            TempData["Update"] = JsonConvert.SerializeObject(result);
             if (result.IsSuccess)
             {
                 return RedirectToAction("Index");

@@ -13,9 +13,9 @@
     }
 });
 function showNotification(data) {
-    if (data.length == 0) {
-        return;
-    }
+    //if (data.length == 0) {
+    //    return;
+    //}
     var icon = 'danger'; //error
     if (data.is_success === true) {
         icon = 'success'; //success

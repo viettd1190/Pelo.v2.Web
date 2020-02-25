@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Pelo.v2.Web.Models.CrmStatus;
 using Pelo.v2.Web.Services.CrmStatus;
 
@@ -42,7 +43,7 @@ namespace Pelo.v2.Web.Controllers
             var result = await _crmStatusService.Add(model);
             if (result.IsSuccess)
             {
-                TempData["Update"] = result;
+                TempData["Update"] = JsonConvert.SerializeObject(result);
                 return RedirectToAction("Index");
             }
             return View(model);
@@ -69,7 +70,7 @@ namespace Pelo.v2.Web.Controllers
             var result = await _crmStatusService.Edit(model);
             if (result.IsSuccess)
             {
-                TempData["Update"] = result;
+                TempData["Update"] = JsonConvert.SerializeObject(result);
                 return RedirectToAction("Index");
             }
             return View(model);

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Pelo.v2.Web.Models.CrmPriority;
 using Pelo.v2.Web.Services.CrmPriority;
 
@@ -34,7 +35,7 @@ namespace Pelo.v2.Web.Controllers
         }
         public IActionResult Add()
         {
-            return View(new CrmPrioritySearchModel());
+            return View(new CrmPriorityModel());
         }
         [HttpPost]
         public async Task<IActionResult> Add(CrmPriorityModel model)
@@ -42,7 +43,7 @@ namespace Pelo.v2.Web.Controllers
             var result = await _crmPriorityService.Add(model);
             if (result.IsSuccess)
             {
-                TempData["Update"] = result;
+                TempData["Update"] = JsonConvert.SerializeObject(result);
                 return RedirectToAction("Index");
             }
             return View(model);
@@ -67,7 +68,7 @@ namespace Pelo.v2.Web.Controllers
             var result = await _crmPriorityService.Edit(model);
             if (result.IsSuccess)
             {
-                TempData["Update"] = result;
+                TempData["Update"] = JsonConvert.SerializeObject(result);
                 return RedirectToAction("Index");
             }
             return View(model);

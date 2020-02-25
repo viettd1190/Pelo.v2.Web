@@ -179,7 +179,7 @@ namespace Pelo.v2.Web.Services.CrmType
                                                                 Id = model.Id,
                                                                 Name = model.Name
                                                             },
-                                                            HttpMethod.Post,
+                                                            HttpMethod.Put,
                                                             true);
                 if (response.IsSuccess)
                 {

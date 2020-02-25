@@ -181,7 +181,7 @@ namespace Pelo.v2.Web.Services.CrmPriority
                                                                 Color = model.Color,
                                                                 Name = model.Name
                                                             },
-                                                            HttpMethod.Post,
+                                                            HttpMethod.Put,
                                                             true);
                 if (response.IsSuccess)
                 {

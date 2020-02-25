@@ -45,4 +45,16 @@
     <ProjectReference Include="..\..\..\Pelo.Common\src\Pelo.Common\Pelo.Common.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Content Update="Views\CustomerSource\Add.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\CustomerSource\Edit.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

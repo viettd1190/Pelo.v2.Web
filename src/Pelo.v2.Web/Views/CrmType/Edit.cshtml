@@ -16,7 +16,7 @@
 
 <section class="card">
     <div class="card-block">
-        <form asp-controller="CrmType" asp-action="Add" method="post" id="crmtype-form">
+        <form asp-controller="CrmType" asp-action="Edit" method="post" id="crmtype-form">
             @Html.ValidationSummary()
             @Html.HiddenFor(c => c.Id)
             <div class="row">
@@ -29,7 +29,7 @@
                 </div>
                 <div class="col-lg-12">
                     <fieldset class="form-group">
-                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
                         <a class="btn btn-default" href="@Url.Action("Index", "CrmType")">Hủy</a>
                     </fieldset>
                 </div>

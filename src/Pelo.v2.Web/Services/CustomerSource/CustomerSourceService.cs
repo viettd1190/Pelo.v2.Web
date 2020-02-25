@@ -20,6 +20,12 @@ namespace Pelo.v2.Web.Services.CustomerSource
         Task<CustomerSourceListModel> GetByPaging(CustomerSourceSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<bool>> Add(CustomerSourceModel model);
+
+        Task<TResponse<bool>> Edit(CustomerSourceModel model);
+
+        Task<TResponse<CustomerSourceModel>> GetById(int id);
     }
 
     public class CustomerSourceService : BaseService,
@@ -134,6 +140,76 @@ namespace Pelo.v2.Web.Services.CustomerSource
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Add(CustomerSourceModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CUSTOMER_SOURCE_UPDATE,
+                                                            new InsertCustomerSource
+                                                            {
+                                                                Name = model.Name
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(CustomerSourceModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CUSTOMER_SOURCE_UPDATE,
+                                                            new UpdateCustomerSource
+                                                            {
+                                                                Id = model.Id,
+                                                                Name = model.Name
+                                                            },
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<CustomerSourceModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CUSTOMER_SOURCE_GET_BY_ID, id);
+                var response = await HttpService.Send<GetCustomerSourceResponse>(url, null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new CustomerSourceModel { Id = response.Data.Id, Name = response.Data.Name });
+                }
+
+                return await Fail<CustomerSourceModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<CustomerSourceModel>(exception);
             }
         }
 
