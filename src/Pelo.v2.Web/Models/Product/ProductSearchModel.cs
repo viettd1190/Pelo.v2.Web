@@ -23,6 +23,8 @@ namespace Pelo.v2.Web.Models.Product
 
         public int ManufacturerId { get; set; }
 
+        public int CountryId { get; set; }
+
         public int WarrantyMonth { get; set; }
 
         public string Description { get; set; }
@@ -34,5 +36,7 @@ namespace Pelo.v2.Web.Models.Product
         public IList<SelectListItem> AvaiableProductStatuses { get; set; }
 
         public IList<SelectListItem> AvaiableManufacturers { get; set; }
+
+        public IList<SelectListItem> AvaiableCountries{ get; set; }
     }
 }

@@ -21,6 +21,12 @@ namespace Pelo.v2.Web.Services.Product
         Task<ProductListModel> GetByPaging(ProductSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<bool>> Add(UpdateProductModel model);
+
+        Task<TResponse<bool>> Edit(UpdateProductModel model);
+
+        Task<TResponse<ProductModel>> GetById(int id);
     }
 
     public class ProductService : BaseService,
@@ -153,6 +159,98 @@ namespace Pelo.v2.Web.Services.Product
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Add(UpdateProductModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.PRODUCT_UPDATE,
+                                                            new InsertProduct
+                                                            {
+                                                                Name = model.Name,
+                                                                CountryId = model.CountryId,
+                                                                Description = model.Description,
+                                                                ImportPrice = model.ImportPrice,
+                                                                ManufacturerId = model.ManufacturerId,
+                                                                MaxCount = model.MaxCount,
+                                                                MinCount = model.MinCount,
+                                                                ProductGroupId = model.ProductGroupId,
+                                                                ProductStatusId = model.ProductStatusId,
+                                                                ProductUnitId = model.ProductUnitId,
+                                                                SellPrice = model.SellPrice,
+                                                                WarrantyMonth = model.WarrantyMonth
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(UpdateProductModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.PRODUCT_UPDATE,
+                                                            new UpdateProduct
+                                                            {
+                                                                Id = model.Id,
+                                                                Name = model.Name,
+                                                                CountryId = model.CountryId,
+                                                                Description = model.Description,
+                                                                ImportPrice = model.ImportPrice,
+                                                                ManufacturerId = model.ManufacturerId,
+                                                                MaxCount = model.MaxCount,
+                                                                MinCount = model.MinCount,
+                                                                ProductGroupId = model.ProductGroupId,
+                                                                ProductStatusId = model.ProductStatusId,
+                                                                ProductUnitId = model.ProductUnitId,
+                                                                SellPrice = model.SellPrice,
+                                                                WarrantyMonth = model.WarrantyMonth
+                                                            },
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<ProductModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CRM_TYPE_GET_BY_ID, id);
+                var response = await HttpService.Send<Pelo.Common.Dtos.Product.ProductModel>(url, null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new ProductModel { Id = response.Data.Id, Name = response.Data.Name });
+                }
+
+                return await Fail<ProductModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<ProductModel>(exception);
             }
         }
 

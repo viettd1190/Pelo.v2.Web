@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace Pelo.v2.Web.Models.Product
 {
-    public class ProductModel
+    public class UpdateProductModel
     {
-        public ProductModel()
+        public UpdateProductModel()
         {
-            if(PageSize < 1)
-            {
-                PageSize = 20;
-            }
+            AvaiableProductGroups = new List<SelectListItem>();
+            AvaiableProductUnits = new List<SelectListItem>();
+            AvaiableProductStatuses = new List<SelectListItem>();
+            AvaiableManufacturers = new List<SelectListItem>();
+            AvaiableCountries = new List<SelectListItem>();
         }
 
         [JsonProperty("Id")] public int Id { get; set; }
@@ -22,16 +25,6 @@ namespace Pelo.v2.Web.Models.Product
         [JsonProperty("SellPrice")] public int SellPrice { get; set; }
 
         [JsonProperty("WarrantyMonth")] public int WarrantyMonth { get; set; }
-
-        [JsonProperty("ProductStatus")] public string ProductStatus { get; set; }
-
-        [JsonProperty("ProductUnit")] public string ProductUnit { get; set; }
-
-        [JsonProperty("ProductGroup")] public string ProductGroup { get; set; }
-
-        [JsonProperty("Manufacturer")] public string Manufacturer { get; set; }
-
-        [JsonProperty("Country")] public string Country { get; set; }
 
         [JsonProperty("CountryId")] public int CountryId { get; set; }
 
@@ -49,10 +42,14 @@ namespace Pelo.v2.Web.Models.Product
 
         [JsonProperty("Description")] public string Description { get; set; }
 
-        [JsonProperty("DateUpdated")] public DateTime DateUpdated { get; set; }
+        public IList<SelectListItem> AvaiableProductGroups { get; set; }
 
-        [JsonProperty("PageSize")] public int PageSize { get; set; }
+        public IList<SelectListItem> AvaiableProductUnits { get; set; }
 
-        [JsonProperty("PageSizeOptions")] public string PageSizeOptions { get; set; }
+        public IList<SelectListItem> AvaiableProductStatuses { get; set; }
+
+        public IList<SelectListItem> AvaiableManufacturers { get; set; }
+
+        public IList<SelectListItem> AvaiableCountries { get; set; }
     }
 }
