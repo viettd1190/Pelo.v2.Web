@@ -11,6 +11,7 @@ namespace Pelo.v2.Web.Models.Product
             AvaiableProductUnits = new List<SelectListItem>();
             AvaiableProductStatuses = new List<SelectListItem>();
             AvaiableManufacturers = new List<SelectListItem>();
+            AvaiableCountries = new List<SelectListItem>();
         }
 
         public string Name { get; set; }

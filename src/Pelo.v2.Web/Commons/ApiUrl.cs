@@ -289,6 +289,20 @@
 
         #endregion
 
+        #region Country
+        public const string COUNTRY_GET_BY_PAGING = BASE_API_URL + "/api/country?name={0}&column_order={1}&sort_dir={2}&page={3}&page_size={4}";
+
+        public const string COUNTRY_INSERT = BASE_API_URL + "/api/country";
+
+        public const string COUNTRY_UPDATE = BASE_API_URL + "/api/country";
+
+        public const string COUNTRY_DELETE = BASE_API_URL + "/api/country/{0}";
+
+        public const string COUNTRY_GET_BY_ID = BASE_API_URL + "/api/country/{0}";
+
+        public const string COUNTRY_GET_ALL = BASE_API_URL + "/api/country/all";
+        #endregion
+
         #region InvoiceStatus
 
         public const string INVOICE_STATUS_GET_ALL = BASE_API_URL + "/api/invoice_status/all";

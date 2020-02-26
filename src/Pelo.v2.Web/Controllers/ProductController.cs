@@ -30,7 +30,7 @@ namespace Pelo.v2.Web.Controllers
             await _baseModelFactory.PrepareProductGroups(searchModel.AvaiableProductGroups);
             await _baseModelFactory.PrepareProductUnits(searchModel.AvaiableProductUnits);
             await _baseModelFactory.PrepareProductStatuses(searchModel.AvaiableProductStatuses);
-            await _baseModelFactory.PrepareProductStatuses(searchModel.AvaiableCountries);
+            //await _baseModelFactory.PrepareCountries(searchModel.AvaiableCountries);
 
             return View(searchModel);
         }
@@ -56,7 +56,7 @@ namespace Pelo.v2.Web.Controllers
             await _baseModelFactory.PrepareProductGroups(searchModel.AvaiableProductGroups);
             await _baseModelFactory.PrepareProductUnits(searchModel.AvaiableProductUnits);
             await _baseModelFactory.PrepareProductStatuses(searchModel.AvaiableProductStatuses);
-            await _baseModelFactory.PrepareProductStatuses(searchModel.AvaiableCountries);
+            await _baseModelFactory.PrepareCountries(searchModel.AvaiableCountries);
             return View(searchModel);
         }
         [HttpPost]
@@ -74,7 +74,7 @@ namespace Pelo.v2.Web.Controllers
             await _baseModelFactory.PrepareProductGroups(searchModel.AvaiableProductGroups);
             await _baseModelFactory.PrepareProductUnits(searchModel.AvaiableProductUnits);
             await _baseModelFactory.PrepareProductStatuses(searchModel.AvaiableProductStatuses);
-            await _baseModelFactory.PrepareProductStatuses(searchModel.AvaiableCountries);
+            await _baseModelFactory.PrepareCountries(searchModel.AvaiableCountries);
             return View(model);
         }
         public async Task<IActionResult> Edit(int id)
@@ -88,7 +88,7 @@ namespace Pelo.v2.Web.Controllers
                 await _baseModelFactory.PrepareProductGroups(searchModel.AvaiableProductGroups);
                 await _baseModelFactory.PrepareProductUnits(searchModel.AvaiableProductUnits);
                 await _baseModelFactory.PrepareProductStatuses(searchModel.AvaiableProductStatuses);
-                await _baseModelFactory.PrepareProductStatuses(searchModel.AvaiableCountries);
+                await _baseModelFactory.PrepareCountries(searchModel.AvaiableCountries);
                 searchModel.Id = result.Data.Id;
                 searchModel.Name = result.Data.Name;
                 searchModel.WarrantyMonth = result.Data.WarrantyMonth;
@@ -119,7 +119,7 @@ namespace Pelo.v2.Web.Controllers
             await _baseModelFactory.PrepareProductGroups(model.AvaiableProductGroups);
             await _baseModelFactory.PrepareProductUnits(model.AvaiableProductUnits);
             await _baseModelFactory.PrepareProductStatuses(model.AvaiableProductStatuses);
-            await _baseModelFactory.PrepareProductStatuses(model.AvaiableCountries);
+            await _baseModelFactory.PrepareCountries(model.AvaiableCountries);
             return View(model);
         }
     }

@@ -124,7 +124,7 @@ namespace Pelo.v2.Web.Services.CustomerSource
         {
             try
             {
-                var url = string.Format(ApiUrl.CUSTOMER_GROUP_DELETE,
+                var url = string.Format(ApiUrl.CUSTOMER_SOURCE_DELETE,
                                         id);
                 var response = await HttpService.Send<bool>(url,
                                                             null,

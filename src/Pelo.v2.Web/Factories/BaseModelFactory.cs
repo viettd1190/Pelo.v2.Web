@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pelo.v2.Web.Services.Branch;
+using Pelo.v2.Web.Services.Country;
 using Pelo.v2.Web.Services.CrmPriority;
 using Pelo.v2.Web.Services.CrmStatus;
 using Pelo.v2.Web.Services.CrmType;
@@ -154,7 +155,16 @@ namespace Pelo.v2.Web.Factories
         Task PrepareProductStatuses(IList<SelectListItem> items,
                                     bool withSpecialDefaultItem = true,
                                     string defaultItemText = null);
-
+        /// <summary>
+        ///     Get all Countries
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="withSpecialDefaultItem"></param>
+        /// <param name="defaultItemText"></param>
+        /// <returns></returns>
+        Task PrepareCountries(IList<SelectListItem> items,
+                                    bool withSpecialDefaultItem = true,
+                                    string defaultItemText = null);
         /// <summary>
         ///     Get all manufacturers
         /// </summary>
@@ -375,6 +385,8 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IReceiptDescriptionService _receiptDescriptionService;
 
+        private readonly ICountryService _countryService;
+
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
                                 IWardService wardService,
@@ -400,7 +412,8 @@ namespace Pelo.v2.Web.Factories
                                 IPayMethodService payMethodService,
                                 IInvoiceStatusService invoiceStatusService,
                                 IReceiptStatusService receiptStatusService,
-                                IReceiptDescriptionService receiptDescriptionService)
+                                IReceiptDescriptionService receiptDescriptionService,
+                                ICountryService countryService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -428,6 +441,7 @@ namespace Pelo.v2.Web.Factories
             _invoiceStatusService = invoiceStatusService;
             _receiptStatusService = receiptStatusService;
             _receiptDescriptionService = receiptDescriptionService;
+            _countryService = countryService;
         }
 
         #region IBaseModelFactory Members
@@ -1073,6 +1087,29 @@ namespace Pelo.v2.Web.Factories
                                defaultItemText);
         }
 
+        public async Task PrepareCountries(IList<SelectListItem> items,
+                                                bool withSpecialDefaultItem = true,
+                                                string defaultItemText = null)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available customer groups
+            var avaiableCountry = await _countryService.GetAll();
+            foreach (var country in avaiableCountry)
+            {
+                items.Add(new SelectListItem
+                {
+                    Value = country.Id.ToString(),
+                    Text = $"{country.Name}"
+                });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
         #endregion
 
         /// <summary>
