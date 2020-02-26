@@ -4,6 +4,7 @@ using Pelo.Common.Extensions;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Customer;
 using Pelo.v2.Web.Services.Customer;
+using Pelo.v2.Web.Services.Invoice;
 
 namespace Pelo.v2.Web.Controllers
 {
@@ -13,10 +14,14 @@ namespace Pelo.v2.Web.Controllers
 
         private readonly ICustomerService _customerService;
 
+        private IInvoiceService _invoiceService;
+
         public CustomerController(ICustomerService customerService,
+                                  IInvoiceService invoiceService,
                                   IBaseModelFactory baseModelFactory)
         {
             _customerService = customerService;
+            _invoiceService = invoiceService;
             _baseModelFactory = baseModelFactory;
         }
 
@@ -165,6 +170,13 @@ namespace Pelo.v2.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _customerService.Delete(id);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetInvoicesByCustomerId(CustomerInvoiceSearchModel model)
+        {
+            var result = await _invoiceService.GetByCustomerIdPaging(model);
             return Json(result);
         }
     }

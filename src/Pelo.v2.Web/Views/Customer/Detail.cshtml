@@ -1,26 +1,37 @@
 ﻿@model Pelo.v2.Web.Models.Customer.CustomerDetailModel
 
 @{
-    ViewBag.Title = "Thông tin khách hàng: "+Model.Name;
+    ViewBag.Title = "Thông tin khách hàng: " + Model.Name;
     Layout = "_Layout";
 }
 
-@section css{ 
+@section cssPlugin{
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{
     <style>
         .label-content {
-            color:#6b6fb9;
-            font-weight:600;
+            color: #6b6fb9;
+            font-weight: 600;
         }
+
         .divider {
-            border:1px solid #c6c6c6;
-            margin-bottom:20px;
+            border: 1px solid #c6c6c6;
+            margin-bottom: 20px;
         }
+
         a.btn.title-history {
             width: 100% !important;
             background-color: white !important;
             color: black !important;
-            text-align:left !important;
-            border-color:#c6c6c6 !important;
+            text-align: left !important;
+            border-color: #c6c6c6 !important;
+        }
+
+        .dataTables_length {
+            display:none;
         }
     </style>
 }
@@ -31,253 +42,249 @@
 </ol>
 
 <section class="card">
-<div class="card-block">
-<form id="customer-detail-form">
-@Html.ValidationSummary()
-@Html.HiddenFor(c => c.Id)
-<div class="row">
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Mã khách hàng: <span class="label-content">@Model.Code</span></label>
-    </fieldset>
-</div>
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Người tạo: <a class="label-content" href="tel:@Model.UserCreatedPhone">@Model.UserCreated</a></label>
-    </fieldset>
-</div>
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Tên khách hàng: <span class="label-content">@Model.Name</span></label>
-    </fieldset>
-</div>
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Ngày tạo: <span class="label-content">@string.Format(AppUtil.DATE_TIME_FORMAT, Model.DateCreated)</span></label>
-    </fieldset>
-</div>
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Ngày sinh: <span class="label-content"></span></label>
-    </fieldset>
-</div>
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Email: <span class="label-content"><a class="label-content" href="mailto:@Model.Email">@Model.Email</a></span></label>
-    </fieldset>
-</div>
-<div class="col-lg-12">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Số điện thoại: <a class="label-content" href="tel:@Model.Phone">@Model.Phone</a></label>
-    </fieldset>
-</div>
-@{
-    if (!string.IsNullOrEmpty(Model.Phone2))
-    {
-        <div class="col-lg-12">
-            <fieldset class="form-group">
-                <label class="form-label semibold">Số điện thoại 2: <a class="label-content" href="tel:@Model.Phone2">@Model.Phone2</a></label>
-            </fieldset>
-        </div>
-    }
-    if (!string.IsNullOrEmpty(Model.Phone3))
-    {
-        <div class="col-lg-12">
-            <fieldset class="form-group">
-                <label class="form-label semibold">Số điện thoại 3: <a class="label-content" href="tel:@Model.Phone3">@Model.Phone3</a></label>
-            </fieldset>
-        </div>
-    }
-    if (!string.IsNullOrEmpty(Model.Province))
-    {
-        <div class="col-lg-12">
-            <fieldset class="form-group">
-                <label class="form-label semibold">Địa chỉ: <span class="label-content">@Model.Address, @Model.Ward, @Model.District, @Model.Province</span></label>
-            </fieldset>
-        </div>
-    }
-    else
-    {
-        <div class="col-lg-12">
-            <fieldset class="form-group">
-                <label class="form-label semibold">Địa chỉ: <span class="label-content">@Model.Address</span></label>
-            </fieldset>
-        </div>
-    }
-}
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Nhóm khách hàng: <span class="label-content">@Model.CustomerGroup</span></label>
-    </fieldset>
-</div>
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Mức độ thân thiết: <span class="label-content">@Model.CustomerVip</span></label>
-    </fieldset>
-</div>
-<div class="col-lg-12">
-    <div class="divider"></div>
-</div>
-<div class="col-lg-12">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Số lợi nhuận bên HD Pelo ghi nhận: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, Model.Profit)</span></label>
-    </fieldset>
-</div>
-<div class="col-lg-12">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Số lợi nhuận kế toán điều chỉnh: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, Model.ProfitUpdate)</span></label>
-    </fieldset>
-</div>
-<div class="col-lg-12">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Số lợi nhuận khách trả cho Vidia: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, Model.Profit - Model.ProfitUpdate)</span></label>
-    </fieldset>
-</div>
-<div class="col-lg-12">
-    <div class="divider"></div>
-</div>
-<div class="col-lg-12">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Bạn đang phụ trách: <a class="label-content" href="tel:@Model.UserCare">@Model.UserCare</a></label>
-    </fieldset>
-</div>
-<div class="col-lg-12">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Nguồn giúp quen biết khách lần đầu: <a class="label-content" href="tel:@Model.UserFirstPhone">@Model.UserFirst</a></label>
-    </fieldset>
-</div>
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <label class="form-label semibold">Ghi chú: <span class="label-content">@Model.Description</span></label>
-    </fieldset>
-</div>
-<div class="col-lg-12">
-    <fieldset class="form-group" style="text-align:center;">
-        <a href="@Url.Action("Edit","Customer",new{id=Model.Id})" class="btn btn-primary"><i class="fa fa-cog"></i>&nbsp;Cập nhật</a>
-    </fieldset>
-</div>
-<div class="col-lg-6">
-    <fieldset class="form-group">
-        <small>Cập nhật lần cuối ngày: <span>@string.Format(AppUtil.DATE_TIME_FORMAT,Model.DateUpdated)</span></small>
-    </fieldset>
-</div>
-<div class="col-lg-12">
-    <br/>
-    <h4 class="label-content" style="text-align:center;">Lịch sử giao dịch của khách</h4>
-</div>
-<div class="col-lg-12">
-    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseInvoice" role="button" aria-expanded="false" aria-controls="collapseInvoice">
-        Đơn hàng <span id="invoiceCount">(0)</span>
-    </a>
-    <div class="mt-2 collapse" id="collapseInvoice" style="">
-        <div class="table-responsive">
-            <table id="tblInvoices" class="table table-bordered">
-                <thead class="thead-default">
-                <tr>
-                    <th></th>
-                    <th>Trạng thái</th>
-                    <th>Mã đơn hàng</th>
-                    <th>Sản phẩm</th>
-                    <th>Chi nhánh</th>
-                    <th>Ngày giao</th>
-                    <th>Ngày tạo</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
+    <div class="card-block">
+        <form id="customer-detail-form">
+            @Html.ValidationSummary()
+            @Html.HiddenFor(c => c.Id)
+            <div class="row">
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Mã khách hàng: <span class="label-content">@Model.Code</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Người tạo: <a class="label-content" href="tel:@Model.UserCreatedPhone">@Model.UserCreated</a></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Tên khách hàng: <span class="label-content">@Model.Name</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Ngày tạo: <span class="label-content">@string.Format(AppUtil.DATE_TIME_FORMAT, Model.DateCreated)</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Ngày sinh: <span class="label-content"></span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Email: <span class="label-content"><a class="label-content" href="mailto:@Model.Email">@Model.Email</a></span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Số điện thoại: <a class="label-content" href="tel:@Model.Phone">@Model.Phone</a></label>
+                    </fieldset>
+                </div>
+                @{
+                    if (!string.IsNullOrEmpty(Model.Phone2))
+                    {
+                        <div class="col-lg-12">
+                            <fieldset class="form-group">
+                                <label class="form-label semibold">Số điện thoại 2: <a class="label-content" href="tel:@Model.Phone2">@Model.Phone2</a></label>
+                            </fieldset>
+                        </div>
+                    }
+                    if (!string.IsNullOrEmpty(Model.Phone3))
+                    {
+                        <div class="col-lg-12">
+                            <fieldset class="form-group">
+                                <label class="form-label semibold">Số điện thoại 3: <a class="label-content" href="tel:@Model.Phone3">@Model.Phone3</a></label>
+                            </fieldset>
+                        </div>
+                    }
+                    if (!string.IsNullOrEmpty(Model.Province))
+                    {
+                        <div class="col-lg-12">
+                            <fieldset class="form-group">
+                                <label class="form-label semibold">Địa chỉ: <span class="label-content">@Model.Address, @Model.Ward, @Model.District, @Model.Province</span></label>
+                            </fieldset>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-lg-12">
+                            <fieldset class="form-group">
+                                <label class="form-label semibold">Địa chỉ: <span class="label-content">@Model.Address</span></label>
+                            </fieldset>
+                        </div>
+                    }
+                }
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Nhóm khách hàng: <span class="label-content">@Model.CustomerGroup</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Mức độ thân thiết: <span class="label-content">@Model.CustomerVip</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <div class="divider"></div>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Số lợi nhuận bên HD Pelo ghi nhận: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, Model.Profit)</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Số lợi nhuận kế toán điều chỉnh: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, Model.ProfitUpdate)</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Số lợi nhuận khách trả cho Vidia: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, Model.Profit - Model.ProfitUpdate)</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <div class="divider"></div>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Bạn đang phụ trách: <a class="label-content" href="tel:@Model.UserCare">@Model.UserCare</a></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Nguồn giúp quen biết khách lần đầu: <a class="label-content" href="tel:@Model.UserFirstPhone">@Model.UserFirst</a></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Ghi chú: <span class="label-content">@Model.Description</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group" style="text-align:center;">
+                        <a href="@Url.Action("Edit","Customer",new{id=Model.Id})" class="btn btn-primary"><i class="fa fa-cog"></i>&nbsp;Cập nhật</a>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <small>Cập nhật lần cuối ngày: <span>@string.Format(AppUtil.DATE_TIME_FORMAT, Model.DateUpdated)</span></small>
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <br />
+                    <h4 class="label-content" style="text-align:center;">Lịch sử giao dịch của khách</h4>
+                </div>
+                <div class="col-lg-12">
+                    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseInvoice" role="button" aria-expanded="false" aria-controls="collapseInvoice">
+                        Đơn hàng <span id="invoiceCount">(0)</span>
+                    </a>
+                    <div class="mt-2 collapse" id="collapseInvoice" style="">
+                        <div class="table-responsive">
+                            @await Component.InvokeAsync("CustomerInvoice", new
+                                                                                     {
+                                                                                             customerId = Model.Id
+                                                                                     })
+                        </div>
+                    </div>
+                    <br />
+                    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseCrm" role="button" aria-expanded="false" aria-controls="collapseCrm">
+                        Crm <span id="crmCount">(0)</span>
+                    </a>
+                    <div class="mt-2 collapse" id="collapseCrm" style="">
+                        <div class="table-responsive">
+                            <table id="tblCrms" class="table table-bordered">
+                                <thead class="thead-default">
+                                    <tr>
+                                        <th></th>
+                                        <th>Trạng thái</th>
+                                        <th>Mã cơ hội</th>
+                                        <th>Nhu cầu</th>
+                                        <th>Thông tin thêm</th>
+                                        <th>Phụ trách</th>
+                                        <th>Ngày liên hệ</th>
+                                        <th>Ngày tạo</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseTask" role="button" aria-expanded="false" aria-controls="collapseTask">
+                        Công việc <span id="taskCount">(0)</span>
+                    </a>
+                    <div class="mt-2 collapse" id="collapseTask" style="">
+                        <div class="table-responsive">
+                            <table id="tblTasks" class="table table-bordered">
+                                <thead class="thead-default">
+                                    <tr>
+                                        <th></th>
+                                        <th>Trạng thái</th>
+                                        <th>MỨc độ gấp</th>
+                                        <th>Mã công việc</th>
+                                        <th>Người liên hệ</th>
+                                        <th>Công việc</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseReceipt" role="button" aria-expanded="false" aria-controls="collapseReceipt">
+                        Biên nhận <span id="receiptCount">(0)</span>
+                    </a>
+                    <div class="mt-2 collapse" id="collapseReceipt" style="">
+                        <div class="table-responsive">
+                            <table id="tblReceipts" class="table table-bordered">
+                                <thead class="thead-default">
+                                    <tr>
+                                        <th></th>
+                                        <th>Trạng thái</th>
+                                        <th>Mã biên nhận</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Chi nhánh</th>
+                                        <th>Ngày hẹn</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseWarranty" role="button" aria-expanded="false" aria-controls="collapseWarranty">
+                        Bảo hành <span id="warrantyCount">(0)</span>
+                    </a>
+                    <div class="mt-2 collapse" id="collapseWarranty" style="">
+                        <div class="table-responsive">
+                            <table id="tblWarrantys" class="table table-bordered">
+                                <thead class="thead-default">
+                                    <tr>
+                                        <th></th>
+                                        <th>Trạng thái</th>
+                                        <th>Mã bảo hành</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Chi nhánh</th>
+                                        <th>Ngày hẹn</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+            </div>
+        </form>
     </div>
-    <br />
-    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseCrm" role="button" aria-expanded="false" aria-controls="collapseCrm">
-        Crm <span id="crmCount">(0)</span>
-    </a>
-    <div class="mt-2 collapse" id="collapseCrm" style="">
-        <div class="table-responsive">
-            <table id="tblCrms" class="table table-bordered">
-                <thead class="thead-default">
-                <tr>
-                    <th></th>
-                    <th>Trạng thái</th>
-                    <th>Mã cơ hội</th>
-                    <th>Nhu cầu</th>
-                    <th>Thông tin thêm</th>
-                    <th>Phụ trách</th>
-                    <th>Ngày liên hệ</th>
-                    <th>Ngày tạo</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <br />
-    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseTask" role="button" aria-expanded="false" aria-controls="collapseTask">
-        Công việc <span id="taskCount">(0)</span>
-    </a>
-    <div class="mt-2 collapse" id="collapseTask" style="">
-        <div class="table-responsive">
-            <table id="tblTasks" class="table table-bordered">
-                <thead class="thead-default">
-                <tr>
-                    <th></th>
-                    <th>Trạng thái</th>
-                    <th>MỨc độ gấp</th>
-                    <th>Mã công việc</th>
-                    <th>Người liên hệ</th>
-                    <th>Công việc</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <br />
-    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseReceipt" role="button" aria-expanded="false" aria-controls="collapseReceipt">
-        Biên nhận <span id="receiptCount">(0)</span>
-    </a>
-    <div class="mt-2 collapse" id="collapseReceipt" style="">
-        <div class="table-responsive">
-            <table id="tblReceipts" class="table table-bordered">
-                <thead class="thead-default">
-                <tr>
-                    <th></th>
-                    <th>Trạng thái</th>
-                    <th>Mã biên nhận</th>
-                    <th>Sản phẩm</th>
-                    <th>Chi nhánh</th>
-                    <th>Ngày hẹn</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <br />
-    <a style="margin-bottom:5px" class="btn collapsed title-history" data-toggle="collapse" href="#collapseWarranty" role="button" aria-expanded="false" aria-controls="collapseWarranty">
-        Bảo hành <span id="warrantyCount">(0)</span>
-    </a>
-    <div class="mt-2 collapse" id="collapseWarranty" style="">
-        <div class="table-responsive">
-            <table id="tblWarrantys" class="table table-bordered">
-                <thead class="thead-default">
-                <tr>
-                    <th></th>
-                    <th>Trạng thái</th>
-                    <th>Mã bảo hành</th>
-                    <th>Sản phẩm</th>
-                    <th>Chi nhánh</th>
-                    <th>Ngày hẹn</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <br />
-</div>
-</div>
-</form>
-</div>
 </section>
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+    <script src="~/startui/js/lib/moment/moment.min.js"></script>
+}
 
 @section js{
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('.opened').removeClass('opened');
             $('.row-active').removeClass('row-active');
             $('#liCustomers').addClass('opened');

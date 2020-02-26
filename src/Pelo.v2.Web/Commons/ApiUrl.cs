@@ -231,7 +231,7 @@
 
         public const string CRM_GET_CRM_CUSTOMER_BY_PAGING = BASE_API_URL + "/api/crm/get_by_customer?customerId={0}&page={1}&pageSize={2}";
 
-        public const string CRM_GET_INVOICE_CUSTOMER_BY_PAGING = BASE_API_URL + "/api/invoice/get_by_custome?customerId={0}&page={1}&pageSize={2}";
+        public const string GET_INVOICE_CUSTOMER_BY_PAGING = BASE_API_URL + "/api/invoice/get_by_customer?customerId={0}&page={1}&pageSize={2}";
 
         public const string CRM_INSERT = BASE_API_URL + "/api/crm";
 

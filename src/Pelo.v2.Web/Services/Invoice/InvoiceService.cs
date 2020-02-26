@@ -7,6 +7,7 @@ using Pelo.Common.Dtos.Invoice;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
+using Pelo.v2.Web.Models.Customer;
 using Pelo.v2.Web.Models.Invoice;
 using Pelo.v2.Web.Services.Http;
 
@@ -17,13 +18,16 @@ namespace Pelo.v2.Web.Services.Invoice
         Task<InvoiceListModel> GetByPaging(InvoiceSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<InvoiceListModel> GetByCustomerIdPaging(CustomerInvoiceSearchModel request);
     }
 
     public class InvoiceService : BaseService,
-                                    IInvoiceService
+                                  IInvoiceService
     {
         public InvoiceService(IHttpService httpService,
-                                ILogger<BaseService> logger) : base(httpService, logger)
+                              ILogger<BaseService> logger) : base(httpService,
+                                                                  logger)
         {
         }
 
@@ -33,7 +37,7 @@ namespace Pelo.v2.Web.Services.Invoice
         {
             try
             {
-                if (request != null)
+                if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
@@ -53,50 +57,57 @@ namespace Pelo.v2.Web.Services.Invoice
                                             request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetInvoicePagingResponse>>(url,
-                                                                                                  null,
-                                                                                                  HttpMethod.Get,
-                                                                                                  true);
+                                                                                                null,
+                                                                                                HttpMethod.Get,
+                                                                                                true);
 
-                    if (response.IsSuccess)
+                    if(response.IsSuccess)
                         return new InvoiceListModel
-                        {
-                            Draw = request.Draw,
-                            RecordsFiltered = response.Data.TotalCount,
-                            Total = response.Data.TotalCount,
-                            RecordsTotal = response.Data.TotalCount,
-                            Data = response.Data.Data.Select(c => new InvoiceModel
-                            {
-                                Id = c.Id,
-                                Code = c.Code,
-                                Branch = c.Branch,
-                                Customer = c.CustomerName,
-                                CustomerCode = c.CustomerCode,
-                                CustomerAddress = c.CustomerAddress,
-                                CustomerPhone = c.CustomerPhone,
-                                CustomerPhone2 = c.CustomerPhone2,
-                                CustomerPhone3 = c.CustomerPhone3,
-                                Province = c.Province,
-                                District = c.District,
-                                InvoiceStatus = c.InvoiceStatus,
-                                InvoiceStatusColor = c.InvoiceStatusColor,
-                                Ward = c.Ward,
-                                UserSellPhone = c.UserSellPhone,
-                                UserDeliveries = c.UsersDelivery.Select(v => new UserDisplaySimpleList { Id = v.Id, DisplayName = v.DisplayName, PhoneNumber = v.PhoneNumber }).ToList(),
-                                UserSell = c.UserSell,
-                                UserCreatedPhone = c.UserCreatedPhone,
-                                DateCreated = c.DateCreated,
-                                DeliveryDate = c.DeliveryDate,
-                                Products = c.Products.Select(v => new ProductInInvoiceSimpleList
-                                {
-                                    Description = v.Description,
-                                    Id = v.Id,
-                                    Name = v.Name
-                                }).ToList(),
-                                UserCreated = c.UserCreated,
-                                PageSize = request.PageSize,
-                                PageSizeOptions = request.AvailablePageSizes
-                            })
-                        };
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new InvoiceModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Code = c.Code,
+                                                                                     Branch = c.Branch,
+                                                                                     Customer = c.CustomerName,
+                                                                                     CustomerCode = c.CustomerCode,
+                                                                                     CustomerAddress = c.CustomerAddress,
+                                                                                     CustomerPhone = c.CustomerPhone,
+                                                                                     CustomerPhone2 = c.CustomerPhone2,
+                                                                                     CustomerPhone3 = c.CustomerPhone3,
+                                                                                     Province = c.Province,
+                                                                                     District = c.District,
+                                                                                     InvoiceStatus = c.InvoiceStatus,
+                                                                                     InvoiceStatusColor = c.InvoiceStatusColor,
+                                                                                     Ward = c.Ward,
+                                                                                     UserSellPhone = c.UserSellPhone,
+                                                                                     UserDeliveries = c.UsersDelivery.Select(v => new UserDisplaySimpleList
+                                                                                                                                  {
+                                                                                                                                          Id = v.Id,
+                                                                                                                                          DisplayName = v.DisplayName,
+                                                                                                                                          PhoneNumber = v.PhoneNumber
+                                                                                                                                  })
+                                                                                                       .ToList(),
+                                                                                     UserSell = c.UserSell,
+                                                                                     UserCreatedPhone = c.UserCreatedPhone,
+                                                                                     DateCreated = c.DateCreated,
+                                                                                     DeliveryDate = c.DeliveryDate,
+                                                                                     Products = c.Products.Select(v => new ProductInInvoiceSimpleList
+                                                                                                                       {
+                                                                                                                               Description = v.Description,
+                                                                                                                               Id = v.Id,
+                                                                                                                               Name = v.Name
+                                                                                                                       })
+                                                                                                 .ToList(),
+                                                                                     UserCreated = c.UserCreated,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
 
                     throw new PeloException(response.Message);
                 }
@@ -119,7 +130,7 @@ namespace Pelo.v2.Web.Services.Invoice
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -129,6 +140,74 @@ namespace Pelo.v2.Web.Services.Invoice
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<InvoiceListModel> GetByCustomerIdPaging(CustomerInvoiceSearchModel request)
+        {
+            try
+            {
+                if(request != null)
+                {
+                    var start = request.Start / request.Length + 1;
+
+                    var url = string.Format(ApiUrl.GET_INVOICE_CUSTOMER_BY_PAGING,
+                                            request.CustomerId,
+                                            start,
+                                            request?.Length ?? 10);
+
+                    var response = await HttpService.Send<PageResult<GetInvoicePagingResponse>>(url,
+                                                                                                null,
+                                                                                                HttpMethod.Get,
+                                                                                                true);
+
+                    if(response.IsSuccess)
+                        return new InvoiceListModel
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new InvoiceModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Code = c.Code,
+                                                                                     Branch = c.Branch,
+                                                                                     InvoiceStatus = c.InvoiceStatus,
+                                                                                     InvoiceStatusColor = c.InvoiceStatusColor,
+                                                                                     UserSellPhone = c.UserSellPhone,
+                                                                                     UserDeliveries = c.UsersDelivery.Select(v => new UserDisplaySimpleList
+                                                                                                                                  {
+                                                                                                                                          Id = v.Id,
+                                                                                                                                          DisplayName = v.DisplayName,
+                                                                                                                                          PhoneNumber = v.PhoneNumber
+                                                                                                                                  })
+                                                                                                       .ToList(),
+                                                                                     UserSell = c.UserSell,
+                                                                                     UserCreatedPhone = c.UserCreatedPhone,
+                                                                                     DateCreated = c.DateCreated,
+                                                                                     DeliveryDate = c.DeliveryDate,
+                                                                                     Products = c.Products.Select(v => new ProductInInvoiceSimpleList
+                                                                                                                       {
+                                                                                                                               Description = v.Description,
+                                                                                                                               Id = v.Id,
+                                                                                                                               Name = v.Name
+                                                                                                                       })
+                                                                                                 .ToList(),
+                                                                                     UserCreated = c.UserCreated,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
+
+                    throw new PeloException(response.Message);
+                }
+
+                throw new PeloException("Request is null");
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
             }
         }
 
