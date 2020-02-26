@@ -20,6 +20,10 @@ namespace Pelo.v2.Web.Services.Customer
 
         Task<TResponse<GetCustomerDetailResponse>> GetDetail(int id);
 
+        Task<TResponse<CustomerUpdateModel>> GetById(int id);
+
+        Task<TResponse<bool>> Update(CustomerUpdateModel request);
+
         Task<TResponse<bool>> Delete(int id);
     }
 
@@ -127,7 +131,7 @@ namespace Pelo.v2.Web.Services.Customer
                                                             request,
                                                             HttpMethod.Post,
                                                             true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -160,6 +164,82 @@ namespace Pelo.v2.Web.Services.Customer
             catch (Exception exception)
             {
                 return await Fail<GetCustomerDetailResponse>(exception);
+            }
+        }
+
+        public async Task<TResponse<CustomerUpdateModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CUSTOMER_GET_BY_ID,
+                                        id);
+                var response = await HttpService.Send<GetCustomerByIdResponse>(url,
+                                                                               null,
+                                                                               HttpMethod.Get,
+                                                                               true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(new CustomerUpdateModel
+                                    {
+                                            Id = response.Data.Id,
+                                            Address = response.Data.Address,
+                                            CustomerGroupId = response.Data.CustomerGroupId,
+                                            Description = response.Data.Description,
+                                            DistrictId = response.Data.DistrictId,
+                                            Email = response.Data.Email,
+                                            Name = response.Data.Name,
+                                            Code = response.Data.Code,
+                                            Phone = response.Data.Phone,
+                                            Phone2 = response.Data.Phone2,
+                                            Phone3 = response.Data.Phone3,
+                                            ProvinceId = response.Data.ProvinceId,
+                                            Profit = response.Data.Profit,
+                                            ProfitUpdate = response.Data.ProfitUpdate,
+                                            WardId = response.Data.WardId
+                                    });
+                }
+
+                return await Fail<CustomerUpdateModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<CustomerUpdateModel>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(CustomerUpdateModel request)
+        {
+            try
+            {
+                var url = ApiUrl.CUSTOMER_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new
+                                                            {
+                                                                    request.Id,
+                                                                    request.Name,
+                                                                    request.Phone,
+                                                                    request.Phone2,
+                                                                    request.Phone3,
+                                                                    request.Email,
+                                                                    request.ProvinceId,
+                                                                    request.DistrictId,
+                                                                    request.WardId,
+                                                                    request.Address,
+                                                                    request.CustomerGroupId,
+                                                                    request.Description
+                                                            },
+                                                            HttpMethod.Put,
+                                                            true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 

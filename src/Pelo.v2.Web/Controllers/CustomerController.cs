@@ -80,7 +80,7 @@ namespace Pelo.v2.Web.Controllers
 
         public async Task<IActionResult> Add()
         {
-            var model=new CustomerInsertModel();
+            var model = new CustomerInsertModel();
 
             await _baseModelFactory.PrepareCustomerGroups(model.AvaiableCustomerGroups);
             await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
@@ -93,17 +93,71 @@ namespace Pelo.v2.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CustomerInsertModel model)
         {
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
                 var result = await _customerService.Insert(model);
-                if (result.IsSuccess)
+                if(result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();
                     return RedirectToAction("Index");
                 }
 
-                ModelState.AddModelError("", result.Message);
+                ModelState.AddModelError("",
+                                         result.Message);
             }
+
+            await _baseModelFactory.PrepareCustomerGroups(model.AvaiableCustomerGroups);
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
+            await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts);
+            await _baseModelFactory.PrepareWards(model.AvaiableWards);
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var customer = await _customerService.GetById(id);
+            if(customer.IsSuccess)
+            {
+                var model = customer.Data;
+
+                await _baseModelFactory.PrepareCustomerGroups(model.AvaiableCustomerGroups);
+                await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
+                await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts);
+                await _baseModelFactory.PrepareWards(model.AvaiableWards);
+
+                return View(model);
+            }
+
+            return View("Notfound");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CustomerUpdateModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var result = await _customerService.Update(model);
+                if(result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Detail",
+                                            "Customer",
+                                            new
+                                            {
+                                                    id = model.Id
+                                            });
+                }
+
+                ModelState.AddModelError("",
+                                         result.Message);
+            }
+
+            await _baseModelFactory.PrepareCustomerGroups(model.AvaiableCustomerGroups);
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
+            await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts);
+            await _baseModelFactory.PrepareWards(model.AvaiableWards);
+
             return View(model);
         }
 
