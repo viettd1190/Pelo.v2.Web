@@ -45,48 +45,49 @@ namespace Pelo.v2.Web.Controllers
             return Json(result);
         }
 
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Detail(int id, string nextAction = "")
         {
             var customer = await _customerService.GetDetail(id);
-            if(customer.IsSuccess)
+            if (customer.IsSuccess)
             {
                 return View(new CustomerDetailModel
-                            {
-                                    Address = customer.Data.Address,
-                                    BirthDate = customer.Data.BirthDate,
-                                    Code = customer.Data.Code,
-                                    CustomerGroup = customer.Data.CustomerGroup,
-                                    CustomerVip = customer.Data.CustomerVip,
-                                    DateCreated = customer.Data.DateCreated,
-                                    DateUpdated = customer.Data.DateUpdated,
-                                    Description = customer.Data.Description,
-                                    District = customer.Data.District,
-                                    Email = customer.Data.Email,
-                                    Id = customer.Data.Id,
-                                    Name = customer.Data.Name,
-                                    Phone = customer.Data.Phone,
-                                    Phone2 = customer.Data.Phone2,
-                                    Phone3 = customer.Data.Phone3,
-                                    Profit = customer.Data.Profit,
-                                    ProfitUpdate = customer.Data.ProfitUpdate,
-                                    Province = customer.Data.Province,
-                                    UserCare = customer.Data.UserCare,
-                                    UserCarePhone = customer.Data.UserCarePhone,
-                                    UserCreated = customer.Data.UserCreated,
-                                    UserCreatedPhone = customer.Data.UserCreatedPhone,
-                                    UserFirst = customer.Data.UserFirst,
-                                    UserFirstPhone = customer.Data.UserFirstPhone,
-                                    Ward = customer.Data.Ward
-                            });
+                {
+                    Address = customer.Data.Address,
+                    BirthDate = customer.Data.BirthDate,
+                    Code = customer.Data.Code,
+                    CustomerGroup = customer.Data.CustomerGroup,
+                    CustomerVip = customer.Data.CustomerVip,
+                    DateCreated = customer.Data.DateCreated,
+                    DateUpdated = customer.Data.DateUpdated,
+                    Description = customer.Data.Description,
+                    District = customer.Data.District,
+                    Email = customer.Data.Email,
+                    Id = customer.Data.Id,
+                    Name = customer.Data.Name,
+                    Phone = customer.Data.Phone,
+                    Phone2 = customer.Data.Phone2,
+                    Phone3 = customer.Data.Phone3,
+                    Profit = customer.Data.Profit,
+                    ProfitUpdate = customer.Data.ProfitUpdate,
+                    Province = customer.Data.Province,
+                    UserCare = customer.Data.UserCare,
+                    UserCarePhone = customer.Data.UserCarePhone,
+                    UserCreated = customer.Data.UserCreated,
+                    UserCreatedPhone = customer.Data.UserCreatedPhone,
+                    UserFirst = customer.Data.UserFirst,
+                    UserFirstPhone = customer.Data.UserFirstPhone,
+                    Ward = customer.Data.Ward,
+                    NextAction = nextAction
+                });
             }
 
             return View("Notfound");
         }
 
-        public async Task<IActionResult> Add()
+        public async Task<IActionResult> Add(string nextAction)
         {
             var model = new CustomerInsertModel();
-
+            model.Action = nextAction;
             await _baseModelFactory.PrepareCustomerGroups(model.AvaiableCustomerGroups);
             await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts);
@@ -98,13 +99,28 @@ namespace Pelo.v2.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CustomerInsertModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await _customerService.Insert(model);
-                if(result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();
-                    return RedirectToAction("Index");
+                    if (string.IsNullOrEmpty(model.Action))
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        var customer = await _customerService.GetCustomerByPhone(model.Phone);
+                        if (customer.IsSuccess)
+                        {
+                            return RedirectToAction("Add", model.Action, new
+                            {
+                                customerId = customer.Data.Id
+                            });
+                        }                            
+                    }
+
                 }
 
                 ModelState.AddModelError("",
@@ -122,7 +138,7 @@ namespace Pelo.v2.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var customer = await _customerService.GetById(id);
-            if(customer.IsSuccess)
+            if (customer.IsSuccess)
             {
                 var model = customer.Data;
 
@@ -140,17 +156,17 @@ namespace Pelo.v2.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(CustomerUpdateModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await _customerService.Update(model);
-                if(result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();
                     return RedirectToAction("Detail",
                                             "Customer",
                                             new
                                             {
-                                                    id = model.Id
+                                                id = model.Id
                                             });
                 }
 
@@ -178,6 +194,38 @@ namespace Pelo.v2.Web.Controllers
         {
             var result = await _invoiceService.GetByCustomerIdPaging(model);
             return Json(result);
+        }
+
+        public IActionResult FindByPhoneNumber(string nextAction)
+        {
+            return View(new FindCustomerByPhoneViewModel
+            {
+                NextAction = nextAction
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> FindByPhoneNumber(FindCustomerByPhoneViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var customer = await _customerService.GetCustomerByPhone(model.PhoneNumber);
+                if (customer.IsSuccess)
+                {
+                    return RedirectToAction("Detail",
+                                            "Customer",
+                                            new
+                                            {
+                                                id = customer.Data.Id,
+                                                nextAction = model.NextAction
+                                            });
+                }
+            }
+            return RedirectToAction("Add",
+                                    "Customer",
+                                    new
+                                    {
+                                        nextAction = model.NextAction
+                                    });
         }
     }
 }

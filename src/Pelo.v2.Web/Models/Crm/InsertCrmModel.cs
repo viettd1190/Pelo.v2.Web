@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Pelo.v2.Web.Models.Crm
 {
-    public class CrmSearchModel : BaseSearchModel
+    public class InsertCrmModel : BaseSearchModel
     {
-        public CrmSearchModel()
+        public InsertCrmModel()
         {
             AvaiableCustomerGroups = new List<SelectListItem>();
             AvaiableCrmStatuses = new List<SelectListItem>();
@@ -60,17 +60,19 @@ namespace Pelo.v2.Web.Models.Crm
 
         public int CustomerSourceId { get; set; }
 
+        public int CustomerId { get; set; }
+
         public int Code { get; set; }
 
-        public int UserCareId { get; set; }
+        public string UserCareIds { get; set; }
 
         public int ProductGroupId { get; set; }
 
         public int IsVisit { get; set; }
 
-        public DateTime? FromDate { get; set; }
+        public string ContactDate { get; set; }
 
-        public DateTime? ToDate { get; set; }
+        public string ContactTime { get; set; }
 
         public int UserCreatedId { get; set; }
 
@@ -101,5 +103,6 @@ namespace Pelo.v2.Web.Models.Crm
         public IList<SelectListItem> AvaiableVisits { get; set; }
 
         public IList<SelectListItem> AvaiableUserCreateds { get; set; }
+        public string Description { get; set; }
     }
 }

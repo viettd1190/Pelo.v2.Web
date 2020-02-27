@@ -38,6 +38,8 @@ namespace Pelo.v2.Web.Models.Customer
 
         public string Description { get; set; }
 
+        public string Action { get; set; }
+
         public IList<SelectListItem> AvaiableProvinces { get; set; }
 
         public IList<SelectListItem> AvaiableDistricts { get; set; }

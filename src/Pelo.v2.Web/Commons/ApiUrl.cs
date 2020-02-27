@@ -131,6 +131,7 @@
 
         public const string CUSTOMER_GET_BY_ID = BASE_API_URL + "/api/customer/{0}";
 
+
         public const string CUSTOMER_UPDATE = BASE_API_URL + "/api/customer";
 
         public const string CUSTOMER_DELETE = BASE_API_URL + "/api/customer/{0}";

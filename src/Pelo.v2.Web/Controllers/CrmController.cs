@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Crm;
 using Pelo.v2.Web.Services.Crm;
+using Pelo.Common.Extensions;
 
 namespace Pelo.v2.Web.Controllers
 {
@@ -100,6 +101,56 @@ namespace Pelo.v2.Web.Controllers
         {
             var result = await _crmService.KhachToiHenNgayMai(model);
             return Json(result);
+        }
+
+        public async Task<IActionResult> Add(int customerId)
+        {
+            var searchModel = new InsertCrmModel();
+
+            await _baseModelFactory.PrepareProvinces(searchModel.AvaiableProvinces);
+            await _baseModelFactory.PrepareDistricts(searchModel.AvaiableDistricts);
+            await _baseModelFactory.PrepareWards(searchModel.AvaiableWards);
+            await _baseModelFactory.PrepareCustomerGroups(searchModel.AvaiableCustomerGroups);
+            await _baseModelFactory.PrepareCustomerSources(searchModel.AvaiableCustomerSources);
+            await _baseModelFactory.PrepareCustomerVips(searchModel.AvaiableCustomerVips);
+            await _baseModelFactory.PrepareCrmTypes(searchModel.AvaiableCrmTypes);
+            await _baseModelFactory.PrepareCrmStatuses(searchModel.AvaiableCrmStatuses);
+            await _baseModelFactory.PrepareCrmPriorities(searchModel.AvaiableCrmPriorities);
+            await _baseModelFactory.PrepareUsers(searchModel.AvaiableUserCreateds);
+            await _baseModelFactory.PrepareUsers(searchModel.AvaiableUserCares);
+            await _baseModelFactory.PrepareProductGroups(searchModel.AvaiableProductGroups);
+
+            return View(searchModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add(InsertCrmModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _crmService.Insert(model);
+                if (result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("",
+                                         result.Message);
+            }
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
+            await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts);
+            await _baseModelFactory.PrepareWards(model.AvaiableWards);
+            await _baseModelFactory.PrepareCustomerGroups(model.AvaiableCustomerGroups);
+            await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources);
+            await _baseModelFactory.PrepareCustomerVips(model.AvaiableCustomerVips);
+            await _baseModelFactory.PrepareCrmTypes(model.AvaiableCrmTypes);
+            await _baseModelFactory.PrepareCrmStatuses(model.AvaiableCrmStatuses);
+            await _baseModelFactory.PrepareCrmPriorities(model.AvaiableCrmPriorities);
+            await _baseModelFactory.PrepareUsers(model.AvaiableUserCreateds);
+            await _baseModelFactory.PrepareUsers(model.AvaiableUserCares);
+            await _baseModelFactory.PrepareProductGroups(model.AvaiableProductGroups);
+
+            return View(model);
         }
     }
 }

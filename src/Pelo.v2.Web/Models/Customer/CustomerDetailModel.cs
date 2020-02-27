@@ -53,5 +53,7 @@ namespace Pelo.v2.Web.Models.Customer
         public DateTime DateCreated { get; set; }
 
         public DateTime DateUpdated { get; set; }
+
+        public string NextAction { get; set; }
     }
 }
