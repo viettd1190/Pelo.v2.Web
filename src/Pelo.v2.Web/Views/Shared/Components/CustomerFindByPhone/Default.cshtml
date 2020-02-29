@@ -1,0 +1,11 @@
+﻿@model Pelo.v2.Web.Models.Customer.CustomerFindByPhoneModel
+
+<div class="row">
+    <div class="col-lg-12">
+        <fieldset class="form-group">
+            <nop-label asp-for="PhoneNumber" text-display="Số điện thoại"/>
+            <input asp-for="PhoneNumber" class="form-control" type="text" placeholder="Số điện thoại"/>
+            @Html.ValidationMessageFor(c => c.PhoneNumber)
+        </fieldset>
+    </div>
+</div>

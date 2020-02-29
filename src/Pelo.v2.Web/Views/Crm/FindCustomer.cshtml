@@ -1,0 +1,41 @@
+﻿@model Pelo.v2.Web.Models.Customer.CustomerFindByPhoneModel
+
+@{
+    ViewBag.Title = "Thông tin khách hàng";
+    Layout = "_Layout";
+}
+
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","CrmPriority")">Danh sách CRM</a></li>
+    <li class="active">Thông tin khách hàng</li>
+</ol>
+
+<section class="card">
+    <div class="card-block">
+        <form asp-controller="Crm" asp-action="FindCustomer" method="post" id="crm-find-customer-form">
+            @Html.ValidationSummary()
+            @await Component.InvokeAsync("CustomerFindByPhone", Model)
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        <a class="btn btn-default" href="@Url.Action("Index", "Crm")">Hủy</a>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section js{
+    <script>
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liCrm').addClass('opened');
+            $('#liCrmList').addClass('row-active');
+        })
+    </script>
+}
+
+

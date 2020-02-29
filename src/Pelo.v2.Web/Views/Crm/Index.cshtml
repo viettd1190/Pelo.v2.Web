@@ -168,7 +168,7 @@
                     </div>
                     <div class="col-xs-12">
                         <button class="btn btn-primary" id="search-crm">Tìm kiếm</button>
-                        <a class="btn btn-success" href="@Url.Action("FindByPhoneNumber","Customer",new {nextAction="Crm" })">Thêm mới</a>
+                        <a class="btn btn-success" href="@Url.Action("FindCustomer","Crm")">Thêm mới</a>
                     </div>
                 </div>
             </div>
@@ -244,11 +244,6 @@
                                                            {
                                                                    Title = "Ngày liên hệ",
                                                                    Render = new RenderCustom("displayContactDate")
-                                                           },
-                                                           new ColumnProperty(nameof(CrmModel.DateCreated))
-                                                           {
-                                                                   Title = "Ngày tạo",
-                                                                   Render = new RenderCustom("displayDateCreated")
                                                            }
                                                    }
    })
@@ -257,7 +252,12 @@
 
 @section js{
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liCrm').addClass('opened');
+            $('#liCrmList').addClass('row-active');
+
             $('.panel').lobiPanel({
                     sortable:false,
                     draggable:false,
@@ -352,7 +352,7 @@
                 '</span></div>';
         }
         function displayContactDate(data, type, row, meta) {
-            return '<div style="text-align:center;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
+            return '<div style="text-align:center;min-width:121px;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
         }
         function displayDateCreated(data, type, row, meta) {
             return '<div style="text-align:center;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';

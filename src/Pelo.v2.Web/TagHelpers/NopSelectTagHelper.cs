@@ -120,20 +120,16 @@ namespace Pelo.v2.Web.TagHelpers
             bool.TryParse(IsMultiple, out bool multiple);
             if (!string.IsNullOrEmpty(tagName))
             {
-                IHtmlContent selectList;
                 if (multiple)
                 {
-                    selectList = _htmlHelper.Editor(tagName, "MultiSelect", new { htmlAttributes, SelectList = Items });
+                    htmlAttributes.Add("multiple", "multiple");
                 }
+                if (htmlAttributes.ContainsKey("class"))
+                    htmlAttributes["class"] += " form-control select2";
                 else
-                {
-                    if (htmlAttributes.ContainsKey("class"))
-                        htmlAttributes["class"] += " form-control select2";
-                    else
-                        htmlAttributes.Add("class", "form-control select2");
+                    htmlAttributes.Add("class", "form-control select2");
 
-                    selectList = _htmlHelper.DropDownList(tagName, Items, htmlAttributes);
-                }
+                var selectList = _htmlHelper.DropDownList(tagName, Items, htmlAttributes);
                 output.Content.SetHtmlContent(selectList.RenderHtmlContent());
             }
         }

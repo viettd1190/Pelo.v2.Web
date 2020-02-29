@@ -1,8 +1,115 @@
-﻿@model Pelo.v2.Web.Models.AppConfig.AppConfigInsert
+﻿@model Pelo.v2.Web.Models.Crm.InsertCrmModel
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Thêm mới CRM";
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+@section css{
+    <style>
+        .label-content {
+            color: #6b6fb9;
+            font-weight: 600;
+        }
+
+        .divider {
+            border: 1px solid #c6c6c6;
+            margin-bottom: 20px;
+        }
+
+        a.btn.title-history {
+            width: 100% !important;
+            background-color: white !important;
+            color: black !important;
+            text-align: left !important;
+            border-color: #c6c6c6 !important;
+        }
+
+        .dataTables_length {
+            display: none;
+        }
+    </style>
+}
+
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Crm")">Danh sách CRM</a></li>
+    <li class="active">Thêm mới CRM</li>
+</ol>
+
+<section class="card">
+    <div class="card-block">
+        <form id="insert-crm">
+            @Html.HiddenFor(c=>c.CustomerId)
+            @Html.ValidationSummary()
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>Thông tin khách hàng</h3>
+                </div>
+                @await Component.InvokeAsync("CustomerDetail",
+                                             Model.Customer)
+                <div class="col-lg-12">
+                    <div class="divider"></div>
+                </div>
+                <div class="col-lg-12">
+                    <h3>Tạo cơ hội bán hàng</h3>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Need">Nhu cầu</label>
+                        <textarea asp-for="Need" class="form-control" type="text" placeholder="Nhu cầu"></textarea>
+                        @Html.ValidationMessageFor(c => c.Need)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Description">Ghi chú</label>
+                        <textarea asp-for="Description" class="form-control" type="text" placeholder="Ghi chú"></textarea>
+                        @Html.ValidationMessageFor(c => c.Description)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="ContactDate">Ngày liên hệ</label>
+                        <input asp-for="ContactDate" class="form-control" type="text" placeholder="Ngày liên hệ" />
+                        @Html.ValidationMessageFor(c => c.ContactDate)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="UserCareIds" text-display="Người phụ trách" />
+                        <nop-select asp-for="UserCareIds" asp-items="Model.AvaiableUserCares" asp-multiple="true" />
+                        @Html.ValidationMessageFor(c => c.UserCareIds)
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="CrmPriorityId" text-display="Mức độ khẩn cấp" />
+                        <nop-select asp-for="CrmPriorityId" asp-items="Model.AvaiableCrmPriorities" />
+                        @Html.ValidationMessageFor(c => c.CrmPriorityId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="CustomerSourceId" text-display="Nguồn khách hàng" />
+                        <nop-select asp-for="CustomerSourceId" asp-items="Model.AvaiableCustomerSources" />
+                        @Html.ValidationMessageFor(c => c.CustomerSourceId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="ProductGroupId" text-display="Nhóm sản phẩm" />
+                        <nop-select asp-for="ProductGroupId" asp-items="Model.AvaiableProductGroups" />
+                        @Html.ValidationMessageFor(c => c.ProductGroupId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="CrmTypeId" text-display="Kiểu chốt" />
+                        <nop-select asp-for="CrmTypeId" asp-items="Model.AvaiableCrmTypes" />
+                        @Html.ValidationMessageFor(c => c.CrmTypeId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="IsVisit" text-display="Đến cửa hàng" />
+                        <nop-select asp-for="IsVisit" asp-items="Model.AvaiableVisits" />
+                        @Html.ValidationMessageFor(c => c.IsVisit)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <a class="btn btn-default" href="@Url.Action("Index", "AppConfig")">Hủy</a>
+                    </fieldset>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</section>

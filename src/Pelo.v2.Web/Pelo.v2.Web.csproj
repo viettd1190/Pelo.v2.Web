@@ -30,6 +30,9 @@
     <Folder Include="Services\WarrantyStatusInRole\" />
     <Folder Include="Services\Receipt\" />
     <Folder Include="Services\Warranty\" />
+    <Folder Include="Views\Shared\Components\CustomerDetail\" />
+    <Folder Include="Views\Shared\Components\CustomerFindByPhone\" />
+    <Folder Include="Views\District\" />
     <Folder Include="Views\Product\" />
     <Folder Include="Views\Manufacturer\" />
     <Folder Include="Views\ProductStatus\" />
@@ -37,6 +40,7 @@
     <Folder Include="Views\ProductGroup\" />
     <Folder Include="Views\CustomerVip\" />
     <Folder Include="Views\CustomerGroup\" />
+    <Folder Include="Views\Shared\Components\CustomerInvoice\" />
     <Folder Include="wwwroot\lib\spectrum\" />
   </ItemGroup>
 

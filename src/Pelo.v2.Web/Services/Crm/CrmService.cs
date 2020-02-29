@@ -187,11 +187,11 @@ namespace Pelo.v2.Web.Services.Crm
                                                                     CrmPriorityId = model.CrmPriorityId,
                                                                     CrmTypeId = model.CrmTypeId,
                                                                     Need = model.Need,
-                                                                    Description = model.Description,
+                                                                    Description = string.Empty,
                                                                     CustomerSourceId = model.CustomerSourceId,
                                                                     Visit = model.IsVisit,
                                                                     ContactDate = date,
-                                                                    UserIds = Util.GetArrays(model.UserCareIds)
+                                                                    UserIds = model.UserCareIds.ToList()
                                                             },
                                                             HttpMethod.Post,
                                                             true);

@@ -196,36 +196,36 @@ namespace Pelo.v2.Web.Controllers
             return Json(result);
         }
 
-        public IActionResult FindByPhoneNumber(string nextAction)
-        {
-            return View(new FindCustomerByPhoneViewModel
-            {
-                NextAction = nextAction
-            });
-        }
-        [HttpPost]
-        public async Task<IActionResult> FindByPhoneNumber(FindCustomerByPhoneViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var customer = await _customerService.GetCustomerByPhone(model.PhoneNumber);
-                if (customer.IsSuccess)
-                {
-                    return RedirectToAction("Detail",
-                                            "Customer",
-                                            new
-                                            {
-                                                id = customer.Data.Id,
-                                                nextAction = model.NextAction
-                                            });
-                }
-            }
-            return RedirectToAction("Add",
-                                    "Customer",
-                                    new
-                                    {
-                                        nextAction = model.NextAction
-                                    });
-        }
+        //public IActionResult FindByPhoneNumber(string nextAction)
+        //{
+        //    return View(new FindCustomerByPhoneViewModel
+        //    {
+        //        NextAction = nextAction
+        //    });
+        //}
+        //[HttpPost]
+        //public async Task<IActionResult> FindByPhoneNumber(FindCustomerByPhoneViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var customer = await _customerService.GetCustomerByPhone(model.PhoneNumber);
+        //        if (customer.IsSuccess)
+        //        {
+        //            return RedirectToAction("Detail",
+        //                                    "Customer",
+        //                                    new
+        //                                    {
+        //                                        id = customer.Data.Id,
+        //                                        nextAction = model.NextAction
+        //                                    });
+        //        }
+        //    }
+        //    return RedirectToAction("Add",
+        //                            "Customer",
+        //                            new
+        //                            {
+        //                                nextAction = model.NextAction
+        //                            });
+        //}
     }
 }
