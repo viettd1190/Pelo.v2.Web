@@ -10,6 +10,7 @@ using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models;
 using Pelo.v2.Web.Models.Crm;
+using Pelo.v2.Web.Models.Customer;
 using Pelo.v2.Web.Services.Http;
 
 namespace Pelo.v2.Web.Services.Crm
@@ -25,7 +26,10 @@ namespace Pelo.v2.Web.Services.Crm
         Task<CrmListModel> KhachQuaHenChamSoc(BaseSearchModel request);
 
         Task<CrmListModel> KhachToiHenNgayMai(BaseSearchModel request);
+
         Task<TResponse<bool>> Insert(InsertCrmModel model);
+
+        Task<CrmListModel> GetByCustomerIdPaging(CustomerComponentSearchModel request);
     }
 
     public class CrmService : BaseService,
@@ -46,7 +50,7 @@ namespace Pelo.v2.Web.Services.Crm
                 var columnOrder = "DateCreated";
                 var sortDir = "DESC";
 
-                if (request != null)
+                if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
@@ -81,52 +85,52 @@ namespace Pelo.v2.Web.Services.Crm
                                                                                             HttpMethod.Get,
                                                                                             true);
 
-                    if (response.IsSuccess)
+                    if(response.IsSuccess)
                         return new CrmListModel
-                        {
-                            Draw = request.Draw,
-                            RecordsFiltered = response.Data.TotalCount,
-                            Total = response.Data.TotalCount,
-                            RecordsTotal = response.Data.TotalCount,
-                            Data = response.Data.Data.Select(c => new CrmModel
-                            {
-                                Id = c.Id,
-                                Code = c.Code,
-                                ContactDate = c.ContactDate,
-                                CrmPriority = c.CrmPriority,
-                                CrmStatus = c.CrmStatus,
-                                CrmStatusColor = c.CrmStatusColor,
-                                CrmType = c.CrmType,
-                                CustomerAddress = c.CustomerAddress,
-                                CustomerGroup = c.CustomerGroup,
-                                CustomerName = c.CustomerName,
-                                CustomerPhone1 = c.CustomerPhone,
-                                CustomerPhone2 = c.CustomerPhone2,
-                                CustomerPhone3 = c.CustomerPhone3,
-                                CustomerSource = c.CustomerSource,
-                                CustomerVip = c.CustomerVip,
-                                DateCreated = c.DateCreated,
-                                District = c.District,
-                                Province = c.Province,
-                                Ward = c.Ward,
-                                Need = c.Need,
-                                ProductGroup = c.ProductGroup,
-                                UserCreated = c.UserCreated,
-                                UserCreatedPhone = c.UserCreatedPhone,
-                                Visit = c.Visit == 1
-                                                                                          ? "Đã đến"
-                                                                                          : "Chưa đến",
-                                UserCares = c.UserCares.Select(v => new UserCareModel
-                                {
-                                    Name = v.DisplayName,
-                                    Phone = v.PhoneNumber
-                                })
-                                                                                       .ToList(),
-                                Description = c.Description,
-                                PageSize = request.PageSize,
-                                PageSizeOptions = request.AvailablePageSizes
-                            })
-                        };
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new CrmModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Code = c.Code,
+                                                                                     ContactDate = c.ContactDate,
+                                                                                     CrmPriority = c.CrmPriority,
+                                                                                     CrmStatus = c.CrmStatus,
+                                                                                     CrmStatusColor = c.CrmStatusColor,
+                                                                                     CrmType = c.CrmType,
+                                                                                     CustomerAddress = c.CustomerAddress,
+                                                                                     CustomerGroup = c.CustomerGroup,
+                                                                                     CustomerName = c.CustomerName,
+                                                                                     CustomerPhone1 = c.CustomerPhone,
+                                                                                     CustomerPhone2 = c.CustomerPhone2,
+                                                                                     CustomerPhone3 = c.CustomerPhone3,
+                                                                                     CustomerSource = c.CustomerSource,
+                                                                                     CustomerVip = c.CustomerVip,
+                                                                                     DateCreated = c.DateCreated,
+                                                                                     District = c.District,
+                                                                                     Province = c.Province,
+                                                                                     Ward = c.Ward,
+                                                                                     Need = c.Need,
+                                                                                     ProductGroup = c.ProductGroup,
+                                                                                     UserCreated = c.UserCreated,
+                                                                                     UserCreatedPhone = c.UserCreatedPhone,
+                                                                                     Visit = c.Visit == 1
+                                                                                                     ? "Đã đến"
+                                                                                                     : "Chưa đến",
+                                                                                     UserCares = c.UserCares.Select(v => new UserCareModel
+                                                                                                                         {
+                                                                                                                                 Name = v.DisplayName,
+                                                                                                                                 Phone = v.PhoneNumber
+                                                                                                                         })
+                                                                                                  .ToList(),
+                                                                                     Description = c.Description,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
 
                     throw new PeloException(response.Message);
                 }
@@ -163,75 +167,111 @@ namespace Pelo.v2.Web.Services.Crm
                                  ApiUrl.CRM_KHACH_TOI_HEN_NGAY_MAI);
         }
 
-        #endregion
-
-        public async Task<CrmListModel> XuLyCrm(BaseSearchModel request,
-                                                string baseUrl)
+        public async Task<TResponse<bool>> Insert(InsertCrmModel model)
         {
             try
             {
-                var columnOrder = "DateCreated";
-                var sortDir = "DESC";
+                DateTime date = DateTime.Now;
+                if(!string.IsNullOrEmpty(model.ContactDate)
+                   && !string.IsNullOrEmpty(model.ContactTime))
+                {
+                    date = DateTime.Parse($"{model.ContactDate} {model.ContactTime}");
+                }
 
-                if (request != null)
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_INSERT,
+                                                            new InsertCrmRequest
+                                                            {
+                                                                    CustomerId = model.CustomerId,
+                                                                    CrmStatusId = model.CrmStatusId,
+                                                                    ProductGroupId = model.ProductGroupId,
+                                                                    CrmPriorityId = model.CrmPriorityId,
+                                                                    CrmTypeId = model.CrmTypeId,
+                                                                    Need = model.Need,
+                                                                    Description = model.Description,
+                                                                    CustomerSourceId = model.CustomerSourceId,
+                                                                    Visit = model.IsVisit,
+                                                                    ContactDate = date,
+                                                                    UserIds = Util.GetArrays(model.UserCareIds)
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<CrmListModel> GetByCustomerIdPaging(CustomerComponentSearchModel request)
+        {
+            try
+            {
+                if(request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
-                    string url = string.Format(baseUrl,
-                                               start,
-                                               request.Length);
+                    var url = string.Format(ApiUrl.GET_CRM_CUSTOMER_BY_PAGING,
+                                            request.CustomerId,
+                                            start,
+                                            request?.Length ?? 10);
 
                     var response = await HttpService.Send<PageResult<GetCrmPagingResponse>>(url,
                                                                                             null,
                                                                                             HttpMethod.Get,
                                                                                             true);
 
-                    if (response.IsSuccess)
+                    if(response.IsSuccess)
                         return new CrmListModel
-                        {
-                            Draw = request.Draw,
-                            RecordsFiltered = response.Data.TotalCount,
-                            Total = response.Data.TotalCount,
-                            RecordsTotal = response.Data.TotalCount,
-                            Data = response.Data.Data.Select(c => new CrmModel
-                            {
-                                Id = c.Id,
-                                Code = c.Code,
-                                ContactDate = c.ContactDate,
-                                CrmPriority = c.CrmPriority,
-                                CrmStatus = c.CrmStatus,
-                                CrmStatusColor = c.CrmStatusColor,
-                                CrmType = c.CrmType,
-                                CustomerAddress = c.CustomerAddress,
-                                CustomerGroup = c.CustomerGroup,
-                                CustomerName = c.CustomerName,
-                                CustomerPhone1 = c.CustomerPhone,
-                                CustomerPhone2 = c.CustomerPhone2,
-                                CustomerPhone3 = c.CustomerPhone3,
-                                CustomerSource = c.CustomerSource,
-                                CustomerVip = c.CustomerVip,
-                                DateCreated = c.DateCreated,
-                                District = c.District,
-                                Province = c.Province,
-                                Ward = c.Ward,
-                                Need = c.Need,
-                                ProductGroup = c.ProductGroup,
-                                UserCreated = c.UserCreated,
-                                UserCreatedPhone = c.UserCreatedPhone,
-                                Visit = c.Visit == 1
-                                                                                          ? "Đã đến"
-                                                                                          : "Chưa đến",
-                                UserCares = c.UserCares.Select(v => new UserCareModel
-                                {
-                                    Name = v.DisplayName,
-                                    Phone = v.PhoneNumber
-                                })
-                                                                                       .ToList(),
-                                Description = c.Description,
-                                PageSize = request.PageSize,
-                                PageSizeOptions = request.AvailablePageSizes
-                            })
-                        };
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new CrmModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Code = c.Code,
+                                                                                     ContactDate = c.ContactDate,
+                                                                                     CustomerAddress = c.CustomerAddress,
+                                                                                     CrmStatus = c.CrmStatus,
+                                                                                     CrmPriority = c.CrmPriority,
+                                                                                     CrmStatusColor = c.CrmStatusColor,
+                                                                                     CrmType = c.CrmType,
+                                                                                     CustomerGroup = c.CustomerGroup,
+                                                                                     CustomerName = c.CustomerName,
+                                                                                     CustomerPhone1 = c.CustomerPhone,
+                                                                                     CustomerPhone2 = c.CustomerPhone2,
+                                                                                     CustomerPhone3 = c.CustomerPhone3,
+                                                                                     CustomerSource = c.CustomerSource,
+                                                                                     CustomerVip = c.CustomerVip,
+                                                                                     DateCreated = c.DateCreated,
+                                                                                     Description = c.Description,
+                                                                                     District = c.District,
+                                                                                     Need = c.Need,
+                                                                                     ProductGroup = c.ProductGroup,
+                                                                                     Province = c.Province,
+                                                                                     UserCreatedPhone = c.UserCreatedPhone,
+                                                                                     Visit = c.Visit == 1
+                                                                                                     ? "Đã đến"
+                                                                                                     : "Chưa đến",
+                                                                                     Ward = c.Ward,
+                                                                                     UserCares = c.UserCares.Select(v => new UserCareModel
+                                                                                                                         {
+                                                                                                                                 Name = v.DisplayName,
+                                                                                                                                 Phone = v.PhoneNumber
+                                                                                                                         })
+                                                                                                  .ToList(),
+                                                                                     UserCreated = c.UserCreated,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
 
                     throw new PeloException(response.Message);
                 }
@@ -244,42 +284,84 @@ namespace Pelo.v2.Web.Services.Crm
             }
         }
 
-        public async Task<TResponse<bool>> Insert(InsertCrmModel model)
+        #endregion
+
+        public async Task<CrmListModel> XuLyCrm(BaseSearchModel request,
+                                                string baseUrl)
         {
             try
             {
-                DateTime date = DateTime.Now;
-                if (!string.IsNullOrEmpty(model.ContactDate)&&!string.IsNullOrEmpty(model.ContactTime))
+                var columnOrder = "DateCreated";
+                var sortDir = "DESC";
+
+                if(request != null)
                 {
-                    date = DateTime.Parse($"{model.ContactDate} {model.ContactTime}");
-                }
-                var response = await HttpService.Send<bool>(ApiUrl.CRM_INSERT,
-                                                            new InsertCrmRequest
-                                                            {
-                                                                CustomerId = model.CustomerId,
-                                                                CrmStatusId = model.CrmStatusId,
-                                                                ProductGroupId = model.ProductGroupId,
-                                                                CrmPriorityId = model.CrmPriorityId,
-                                                                CrmTypeId = model.CrmTypeId,
-                                                                Need = model.Need,
-                                                                Description = model.Description,
-                                                                CustomerSourceId = model.CustomerSourceId,
-                                                                Visit = model.IsVisit,
-                                                                ContactDate = date,
-                                                                UserIds = Util.GetArrays(model.UserCareIds)
-                                                            },
-                                                            HttpMethod.Post,
-                                                            true);
-                if (response.IsSuccess)
-                {
-                    return await Ok(true);
+                    var start = request.Start / request.Length + 1;
+
+                    string url = string.Format(baseUrl,
+                                               start,
+                                               request.Length);
+
+                    var response = await HttpService.Send<PageResult<GetCrmPagingResponse>>(url,
+                                                                                            null,
+                                                                                            HttpMethod.Get,
+                                                                                            true);
+
+                    if(response.IsSuccess)
+                        return new CrmListModel
+                               {
+                                       Draw = request.Draw,
+                                       RecordsFiltered = response.Data.TotalCount,
+                                       Total = response.Data.TotalCount,
+                                       RecordsTotal = response.Data.TotalCount,
+                                       Data = response.Data.Data.Select(c => new CrmModel
+                                                                             {
+                                                                                     Id = c.Id,
+                                                                                     Code = c.Code,
+                                                                                     ContactDate = c.ContactDate,
+                                                                                     CrmPriority = c.CrmPriority,
+                                                                                     CrmStatus = c.CrmStatus,
+                                                                                     CrmStatusColor = c.CrmStatusColor,
+                                                                                     CrmType = c.CrmType,
+                                                                                     CustomerAddress = c.CustomerAddress,
+                                                                                     CustomerGroup = c.CustomerGroup,
+                                                                                     CustomerName = c.CustomerName,
+                                                                                     CustomerPhone1 = c.CustomerPhone,
+                                                                                     CustomerPhone2 = c.CustomerPhone2,
+                                                                                     CustomerPhone3 = c.CustomerPhone3,
+                                                                                     CustomerSource = c.CustomerSource,
+                                                                                     CustomerVip = c.CustomerVip,
+                                                                                     DateCreated = c.DateCreated,
+                                                                                     District = c.District,
+                                                                                     Province = c.Province,
+                                                                                     Ward = c.Ward,
+                                                                                     Need = c.Need,
+                                                                                     ProductGroup = c.ProductGroup,
+                                                                                     UserCreated = c.UserCreated,
+                                                                                     UserCreatedPhone = c.UserCreatedPhone,
+                                                                                     Visit = c.Visit == 1
+                                                                                                     ? "Đã đến"
+                                                                                                     : "Chưa đến",
+                                                                                     UserCares = c.UserCares.Select(v => new UserCareModel
+                                                                                                                         {
+                                                                                                                                 Name = v.DisplayName,
+                                                                                                                                 Phone = v.PhoneNumber
+                                                                                                                         })
+                                                                                                  .ToList(),
+                                                                                     Description = c.Description,
+                                                                                     PageSize = request.PageSize,
+                                                                                     PageSizeOptions = request.AvailablePageSizes
+                                                                             })
+                               };
+
+                    throw new PeloException(response.Message);
                 }
 
-                return await Fail<bool>(response.Message);
+                throw new PeloException("Request is null");
             }
             catch (Exception exception)
             {
-                return await Fail<bool>(exception);
+                throw new PeloException(exception.Message);
             }
         }
     }

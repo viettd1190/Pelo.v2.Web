@@ -230,7 +230,7 @@
 
         public const string CRM_GET_BY_PAGING = BASE_API_URL + "/api/crm?code={0}&customer_code={1}&customer_name={2}&customer_phone={3}&customer_address={4}&province_id={5}&district_id={6}&ward_id={7}&customer_group_id={8}&customer_vip_id={9}&customer_source_id={10}&product_group_id={11}&crm_status_id={12}&crm_type_id={13}&crm_priority_id={14}&visit={15}&from_date={16}&to_date={17}&user_created_id={18}&date_created={19}&user_care_id={20}&need={21}&page={22}&page_size={23}";
 
-        public const string CRM_GET_CRM_CUSTOMER_BY_PAGING = BASE_API_URL + "/api/crm/get_by_customer?customerId={0}&page={1}&pageSize={2}";
+        public const string GET_CRM_CUSTOMER_BY_PAGING = BASE_API_URL + "/api/crm/get_by_customer?customerId={0}&page={1}&pageSize={2}";
 
         public const string GET_INVOICE_CUSTOMER_BY_PAGING = BASE_API_URL + "/api/invoice/get_by_customer?customerId={0}&page={1}&pageSize={2}";
 

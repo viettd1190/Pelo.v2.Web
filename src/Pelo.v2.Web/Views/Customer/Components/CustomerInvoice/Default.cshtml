@@ -13,6 +13,7 @@
        UrlRead = new DataUrl("GetInvoicesByCustomerId", "Customer", null),
        SearchButtonId = "search-invoice",
        Ordering = false,
+       DrawCallback = "updateInvoiceCount",
        Filters = new List<FilterParameter> {
                                                    new FilterParameter(nameof(Model.CustomerId))
                                            },
@@ -54,9 +55,12 @@
    })
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+        var datatable=$('#invoice-grid').DataTable();
         if(datatable) {
-            setTimeout(function() {$($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();},200);
+            setTimeout(function() {
+                $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
+            },200);
         }
     });
     function displayInvoiceStatus(data, type, row, meta) {

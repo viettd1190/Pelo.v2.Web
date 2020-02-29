@@ -144,6 +144,8 @@ namespace Pelo.v2.Web.Models.Datatables
         /// </summary>
         public string FooterCallback { get; set; }
 
+        public string DrawCallback { get; set; }
+
         /// <summary>
         /// Gets or sets indicate of child table
         /// </summary>
