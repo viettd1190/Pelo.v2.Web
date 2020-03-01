@@ -16,7 +16,7 @@
 
 <section class="card">
     <div class="card-block">
-        <form asp-controller="Ward" asp-action="Add" method="post" id="ward-form">
+        <form asp-controller="Ward" asp-action="Edit" method="post" id="ward-form">
             @Html.ValidationSummary()
             <div class="row">
                 <div class="col-lg-12">
@@ -28,7 +28,7 @@
                 </div>
                 <div class="col-lg-12">
                     <fieldset class="form-group">
-                        <nop-label asp-for="DistrictId" text-display="Tỉnh thành" />
+                        <nop-label asp-for="DistrictId" text-display="Quận huyện" />
                         <nop-select asp-for="DistrictId" asp-items="Model.AvaiableDistricts" />
                         @Html.ValidationMessageFor(c => c.DistrictId)
                     </fieldset>

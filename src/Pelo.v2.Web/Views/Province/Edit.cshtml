@@ -16,7 +16,7 @@
 
 <section class="card">
     <div class="card-block">
-        <form asp-controller="Province" asp-action="Add" method="post" id="crmtype-form">
+        <form asp-controller="Province" asp-action="Edit" method="post" id="province-form">
             @Html.ValidationSummary()
             @Html.HiddenFor(c => c.Id)
             <div class="row">
@@ -57,7 +57,7 @@
         $(document).ready(function () {
             $('.opened').removeClass('opened');
             $('.row-active').removeClass('row-active');
-            $('#liAppConfig').addClass('opened');
+            $('#liSystem').addClass('opened');
             $('#liProvince').addClass('row-active');
         })
     </script>

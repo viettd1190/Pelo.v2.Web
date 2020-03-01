@@ -77,7 +77,9 @@ namespace Pelo.v2.Web.Controllers
         public async Task<IActionResult> Add()
         {
             var model = new UpdateWardModel();
-            await _baseModelFactory.PrepareProvinces(model.AvaiableDistricts);
+            await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
+                                                     model.ProvinceId);
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             return View(model);
         }
 
@@ -93,6 +95,9 @@ namespace Pelo.v2.Web.Controllers
                     return RedirectToAction("Index");
                 }
             }
+            await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
+                                                     model.ProvinceId);
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             return View(model);
         }
         public async Task<IActionResult> Edit(int id)
@@ -108,7 +113,9 @@ namespace Pelo.v2.Web.Controllers
                     SortOrder = result.Data.SortOrder,
                     DistrictId = result.Data.DistrictId
                 };
-                await _baseModelFactory.PrepareProvinces(model.AvaiableDistricts);
+                await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
+                                                     model.ProvinceId);
+                await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
                 return View(model);
             }
             return View("Notfound");
@@ -122,6 +129,9 @@ namespace Pelo.v2.Web.Controllers
                 TempData["Update"] = JsonConvert.SerializeObject(result);
                 return RedirectToAction("Index");
             }
+            await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
+                                                     model.ProvinceId);
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             return View(model);
         }
     }

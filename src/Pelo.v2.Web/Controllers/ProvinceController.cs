@@ -59,7 +59,22 @@ namespace Pelo.v2.Web.Controllers
 
             return View("Notfound");
         }
+        [HttpPost]
+        public async Task<IActionResult> Edit(ProvinceUpdate model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _provinceService.Update(model);
+                if (result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Index");
+                }
 
+                ModelState.AddModelError("", result.Message);
+            }
+            return View(model);
+        }
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
