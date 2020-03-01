@@ -21,6 +21,12 @@ namespace Pelo.v2.Web.Services.Province
         Task<DistrictListModel> GetByPaging(DistrictSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<bool>> Add(UpdateDistrictModel model);
+
+        Task<TResponse<bool>> Edit(UpdateDistrictModel model);
+
+        Task<TResponse<GetDistrictReponse>> GetById(int id);
     }
 
     public class DistrictService : BaseService,
@@ -44,7 +50,7 @@ namespace Pelo.v2.Web.Services.Province
                                                                                   null,
                                                                                   HttpMethod.Get,
                                                                                   true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                 {
                     return await Ok(response.Data);
                 }
@@ -65,7 +71,7 @@ namespace Pelo.v2.Web.Services.Province
                 var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
@@ -82,24 +88,24 @@ namespace Pelo.v2.Web.Services.Province
                                                                                                  HttpMethod.Get,
                                                                                                  true);
 
-                    if(response.IsSuccess)
+                    if (response.IsSuccess)
                         return new DistrictListModel
-                               {
-                                       Draw = request.Draw,
-                                       RecordsFiltered = response.Data.TotalCount,
-                                       Total = response.Data.TotalCount,
-                                       RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new DistrictModel
-                                                                             {
-                                                                                     Id = c.Id,
-                                                                                     Name = c.Name,
-                                                                                     Province = c.Province,
-                                                                                     SortOrder = c.SortOrder,
-                                                                                     PageSize = request.PageSize,
-                                                                                     Type = c.Type,
-                                                                                     PageSizeOptions = request.AvailablePageSizes
-                                                                             })
-                               };
+                        {
+                            Draw = request.Draw,
+                            RecordsFiltered = response.Data.TotalCount,
+                            Total = response.Data.TotalCount,
+                            RecordsTotal = response.Data.TotalCount,
+                            Data = response.Data.Data.Select(c => new DistrictModel
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                                Province = c.Province,
+                                SortOrder = c.SortOrder,
+                                PageSize = request.PageSize,
+                                Type = c.Type,
+                                PageSizeOptions = request.AvailablePageSizes
+                            })
+                        };
 
                     throw new PeloException(response.Message);
                 }
@@ -122,7 +128,7 @@ namespace Pelo.v2.Web.Services.Province
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -132,6 +138,73 @@ namespace Pelo.v2.Web.Services.Province
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Add(UpdateDistrictModel model)
+        {
+            try
+            {
+                var url = ApiUrl.DISTRICT_INSERT;
+                var response = await HttpService.Send<bool>(url,
+                                                            new InsertDistrict { Type = model.Type, SortOrder = model.SortOrder, Name = model.Name, ProvinceId = model.ProvinceId },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(UpdateDistrictModel model)
+        {
+            try
+            {
+                var url = ApiUrl.DISTRICT_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new UpdateDistrict {Id = model.Id, Type = model.Type, SortOrder = model.SortOrder, Name = model.Name, ProvinceId = model.ProvinceId },
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<GetDistrictReponse>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.DISTRICT_GET_BY_ID,
+                                        id);
+                var response = await HttpService.Send<GetDistrictReponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<GetDistrictReponse>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<GetDistrictReponse>(exception);
             }
         }
 

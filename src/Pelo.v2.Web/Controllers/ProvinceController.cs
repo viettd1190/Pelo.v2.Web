@@ -35,10 +35,10 @@ namespace Pelo.v2.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(ProvinceInsert model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await _provinceService.Insert(model);
-                if(result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();
                     return RedirectToAction("Index");
@@ -52,9 +52,9 @@ namespace Pelo.v2.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var model = await _provinceService.GetById(id);
-            if(model.IsSuccess)
+            if (model.IsSuccess)
             {
-                return View(model.Data);
+                return View(new ProvinceUpdate { Id = model.Data.Id, Name = model.Data.Name, SortOrder = model.Data.SortOrder, Type = model.Data.Type });
             }
 
             return View("Notfound");

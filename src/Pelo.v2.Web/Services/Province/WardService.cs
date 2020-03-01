@@ -21,6 +21,12 @@ namespace Pelo.v2.Web.Services.Province
         Task<WardListModel> GetByPaging(WardSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<bool>> Add(UpdateWardModel model);
+
+        Task<TResponse<bool>> Edit(UpdateWardModel model);
+
+        Task<TResponse<UpdateWardModel>> GetById(int id);
     }
 
     public class WardService : BaseService,
@@ -138,6 +144,82 @@ namespace Pelo.v2.Web.Services.Province
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Add(UpdateWardModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.WARD_UPDATE,
+                                                            new InsertWard
+                                                            {
+                                                                SortOrder= model.SortOrder,
+                                                                Name = model.Name,
+                                                                DistrictId = model.DistrictId,
+                                                                Type = model.Type
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(UpdateWardModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.WARD_UPDATE,
+                                                            new UpdateWard
+                                                            {
+                                                                Id = model.Id,
+                                                                SortOrder = model.SortOrder,
+                                                                Name = model.Name,
+                                                                DistrictId = model.DistrictId,
+                                                                Type = model.Type
+                                                            },
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<UpdateWardModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.WARD_GET_BY_ID, id);
+                var response = await HttpService.Send<GetWardReponse>(url, null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new UpdateWardModel { DistrictId = response.Data.DistrictId, Id = response.Data.Id, Name = response.Data.Name, Type = response.Data.Type, SortOrder = response.Data.SortOrder });
+                }
+
+                return await Fail<UpdateWardModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<UpdateWardModel>(exception);
             }
         }
 

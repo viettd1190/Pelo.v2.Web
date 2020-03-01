@@ -22,7 +22,9 @@ namespace Pelo.v2.Web.Services.Province
 
         Task<TResponse<bool>> Insert(ProvinceInsert request);
 
-        Task<TResponse<ProvinceUpdate>> GetById(int id);
+        Task<TResponse<bool>> Update(ProvinceUpdate request);
+
+        Task<TResponse<GetProvinceReponse>> GetById(int id);
 
         Task<TResponse<bool>> Delete(int id);
     }
@@ -146,13 +148,12 @@ namespace Pelo.v2.Web.Services.Province
             }
         }
 
-        public async Task<TResponse<ProvinceUpdate>> GetById(int id)
+        public async Task<TResponse<GetProvinceReponse>> GetById(int id)
         {
             try
             {
-                var url = string.Format(ApiUrl.PROVINCE_GET_BY_ID,
-                                        id);
-                var response = await HttpService.Send<ProvinceUpdate>(url,
+                var url = string.Format(ApiUrl.PROVINCE_GET_BY_ID, id);
+                var response = await HttpService.Send<GetProvinceReponse>(url,
                                                                       null,
                                                                       HttpMethod.Get,
                                                                       true);
@@ -161,11 +162,11 @@ namespace Pelo.v2.Web.Services.Province
                     return await Ok(response.Data);
                 }
 
-                return await Fail<ProvinceUpdate>(response.Message);
+                return await Fail<GetProvinceReponse>(response.Message);
             }
             catch (Exception exception)
             {
-                return await Fail<ProvinceUpdate>(exception);
+                return await Fail<GetProvinceReponse>(exception);
             }
         }
 
@@ -180,6 +181,28 @@ namespace Pelo.v2.Web.Services.Province
                                                             HttpMethod.Delete,
                                                             true);
                 if(response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(ProvinceUpdate model)
+        {
+            try
+            {
+                var url = ApiUrl.PROVINCE_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new UpdateProvince{ Id = model.Id, Type = model.Type, SortOrder = model.SortOrder, Name = model.Name},
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }
