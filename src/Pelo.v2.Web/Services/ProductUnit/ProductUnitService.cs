@@ -20,6 +20,9 @@ namespace Pelo.v2.Web.Services.ProductUnit
         Task<ProductUnitListModel> GetByPaging(ProductUnitSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<bool>> Insert(ProductUnitModel model);
+        Task<TResponse<bool>> Update(ProductUnitModel model);
+        Task<TResponse<GetProductUnitReponse>> GetById(int id);
     }
 
     public class ProductUnitService : BaseService,
@@ -135,6 +138,72 @@ namespace Pelo.v2.Web.Services.ProductUnit
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(ProductUnitModel model)
+        {
+            try
+            {
+                var url = ApiUrl.PRODUCT_UNIT_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new InsertProductUnit { Name = model.Name },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(ProductUnitModel model)
+        {
+            try
+            {
+                var url = ApiUrl.PRODUCT_UNIT_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new UpdateProductUnit { Id = model.Id, Name = model.Name },
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<GetProductUnitReponse>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.PRODUCT_UNIT_GET_BY_ID, id);
+                var response = await HttpService.Send<GetProductUnitReponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<GetProductUnitReponse>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<GetProductUnitReponse>(exception);
             }
         }
 

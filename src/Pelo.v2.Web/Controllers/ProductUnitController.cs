@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pelo.v2.Web.Models.ProductUnit;
 using Pelo.v2.Web.Services.ProductUnit;
+using Pelo.Common.Extensions;
 
 namespace Pelo.v2.Web.Controllers
 {
@@ -31,6 +32,49 @@ namespace Pelo.v2.Web.Controllers
         {
             var result = await _productUnitService.Delete(id);
             return Json(result);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add(ProductUnitModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _productUnitService.Insert(model);
+                if (result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", result.Message);
+            }
+            return View(model);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var model = await _productUnitService.GetById(id);
+            if (model.IsSuccess)
+            {
+                return View(new ProductUnitModel { Id = model.Data.Id, Name = model.Data.Name });
+            }
+
+            return View("Notfound");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(ProductUnitModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _productUnitService.Update(model);
+                if (result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", result.Message);
+            }
+            return View(model);
         }
     }
 }

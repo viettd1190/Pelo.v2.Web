@@ -18,6 +18,10 @@ namespace Pelo.v2.Web.Services.Role
         Task<IEnumerable<RoleSimpleModel>> GetAll();
 
         Task<RoleListModel> GetByPaging(RoleSearchModel request);
+        Task<TResponse<bool>> Insert(RoleModel model);
+        Task<TResponse<GetRoleReponse>> GetById(int id);
+        Task<TResponse<bool>> Update(RoleModel model);
+        Task<TResponse<bool>> Delete(int id);
     }
 
     public class RoleService : BaseService,
@@ -27,6 +31,29 @@ namespace Pelo.v2.Web.Services.Role
                            ILogger<BaseService> logger) : base(httpService,
                                                                logger)
         {
+        }
+
+        public async Task<TResponse<bool>> Delete(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.ROLE_DELETE,
+                                        id);
+                var response = await HttpService.Send<bool>(url,
+                                                            null,
+                                                            HttpMethod.Delete,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
         }
 
         #region IRoleService Members
@@ -46,6 +73,28 @@ namespace Pelo.v2.Web.Services.Role
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<GetRoleReponse>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.GET_ROLE_ID, id);
+                var response = await HttpService.Send<GetRoleReponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<GetRoleReponse>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<GetRoleReponse>(exception);
             }
         }
 
@@ -107,6 +156,50 @@ namespace Pelo.v2.Web.Services.Role
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(RoleModel model)
+        {
+            try
+            {
+                var url = ApiUrl.ROLE_INSERT;
+                var response = await HttpService.Send<bool>(url,
+                                                            new InsertRole { Name = model.Name },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(RoleModel model)
+        {
+            try
+            {
+                var url = ApiUrl.ROLE_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new UpdateRole { Id = model.Id, Name = model.Name },
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 
