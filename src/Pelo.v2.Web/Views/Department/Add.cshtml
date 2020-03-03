@@ -16,7 +16,7 @@
 
 <section class="card">
     <div class="card-block">
-        <form asp-controller="Department" asp-action="Add" method="post" id="province-form">
+        <form asp-controller="Department" asp-action="Add" method="post" id="department-form">
             @Html.ValidationSummary()
             <div class="row">
                 <div class="col-lg-12">
@@ -42,7 +42,7 @@
         $(document).ready(function () {
             $('.opened').removeClass('opened');
             $('.row-active').removeClass('row-active');
-            $('#liSystem').addClass('opened');
+            $('#liCrm').addClass('opened');
             $('#liDepartment').addClass('row-active');
         })
     </script>

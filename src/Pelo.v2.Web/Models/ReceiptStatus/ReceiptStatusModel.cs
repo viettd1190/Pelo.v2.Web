@@ -24,6 +24,12 @@ namespace Pelo.v2.Web.Models.ReceiptStatus
         [JsonProperty("IsSendSms")]
         public bool IsSendSms { get; set; }
 
+        [JsonProperty("SmsContent")]
+        public string SmsContent { get; set; }
+
+        [JsonProperty("SortOrder")]
+        public int SortOrder { get; set; }
+
         [JsonProperty("PageSize")]
         public int PageSize { get; set; }
 

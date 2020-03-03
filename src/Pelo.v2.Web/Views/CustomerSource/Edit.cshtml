@@ -1,6 +1,6 @@
 ﻿@model Pelo.v2.Web.Models.CustomerSource.CustomerSourceModel
 @{
-    ViewBag.Title = "Cập nhật nguồn khách";
+    ViewBag.Title = "Cập nhật nguồn khách hàng";
     Layout = "_Layout";
 }
 @section cssPlugin{
@@ -10,13 +10,13 @@
     <script src="@Url.Content("~/lib/spectrum/spectrum.js")"></script>
 }
 <ol class="breadcrumb">
-    <li><a href="@Url.Action("Index","CrmPriority")">Danh sách nguồn khách</a></li>
-    <li class="active">Cập nhật nguồn khách</li>
+    <li><a href="@Url.Action("Index","CustomerGroup")">Danh sách nguồn khách hàng</a></li>
+    <li class="active">Cập nhật nguồn khách hàng</li>
 </ol>
 
 <section class="card">
     <div class="card-block">
-        <form asp-controller="CustomerSource" asp-action="Edit" method="post" id="crmtype-form">
+        <form asp-controller="CustomerSource" asp-action="Edit" method="post" id="customerSource-form">
             @Html.ValidationSummary()
             @Html.HiddenFor(c => c.Id)
             <div class="row">

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Pelo.Common.Extensions;
 using Pelo.v2.Web.Models.CustomerSource;
 using Pelo.v2.Web.Services.CustomerSource;
 
@@ -33,21 +34,24 @@ namespace Pelo.v2.Web.Controllers
             var result = await _customerSourceService.Delete(id);
             return Json(result);
         }
+
         public IActionResult Add()
         {
             return View(new CustomerSourceModel());
         }
+        
         [HttpPost]
         public async Task<IActionResult> Add(CustomerSourceModel model)
         {
             var result = await _customerSourceService.Add(model);
             if (result.IsSuccess)
             {
-                TempData["Update"] = JsonConvert.SerializeObject(result);
+                TempData["Update"] = result.ToJson();
                 return RedirectToAction("Index");
             }
             return View(model);
         }
+        
         public async Task<IActionResult> Edit(int id)
         {
             var result = await _customerSourceService.GetById(id);
@@ -61,11 +65,12 @@ namespace Pelo.v2.Web.Controllers
             }
             return View("Notfound");
         }
+        
         [HttpPost]
         public async Task<IActionResult> Edit(CustomerSourceModel model)
         {
             var result = await _customerSourceService.Edit(model);
-            TempData["Update"] = JsonConvert.SerializeObject(result);
+            TempData["Update"] = result.ToJson();
             if (result.IsSuccess)
             {
                 return RedirectToAction("Index");

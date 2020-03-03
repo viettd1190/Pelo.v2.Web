@@ -20,6 +20,9 @@ namespace Pelo.v2.Web.Services.CustomerVip
         Task<CustomerVipListModel> GetByPaging(CustomerVipSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<bool>> Insert(InsertCustomerVipRequest insertCustomerVipRequest);
+        Task<TResponse<CustomerVipModel>> GetById(int id);
+        Task<TResponse<bool>> Update(UpdateCustomerVipRequest updateCustomerVipRequest);
     }
 
     public class CustomerVipService : BaseService,
@@ -127,6 +130,72 @@ namespace Pelo.v2.Web.Services.CustomerVip
                                                             HttpMethod.Delete,
                                                             true);
                 if(response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(InsertCustomerVipRequest model)
+        {
+            try
+            {
+                var url = ApiUrl.CUSTOMER_VIP_INSERT;
+                var response = await HttpService.Send<bool>(url,
+                                                            model,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<CustomerVipModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CUSTOMER_VIP_GET_BY_ID, id);
+                var response = await HttpService.Send<GetCustomerVipByIdResponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new CustomerVipModel { Id = response.Data.Id, Name = response.Data.Name, Color = response.Data.Color, Profit = response.Data.Profit, SortOrder = response.Data.SortOder });
+                }
+
+                return await Fail<CustomerVipModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<CustomerVipModel>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateCustomerVipRequest model)
+        {
+            try
+            {
+                var url = ApiUrl.CUSTOMER_VIP_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            model,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }

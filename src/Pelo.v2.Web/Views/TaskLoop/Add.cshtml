@@ -1,8 +1,63 @@
-﻿@model Pelo.v2.Web.Models.AppConfig.AppConfigInsert
-
+﻿@model Pelo.v2.Web.Models.TaskLoop.TaskLoopModel
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Thêm mới thời gian lặp lại";
     Layout = "_Layout";
 }
+@section cssPlugin{
+    <link rel="stylesheet" href="@Url.Content("~/lib/spectrum/spectrum.css")">
+}
+@section jsPlugin {
+    <script src="@Url.Content("~/lib/spectrum/spectrum.js")"></script>
+}
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","TaskLoop")">Danh sách thời gian lặp lại</a></li>
+    <li class="active">Thêm mới thời gian lặp lại</li>
+</ol>
 
-<h2>title</h2>
+<section class="card">
+    <div class="card-block">
+        <form asp-controller="TaskLoop" asp-action="Add" method="post" id="taskloop-form">
+            @Html.ValidationSummary()
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Name">Tên</label>
+                        <input asp-for="Name" class="form-control" type="text" placeholder="Tên" />
+                        @Html.ValidationMessageFor(c => c.Name)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="DayCount">Số ngày</label>
+                        <input asp-for="DayCount" class="form-control" type="text" placeholder="Số ngày" />
+                        @Html.ValidationMessageFor(c => c.DayCount)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="SortOrder">Vị trí</label>
+                        <input asp-for="SortOrder" class="form-control" type="text" placeholder="Vị trí" />
+                        @Html.ValidationMessageFor(c => c.SortOrder)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <a class="btn btn-default" href="@Url.Action("Index", "TaskLoop")">Hủy</a>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section js{
+    <script>
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liSystem').addClass('opened');
+            $('#liTaskLoop').addClass('row-active');
+        })
+    </script>
+}

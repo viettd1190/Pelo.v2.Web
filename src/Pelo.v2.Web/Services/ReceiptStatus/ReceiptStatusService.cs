@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Pelo.Common.Dtos.ReceiptDescription;
 using Pelo.Common.Dtos.ReceiptStatus;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
@@ -20,6 +21,9 @@ namespace Pelo.v2.Web.Services.ReceiptStatus
         Task<ReceiptStatusListModel> GetByPaging(ReceiptStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<bool>> Update(UpdateReceiptStatus updateReceiptStatus);
+        Task<TResponse<bool>> Insert(InsertReceiptStatus insertReceiptStatus);
+        Task<TResponse<ReceiptStatusModel>> GetById(int id);
     }
 
     public class ReceiptStatusService : BaseService,
@@ -137,6 +141,72 @@ namespace Pelo.v2.Web.Services.ReceiptStatus
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateReceiptStatus updateReceiptStatus)
+        {
+            try
+            {
+                var url = ApiUrl.RECEIPT_STATUS_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            updateReceiptStatus,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(InsertReceiptStatus insertReceiptStatus)
+        {
+            try
+            {
+                var url = ApiUrl.RECEIPT_STATUS_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            insertReceiptStatus,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<ReceiptStatusModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.RECEIPT_STATUS_GET_BY_ID, id);
+                var response = await HttpService.Send<GetReceiptStatusResponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new ReceiptStatusModel { Id = response.Data.Id, Name = response.Data.Name, Color = response.Data.Color, SortOrder = response.Data.SortOrder });
+                }
+
+                return await Fail<ReceiptStatusModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<ReceiptStatusModel>(exception);
             }
         }
 

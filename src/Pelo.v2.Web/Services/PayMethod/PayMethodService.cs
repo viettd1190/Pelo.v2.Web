@@ -19,6 +19,9 @@ namespace Pelo.v2.Web.Services.PayMethod
         Task<IEnumerable<PayMethodSimpleModel>> GetAll();
 
         Task<PayMethodListModel> GetByPaging(PayMethodSearchModel request);
+        Task<TResponse<bool>> Add(InsertPayMethod model);
+        Task<TResponse<PayMethodModel>> GetById(int id);
+        Task<TResponse<bool>> Edit(UpdatePayMethod model);
     }
 
     public class PayMethodService : BaseService,
@@ -28,6 +31,48 @@ namespace Pelo.v2.Web.Services.PayMethod
                                 ILogger<BaseService> logger) : base(httpService,
                                                                     logger)
         {
+        }
+
+        public async Task<TResponse<bool>> Add(InsertPayMethod model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.PAY_METHOD_UPDATE,
+                                                            model,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(UpdatePayMethod model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.PAY_METHOD_UPDATE,
+                                                            model,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
         }
 
         #region IPayMethodService Members
@@ -49,6 +94,27 @@ namespace Pelo.v2.Web.Services.PayMethod
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<PayMethodModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.PAY_METHOD_GET_BY_ID, id);
+                var response = await HttpService.Send<PayMethodSimpleModel>(url, null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new PayMethodModel { Id = response.Data.Id, Name = response.Data.Name });
+                }
+
+                return await Fail<PayMethodModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<PayMethodModel>(exception);
             }
         }
 

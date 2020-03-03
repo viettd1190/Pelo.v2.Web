@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.Manufacturer;
+using Pelo.Common.Dtos.PayMethod;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
@@ -21,6 +22,9 @@ namespace Pelo.v2.Web.Services.Manufacturer
         Task<ManufacturerListModel> GetByPaging(ManufacturerSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<bool>> Add(InsertManufacturerRequest insertPayMethod);
+        Task<TResponse<bool>> Edit(UpdateManufacturerRequest updatePayMethod);
+        Task<TResponse<ManufacturerModel>> GetById(int id);
     }
 
     public class ManufacturerService : BaseService,
@@ -136,6 +140,67 @@ namespace Pelo.v2.Web.Services.Manufacturer
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Add(InsertManufacturerRequest insertPayMethod)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.MANUFACTURER_UPDATE,
+                                                            insertPayMethod,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(UpdateManufacturerRequest updatePayMethod)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.MANUFACTURER_UPDATE,
+                                                            updatePayMethod,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<ManufacturerModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.MANUFACTURER_GET_BY_ID, id);
+                var response = await HttpService.Send<GetManufacturerResponse>(url, null, HttpMethod.Get, true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new ManufacturerModel { Id = response.Data.Id, Name = response.Data.Name });
+                }
+
+                return await Fail<ManufacturerModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<ManufacturerModel>(exception);
             }
         }
 

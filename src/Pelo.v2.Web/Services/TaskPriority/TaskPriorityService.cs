@@ -20,6 +20,12 @@ namespace Pelo.v2.Web.Services.TaskPriority
         Task<TaskPriorityListModel> GetByPaging(TaskPrioritySearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<bool>> Update(TaskPriorityModel model);
+        
+        Task<TResponse<TaskPriorityModel>> GetById(int id);
+        
+        Task<TResponse<bool>> Insert(TaskPriorityModel model);
     }
 
     public class TaskPriorityService : BaseService,
@@ -42,7 +48,7 @@ namespace Pelo.v2.Web.Services.TaskPriority
                                                                                       HttpMethod.Get,
                                                                                       true);
 
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                     return response.Data;
 
                 throw new PeloException(response.Message);
@@ -60,11 +66,11 @@ namespace Pelo.v2.Web.Services.TaskPriority
                 var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
-                    if(request.Columns != null
+                    if (request.Columns != null
                        && request.Columns.Any()
                        && request.Order != null
                        && request.Order.Any())
@@ -88,22 +94,22 @@ namespace Pelo.v2.Web.Services.TaskPriority
                                                                                                      HttpMethod.Get,
                                                                                                      true);
 
-                    if(response.IsSuccess)
+                    if (response.IsSuccess)
                         return new TaskPriorityListModel
-                               {
-                                       Draw = request.Draw,
-                                       RecordsFiltered = response.Data.TotalCount,
-                                       Total = response.Data.TotalCount,
-                                       RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new TaskPriorityModel
-                                                                             {
-                                                                                     Id = c.Id,
-                                                                                     Name = c.Name,
-                                                                                     Color = c.Color,
-                                                                                     PageSize = request.PageSize,
-                                                                                     PageSizeOptions = request.AvailablePageSizes
-                                                                             })
-                               };
+                        {
+                            Draw = request.Draw,
+                            RecordsFiltered = response.Data.TotalCount,
+                            Total = response.Data.TotalCount,
+                            RecordsTotal = response.Data.TotalCount,
+                            Data = response.Data.Data.Select(c => new TaskPriorityModel
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                                Color = c.Color,
+                                PageSize = request.PageSize,
+                                PageSizeOptions = request.AvailablePageSizes
+                            })
+                        };
 
                     throw new PeloException(response.Message);
                 }
@@ -126,7 +132,73 @@ namespace Pelo.v2.Web.Services.TaskPriority
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(TaskPriorityModel model)
+        {
+            try
+            {
+                var url = ApiUrl.TASK_PRIORITY_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new UpdateTaskPriority { Id = model.Id, Name = model.Name, Color = model.Color, SortOrder = model.SortOrder },
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<TaskPriorityModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.TASK_PRIORITY_GET_BY_ID, id);
+                var response = await HttpService.Send<GetTaskPriorityResponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new TaskPriorityModel { Id = response.Data.Id, Name = response.Data.Name, Color = response.Data.Color, SortOrder = response.Data.SortOrder });
+                }
+
+                return await Fail<TaskPriorityModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<TaskPriorityModel>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(TaskPriorityModel model)
+        {
+            try
+            {
+                var url = ApiUrl.TASK_PRIORITY_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new InsertTaskPriority { Name = model.Name, Color = model.Color, SortOrder = model.SortOrder },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }

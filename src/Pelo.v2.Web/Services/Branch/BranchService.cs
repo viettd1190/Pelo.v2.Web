@@ -20,11 +20,11 @@ namespace Pelo.v2.Web.Services.Branch
 
         Task<BranchListModel> GetByPaging(BranchSearchModel request);
 
-        //Task<bool> Insert(InsertBranch request);
+        Task<TResponse<bool>> Insert(InsertBranch request);
 
-        //Task<TResponse<Common.Dtos.Branch.BranchModel>> GetCrmById(int id);
+        Task<TResponse<UpdateBranchModel>> GetById(int id);
 
-        //Task<TResponse<bool>> Update(UpdateBranch request);
+        Task<TResponse<bool>> Update(UpdateBranch request);
 
         //Task<TResponse<bool>> Delete(int id);
     }
@@ -49,7 +49,7 @@ namespace Pelo.v2.Web.Services.Branch
                                                                                       HttpMethod.Get,
                                                                                       true);
 
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                     return response.Data;
 
                 throw new PeloException(response.Message);
@@ -67,11 +67,11 @@ namespace Pelo.v2.Web.Services.Branch
                 var columnOrder = "Name";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
-                    if(request.Columns != null
+                    if (request.Columns != null
                        && request.Columns.Any()
                        && request.Order != null
                        && request.Order.Any())
@@ -99,26 +99,26 @@ namespace Pelo.v2.Web.Services.Branch
                                                                                                HttpMethod.Get,
                                                                                                true);
 
-                    if(response.IsSuccess)
+                    if (response.IsSuccess)
                         return new BranchListModel
-                               {
-                                       Draw = request.Draw,
-                                       RecordsFiltered = response.Data.TotalCount,
-                                       Total = response.Data.TotalCount,
-                                       RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new Models.Branch.BranchModel
-                                                                             {
-                                                                                     Id = c.Id,
-                                                                                     Name = c.Name,
-                                                                                     Address = c.Address,
-                                                                                     PageSize = request.PageSize,
-                                                                                     District = c.District,
-                                                                                     Hotline = c.Hotline,
-                                                                                     Province = c.Province,
-                                                                                     Ward = c.Ward,
-                                                                                     PageSizeOptions = request.AvailablePageSizes
-                                                                             })
-                               };
+                        {
+                            Draw = request.Draw,
+                            RecordsFiltered = response.Data.TotalCount,
+                            Total = response.Data.TotalCount,
+                            RecordsTotal = response.Data.TotalCount,
+                            Data = response.Data.Data.Select(c => new Models.Branch.BranchModel
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                                Address = c.Address,
+                                PageSize = request.PageSize,
+                                District = c.District,
+                                Hotline = c.Hotline,
+                                Province = c.Province,
+                                Ward = c.Ward,
+                                PageSizeOptions = request.AvailablePageSizes
+                            })
+                        };
 
                     throw new PeloException(response.Message);
                 }
@@ -138,19 +138,70 @@ namespace Pelo.v2.Web.Services.Branch
             throw new NotImplementedException();
         }
 
-        public Task<TResponse<BranchModel>> GetCrmById(int id)
+        public async Task<TResponse<bool>> Insert(InsertBranch request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var url = ApiUrl.BRANCH_INSERT;
+                var response = await HttpService.Send<bool>(url,
+                                                            request,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
         }
 
-        public Task<bool> Insert(InsertBranch request)
+        public async Task<TResponse<bool>> Update(UpdateBranch request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var url = ApiUrl.BRANCH_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            request,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
         }
 
-        public Task<TResponse<bool>> Update(UpdateBranch request)
+        public async Task<TResponse<UpdateBranchModel>> GetById(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var url = string.Format(ApiUrl.GET_BRANCH_ID, id);
+                var response = await HttpService.Send<BranchModel>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new UpdateBranchModel { Id = response.Data.Id, Name = response.Data.Name, DistrictId = response.Data.DistrictId, WardId = response.Data.WardId, Hotline = response.Data.Hotline, ProvinceId = response.Data.ProvinceId, Address = response.Data.Address });
+                }
+
+                return await Fail<UpdateBranchModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<UpdateBranchModel>(exception);
+            }
         }
     }
 }

@@ -1,8 +1,50 @@
-﻿@model Pelo.v2.Web.Models.AppConfig.AppConfigUpdate
-
+﻿@model Pelo.v2.Web.Models.ProductGroup.ProductGroupModel
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Cập nhật nhóm sản phẩm";
     Layout = "_Layout";
 }
+@section cssPlugin{
+    <link rel="stylesheet" href="@Url.Content("~/lib/spectrum/spectrum.css")">
+}
+@section jsPlugin {
+    <script src="@Url.Content("~/lib/spectrum/spectrum.js")"></script>
+}
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","ProductGroup")">Danh sách nhóm sản phẩm</a></li>
+    <li class="active">Cập nhật nhóm sản phẩm</li>
+</ol>
 
-<h2>title</h2>
+<section class="card">
+    <div class="card-block">
+        <form asp-controller="ProductGroup" asp-action="Edit" method="post" id="ProductGroup-form">
+            @Html.ValidationSummary()
+            @Html.HiddenFor(c => c.Id)
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Name">Tên</label>
+                        <input asp-for="Name" class="form-control" type="text" placeholder="Tên" />
+                        @Html.ValidationMessageFor(c => c.Name)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        <a class="btn btn-default" href="@Url.Action("Index", "ProductGroup")">Hủy</a>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section js{
+    <script>
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liSystem').addClass('opened');
+            $('#liProductGroup').addClass('row-active');
+        })
+    </script>
+}

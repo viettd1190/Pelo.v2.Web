@@ -21,6 +21,9 @@ namespace Pelo.v2.Web.Models.CustomerVip
         [JsonProperty("Color")]
         public string Color { get; set; }
 
+        [JsonProperty("SortOrder")]
+        public int SortOrder{ get; set; }
+
         [JsonProperty("Profit")]
         public int Profit { get; set; }
 

@@ -27,6 +27,11 @@ namespace Pelo.v2.Web.Controllers
             return Json(result);
         }
 
+        public async Task<IActionResult> Add()
+        {
+            return View(new RoleModel());
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(RoleModel model)
         {

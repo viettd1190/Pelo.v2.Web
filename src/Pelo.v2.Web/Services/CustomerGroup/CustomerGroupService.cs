@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Pelo.Common.Dtos.Customer;
 using Pelo.Common.Dtos.CustomerGroup;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
@@ -20,6 +21,12 @@ namespace Pelo.v2.Web.Services.CustomerGroup
         Task<CustomerGroupListModel> GetByPaging(CustomerGroupSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<CustomerGroupModel>> GetById(int id);
+
+        Task<TResponse<bool>> Update(UpdateCustomerGroupRequest model);
+
+        Task<TResponse<bool>> Insert(InsertCustomerGroupRequest model);
     }
 
     public class CustomerGroupService : BaseService,
@@ -135,6 +142,72 @@ namespace Pelo.v2.Web.Services.CustomerGroup
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<CustomerGroupModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CUSTOMER_SOURCE_GET_BY_ID, id);
+                var response = await HttpService.Send<GetCustomerGroupByIdResponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new CustomerGroupModel { Id = response.Data.Id, Name = response.Data.Name});
+                }
+
+                return await Fail<CustomerGroupModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<CustomerGroupModel>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateCustomerGroupRequest model)
+        {
+            try
+            {
+                var url = ApiUrl.CUSTOMER_SOURCE_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            model,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(InsertCustomerGroupRequest model)
+        {
+            try
+            {
+                var url = ApiUrl.CUSTOMER_SOURCE_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            model,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 

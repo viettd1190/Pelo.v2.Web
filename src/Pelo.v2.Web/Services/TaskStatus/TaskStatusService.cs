@@ -20,6 +20,9 @@ namespace Pelo.v2.Web.Services.TaskStatus
         Task<TaskStatusListModel> GetByPaging(TaskStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<UpdateTaskStatusModel>> GetById(int id);
+        Task<TResponse<bool>> Update(UpdateTaskStatusModel model);
+        Task<TResponse<bool>> Insert(UpdateTaskStatusModel model);
     }
 
     public class TaskStatusService : BaseService,
@@ -42,7 +45,7 @@ namespace Pelo.v2.Web.Services.TaskStatus
                                                                                     HttpMethod.Get,
                                                                                     true);
 
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                     return response.Data;
 
                 throw new PeloException(response.Message);
@@ -60,11 +63,11 @@ namespace Pelo.v2.Web.Services.TaskStatus
                 var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
-                    if(request.Columns != null
+                    if (request.Columns != null
                        && request.Columns.Any()
                        && request.Order != null
                        && request.Order.Any())
@@ -88,24 +91,24 @@ namespace Pelo.v2.Web.Services.TaskStatus
                                                                                                    HttpMethod.Get,
                                                                                                    true);
 
-                    if(response.IsSuccess)
+                    if (response.IsSuccess)
                         return new TaskStatusListModel
-                               {
-                                       Draw = request.Draw,
-                                       RecordsFiltered = response.Data.TotalCount,
-                                       Total = response.Data.TotalCount,
-                                       RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new TaskStatusModel
-                                                                             {
-                                                                                     Id = c.Id,
-                                                                                     Name = c.Name,
-                                                                                     Color = c.Color,
-                                                                                     IsSendSms = c.IsSendSms,
-                                                                                     SortOrder = c.SortOrder,
-                                                                                     PageSize = request.PageSize,
-                                                                                     PageSizeOptions = request.AvailablePageSizes
-                                                                             })
-                               };
+                        {
+                            Draw = request.Draw,
+                            RecordsFiltered = response.Data.TotalCount,
+                            Total = response.Data.TotalCount,
+                            RecordsTotal = response.Data.TotalCount,
+                            Data = response.Data.Data.Select(c => new TaskStatusModel
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                                Color = c.Color,
+                                IsSendSms = c.IsSendSms,
+                                SortOrder = c.SortOrder,
+                                PageSize = request.PageSize,
+                                PageSizeOptions = request.AvailablePageSizes
+                            })
+                        };
 
                     throw new PeloException(response.Message);
                 }
@@ -128,7 +131,73 @@ namespace Pelo.v2.Web.Services.TaskStatus
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<UpdateTaskStatusModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.TASK_TYPE_GET_BY_ID, id);
+                var response = await HttpService.Send<GetTaskStatusPagingResponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new UpdateTaskStatusModel { Id = response.Data.Id, Name = response.Data.Name, Color = response.Data.Color, SortOrder = response.Data.SortOrder });
+                }
+
+                return await Fail<UpdateTaskStatusModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<UpdateTaskStatusModel>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateTaskStatusModel model)
+        {
+            try
+            {
+                var url = ApiUrl.TASK_STATUS_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new InsertTaskStatus { Name = model.Name, Color = model.Color, SortOrder = model.SortOrder, IsSendSms = model.IsSendSms, SmsContent = model.SmsContent },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(UpdateTaskStatusModel model)
+        {
+            try
+            {
+                var url = ApiUrl.TASK_STATUS_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new InsertTaskStatus { Name = model.Name, Color = model.Color, SortOrder = model.SortOrder, IsSendSms = model.IsSendSms, SmsContent = model.SmsContent },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }

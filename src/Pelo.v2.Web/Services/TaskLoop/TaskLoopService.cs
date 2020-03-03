@@ -20,6 +20,9 @@ namespace Pelo.v2.Web.Services.TaskLoop
         Task<TaskLoopListModel> GetByPaging(TaskLoopSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<TaskLoopModel>> GetById(int id);
+        Task<TResponse<bool>> Insert(TaskLoopModel model);
+        Task<TResponse<bool>> Update(TaskLoopModel model);
     }
 
     public class TaskLoopService : BaseService,
@@ -42,7 +45,7 @@ namespace Pelo.v2.Web.Services.TaskLoop
                                                                                   HttpMethod.Get,
                                                                                   true);
 
-                if(response.IsSuccess)
+                if (response.IsSuccess)
                     return response.Data;
 
                 throw new PeloException(response.Message);
@@ -60,11 +63,11 @@ namespace Pelo.v2.Web.Services.TaskLoop
                 var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
-                    if(request.Columns != null
+                    if (request.Columns != null
                        && request.Columns.Any()
                        && request.Order != null
                        && request.Order.Any())
@@ -88,23 +91,23 @@ namespace Pelo.v2.Web.Services.TaskLoop
                                                                                                  HttpMethod.Get,
                                                                                                  true);
 
-                    if(response.IsSuccess)
+                    if (response.IsSuccess)
                         return new TaskLoopListModel
-                               {
-                                       Draw = request.Draw,
-                                       RecordsFiltered = response.Data.TotalCount,
-                                       Total = response.Data.TotalCount,
-                                       RecordsTotal = response.Data.TotalCount,
-                                       Data = response.Data.Data.Select(c => new TaskLoopModel
-                                                                             {
-                                                                                     Id = c.Id,
-                                                                                     Name = c.Name,
-                                                                                     DayCount = c.DayCount,
-                                                                                     SortOrder = c.SortOrder,
-                                                                                     PageSize = request.PageSize,
-                                                                                     PageSizeOptions = request.AvailablePageSizes
-                                                                             })
-                               };
+                        {
+                            Draw = request.Draw,
+                            RecordsFiltered = response.Data.TotalCount,
+                            Total = response.Data.TotalCount,
+                            RecordsTotal = response.Data.TotalCount,
+                            Data = response.Data.Data.Select(c => new TaskLoopModel
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                                DayCount = c.DayCount,
+                                SortOrder = c.SortOrder,
+                                PageSize = request.PageSize,
+                                PageSizeOptions = request.AvailablePageSizes
+                            })
+                        };
 
                     throw new PeloException(response.Message);
                 }
@@ -127,7 +130,73 @@ namespace Pelo.v2.Web.Services.TaskLoop
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<TaskLoopModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.TASK_LOOP_GET_BY_ID, id);
+                var response = await HttpService.Send<GetTaskLoopPagingResponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new TaskLoopModel { Id = response.Data.Id, DayCount = response.Data.DayCount, Name = response.Data.Name, SortOrder = response.Data.SortOrder });
+                }
+
+                return await Fail<TaskLoopModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<TaskLoopModel>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(TaskLoopModel model)
+        {
+            try
+            {
+                var url = ApiUrl.TASK_LOOP_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new InsertTaskLoop { Name = model.Name, SortOrder = model.SortOrder, DayCount = model.DayCount },
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(TaskLoopModel model)
+        {
+            try
+            {
+                var url = ApiUrl.TASK_LOOP_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            new UpdateTaskLoop { Id = model.Id, Name = model.Name, SortOrder = model.SortOrder, DayCount = model.DayCount },
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }

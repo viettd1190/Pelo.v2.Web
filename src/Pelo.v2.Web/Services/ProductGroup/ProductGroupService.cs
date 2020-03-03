@@ -20,6 +20,9 @@ namespace Pelo.v2.Web.Services.ProductGroup
         Task<ProductGroupListModel> GetByPaging(ProductGroupSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<ProductGroupModel>> GetById(int id);
+        Task<TResponse<bool>> Edit(UpdateProductGroup updateProductGroup);
+        Task<TResponse<bool>> Add(InsertProductGroup insertProductGroup);
     }
 
     public class ProductGroupService : BaseService,
@@ -135,6 +138,69 @@ namespace Pelo.v2.Web.Services.ProductGroup
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<ProductGroupModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.PRODUCT_GROUP_GET_BY_ID, id);
+                var response = await HttpService.Send<GetProductGroupReponse>(url, null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new ProductGroupModel { Id = response.Data.Id, Name = response.Data.Name });
+                }
+
+                return await Fail<ProductGroupModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<ProductGroupModel>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(UpdateProductGroup updateProductGroup)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.DEPARTMENT_UPDATE,
+                                                            updateProductGroup,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Add(InsertProductGroup insertProductGroup)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.DEPARTMENT_UPDATE,
+                                                            insertProductGroup,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 
