@@ -1,0 +1,22 @@
+@model DateTime
+@using System.Globalization
+<div class="form-group">
+    <div class="input-group date datetimepicker-1">
+        <input id="@Html.IdForModel()" name="@Html.NameForModel()" class="form-control" value="@((Model > DateTime.MinValue ? Model : DateTime.Today).ToString(CultureInfo.CurrentCulture.DateTimeFormat))" />
+        <span class="input-group-addon">
+            <i class="font-icon font-icon-calend"></i>
+        </span>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('.datetimepicker-1').datetimepicker({
+                widgetPositioning:{
+                        horizontal:'right'
+                    },
+                format:'DD-MM-YYYY hh:mm',
+                minDate:new Date(),
+                debug:false
+            });
+    });
+</script>

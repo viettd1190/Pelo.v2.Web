@@ -5,6 +5,12 @@
     Layout = "_Layout";
 }
 
+@section cssPlugin{
+    <link href="~/startui/css/separate/vendor/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/separate/vendor/bootstrap-daterangepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/lib/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" />
+}
+
 @section css{
     <style>
         .label-content {
@@ -38,8 +44,8 @@
 
 <section class="card">
     <div class="card-block">
-        <form id="insert-crm">
-            @Html.HiddenFor(c=>c.CustomerId)
+        <form id="insert-crm" method="post">
+            @Html.HiddenFor(c => c.CustomerId)
             @Html.ValidationSummary()
             <div class="row">
                 <div class="col-lg-12">
@@ -66,7 +72,8 @@
                     </fieldset>
                     <fieldset class="form-group">
                         <label class="form-label semibold" for="ContactDate">Ngày liên hệ</label>
-                        <input asp-for="ContactDate" class="form-control" type="text" placeholder="Ngày liên hệ" />
+                        @*<input asp-for="ContactDate" class="form-control" type="text" placeholder="Ngày liên hệ" />*@
+                        <nop-editor asp-for="ContactDate" />
                         @Html.ValidationMessageFor(c => c.ContactDate)
                     </fieldset>
                     <fieldset class="form-group">
@@ -80,6 +87,11 @@
                         <nop-label asp-for="CrmPriorityId" text-display="Mức độ khẩn cấp" />
                         <nop-select asp-for="CrmPriorityId" asp-items="Model.AvaiableCrmPriorities" />
                         @Html.ValidationMessageFor(c => c.CrmPriorityId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="CrmStatusId" text-display="Trạng thái CRM" />
+                        <nop-select asp-for="CrmStatusId" asp-items="Model.AvaiableCrmStatuses" />
+                        @Html.ValidationMessageFor(c => c.CrmStatusId)
                     </fieldset>
                     <fieldset class="form-group">
                         <nop-label asp-for="CustomerSourceId" text-display="Nguồn khách hàng" />
@@ -113,3 +125,11 @@
         </form>
     </div>
 </section>
+
+@section jsPlugin{
+    <script src="~/startui/js/lib/moment/moment-with-locales.js"></script>
+    <script src="~/startui/js/lib/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker-init.js"></script>
+    <script src="~/startui/js/lib/daterangepicker/daterangepicker.js"></script>
+}

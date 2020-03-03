@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pelo.v2.Web.Models.Customer;
 
@@ -14,6 +15,7 @@ namespace Pelo.v2.Web.Models.Crm
             AvaiableCrmPriorities = new List<SelectListItem>();
             AvaiableUserCares = new List<SelectListItem>();
             AvaiableProductGroups = new List<SelectListItem>();
+            AvaiableCrmStatuses=new List<SelectListItem>();
             AvaiableVisits = new List<SelectListItem>
                              {
                                      new SelectListItem("Đã đến cửa hàng",
@@ -45,7 +47,8 @@ namespace Pelo.v2.Web.Models.Crm
 
         public int IsVisit { get; set; }
 
-        public string ContactDate { get; set; }
+        [UIHint("DateTime")]
+        public DateTime ContactDate { get; set; }
 
         public string ContactTime { get; set; }
 
@@ -62,5 +65,7 @@ namespace Pelo.v2.Web.Models.Crm
         public IList<SelectListItem> AvaiableProductGroups { get; set; }
 
         public IList<SelectListItem> AvaiableVisits { get; set; }
+
+        public IList<SelectListItem> AvaiableCrmStatuses { get; set; }
     }
 }

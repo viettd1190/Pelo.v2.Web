@@ -171,12 +171,12 @@ namespace Pelo.v2.Web.Services.Crm
         {
             try
             {
-                DateTime date = DateTime.Now;
-                if(!string.IsNullOrEmpty(model.ContactDate)
-                   && !string.IsNullOrEmpty(model.ContactTime))
-                {
-                    date = DateTime.Parse($"{model.ContactDate} {model.ContactTime}");
-                }
+                //DateTime date = DateTime.Now;
+                //if(!string.IsNullOrEmpty(model.ContactDate)
+                //   && !string.IsNullOrEmpty(model.ContactTime))
+                //{
+                //    date = DateTime.Parse($"{model.ContactDate} {model.ContactTime}");
+                //}
 
                 var response = await HttpService.Send<bool>(ApiUrl.CRM_INSERT,
                                                             new InsertCrmRequest
@@ -190,7 +190,7 @@ namespace Pelo.v2.Web.Services.Crm
                                                                     Description = string.Empty,
                                                                     CustomerSourceId = model.CustomerSourceId,
                                                                     Visit = model.IsVisit,
-                                                                    ContactDate = date,
+                                                                    ContactDate = model.ContactDate,
                                                                     UserIds = model.UserCareIds.ToList()
                                                             },
                                                             HttpMethod.Post,
