@@ -8,13 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.0" />
+    <PackageReference Include="autofac.extras.dynamicproxy" Version="4.5.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="Newtonsoft.json" Version="12.0.3" />
     <PackageReference Include="serilog.aspnetcore" Version="2.1.1" />
-    <PackageReference Include="serilog.sinks.file" Version="4.0.0" />
+    <PackageReference Include="serilog.sinks.file" Version="4.1.0" />
   </ItemGroup>
 
 

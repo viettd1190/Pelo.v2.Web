@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Autofac.Extras.DynamicProxy;
 using AutoMapper;
+using Castle.DynamicProxy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pelo.Common.Log.AutoWriteLog;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Services.AppConfig;
 
@@ -25,7 +28,12 @@ namespace Pelo.v2.Web.Commons
             builder.RegisterAssemblyTypes(typeof(AppConfigService).Assembly)
                    .Where(c => c.Name.EndsWith("Service"))
                    .AsImplementedInterfaces()
+                   .EnableInterfaceInterceptors()
+                   .InterceptedBy("log-calls")
                    .InstancePerLifetimeScope();
+
+            builder.Register(c => new DynamicProxyLog(new DynamicProxyAsyncLog(configuration)))
+                   .Named<IInterceptor>("log-calls");
 
             builder.Populate(services);
             var container = builder.Build();
