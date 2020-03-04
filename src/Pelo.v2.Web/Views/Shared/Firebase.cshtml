@@ -1,0 +1,33 @@
+﻿@using System.Security.Claims
+<script>
+    var firebaseConfig = {
+            apiKey: "AIzaSyA1v_6dJPgiHaPP1xlImYqnHihF-3jknmA",
+            authDomain: "pelodb.firebaseapp.com",
+            databaseURL: "https://pelodb.firebaseio.com",
+            projectId: "pelodb",
+            storageBucket: "pelodb.appspot.com",
+            messagingSenderId: "726134219557",
+            appId: "1:726134219557:web:c8eb24a2a5a8fe7fdc70cc",
+            measurementId: "G-Q1Q6JCHV6N"
+        };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+    @{
+        var userId = 0;
+        var identities = (ClaimsIdentity) User.Identity;
+        if(identities!=null) {
+            var idClaim = identities.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if(idClaim!=null) {
+                userId = Convert.ToInt32(idClaim.Value);
+            }
+        }
+    }
+    var ref=database.ref('/user_notifications/@userId');
+    ref.on("value", function (snapshot) {
+        var result = snapshot.val();
+        if (result != null) {
+            console.log(result);
+        }
+    });
+</script>
