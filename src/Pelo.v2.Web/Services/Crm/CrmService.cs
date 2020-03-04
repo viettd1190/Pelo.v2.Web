@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.Crm;
 using Pelo.Common.Exceptions;
-using Pelo.Common.Extensions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models;
@@ -30,6 +31,8 @@ namespace Pelo.v2.Web.Services.Crm
         Task<TResponse<bool>> Insert(InsertCrmModel model);
 
         Task<CrmListModel> GetByCustomerIdPaging(CustomerComponentSearchModel request);
+
+        Task<UpdateCrmModel> GetById(int id);
     }
 
     public class CrmService : BaseService,
@@ -277,6 +280,62 @@ namespace Pelo.v2.Web.Services.Crm
                 }
 
                 throw new PeloException("Request is null");
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<UpdateCrmModel> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CRM_GET_BY_ID,
+                                        id);
+                var response = await HttpService.Send<GetCrmModelReponse>(url,
+                                                                          null,
+                                                                          HttpMethod.Get,
+                                                                          true);
+                if(response.IsSuccess)
+                {
+                    return new UpdateCrmModel
+                           {
+                                   Id = id,
+                                   AvaiableCrmPriorities = new List<SelectListItem>(),
+                                   AvaiableCrmStatuses = new List<SelectListItem>(),
+                                   AvaiableCrmTypes = new List<SelectListItem>(),
+                                   AvaiableCustomerSources = new List<SelectListItem>(),
+                                   AvaiableProductGroups = new List<SelectListItem>(),
+                                   AvaiableUserCares = new List<SelectListItem>(),
+                                   AvaiableVisits = new List<SelectListItem>
+                                                    {
+                                                            new SelectListItem("Đã đến cửa hàng",
+                                                                               "1"),
+                                                            new SelectListItem("Chưa đến cửa hàng",
+                                                                               "0")
+                                                    },
+                                   Code = response.Data.Code,
+                                   ContactDate = response.Data.ContactDate,
+                                   CrmPriorityId = response.Data.CrmPriorityId,
+                                   CrmStatusId = response.Data.CrmStatusId,
+                                   CrmTypeId = response.Data.CrmTypeId,
+                                   Customer = new CustomerDetailModel(),
+                                   CustomerId = response.Data.CustomerId,
+                                   CustomerSourceId = response.Data.CustomerSourceId,
+                                   DateCreated = response.Data.DateCreated,
+                                   Description = response.Data.Description,
+                                   IsVisit = response.Data.Visit,
+                                   Need = response.Data.Need,
+                                   ProductGroupId = response.Data.ProductGroupId,
+                                   UserCareIds = response.Data.UserCares.Select(c => c.Id)
+                                                         .ToList(),
+                                   UserCreated = response.Data.UserCreated,
+                                   UserCreatedPhone = response.Data.UserCreatedPhone
+                           };
+                }
+
+                throw new PeloException(response.Message);
             }
             catch (Exception exception)
             {

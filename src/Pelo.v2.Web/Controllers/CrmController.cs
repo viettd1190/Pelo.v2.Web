@@ -203,5 +203,46 @@ namespace Pelo.v2.Web.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> Detail(int id)
+        {
+            var model = await _crmService.GetById(id);
+            if(model!=null)
+            {
+                
+                var customer = await _customerService.GetDetail(model.CustomerId);
+                if(customer!=null)
+                {
+                    model.Customer = new CustomerDetailModel
+                                     {
+                                             Code = customer.Data.Code,
+                                             Name = customer.Data.Name,
+                                             Phone = customer.Data.Phone,
+                                             Phone2 = customer.Data.Phone2,
+                                             Phone3 = customer.Data.Phone3,
+                                             Province = customer.Data.Province,
+                                             District = customer.Data.District,
+                                             Ward = customer.Data.Ward,
+                                             Address = customer.Data.Address,
+                                             CustomerGroup = customer.Data.CustomerGroup,
+                                             CustomerVip = customer.Data.CustomerVip,
+                                             Email = customer.Data.Email,
+                                             DateCreated = customer.Data.DateCreated,
+                                             Description = customer.Data.Description
+                                     };
+
+                    await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources, false);
+                    await _baseModelFactory.PrepareCrmTypes(model.AvaiableCrmTypes, false);
+                    await _baseModelFactory.PrepareCrmPriorities(model.AvaiableCrmPriorities, false);
+                    await _baseModelFactory.PrepareUsers(model.AvaiableUserCares, false);
+                    await _baseModelFactory.PrepareProductGroups(model.AvaiableProductGroups, false);
+                    await _baseModelFactory.PrepareCrmStatuses(model.AvaiableCrmStatuses, false);
+
+                    return View(model);
+                }
+            }
+
+            return View("Notfound");
+        }
     }
 }

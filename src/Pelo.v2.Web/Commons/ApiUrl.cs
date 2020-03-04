@@ -236,7 +236,7 @@
 
         public const string CRM_INSERT = BASE_API_URL + "/api/crm";
 
-        public const string GET_CRM_ID = BASE_API_URL + "/api/crm/{0}";
+        public const string CRM_GET_BY_ID = BASE_API_URL + "/api/crm/{0}";
 
         public const string CRM_UPDATE = BASE_API_URL + "/api/crm";
 

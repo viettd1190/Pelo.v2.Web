@@ -6,9 +6,9 @@ using Pelo.v2.Web.Models.Customer;
 
 namespace Pelo.v2.Web.Models.Crm
 {
-    public class InsertCrmModel
+    public class UpdateCrmModel
     {
-        public InsertCrmModel()
+        public UpdateCrmModel()
         {
             AvaiableCustomerSources = new List<SelectListItem>();
             AvaiableCrmTypes = new List<SelectListItem>();
@@ -27,7 +27,11 @@ namespace Pelo.v2.Web.Models.Crm
             UserCareIds=new List<int>();
         }
 
+        public int Id { get; set; }
+
         public CustomerDetailModel Customer { get; set; }
+
+        public string Code { get; set; }
 
         public string Need { get; set; }
 
@@ -51,6 +55,13 @@ namespace Pelo.v2.Web.Models.Crm
         public DateTime ContactDate { get; set; }
 
         public string Description { get; set; }
+
+        public string UserCreated { get; set; }
+
+        public string UserCreatedPhone { get; set; }
+
+        [UIHint("DateTime")]
+        public DateTime DateCreated { get; set; }
 
         public IList<SelectListItem> AvaiableCustomerSources { get; set; }
 
