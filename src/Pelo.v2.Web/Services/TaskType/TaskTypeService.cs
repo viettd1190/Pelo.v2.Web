@@ -147,17 +147,68 @@ namespace Pelo.v2.Web.Services.TaskType
 
         public async Task<TResponse<bool>> Insert(InsertTaskType insertTaskType)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var url = ApiUrl.TASK_TYPE_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            insertTaskType,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
         }
 
         public async Task<TResponse<bool>> Update(UpdateTaskType updateTaskType)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var url = ApiUrl.TASK_TYPE_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            updateTaskType,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
         }
 
         public async Task<TResponse<TaskTypeModel>> GetById(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var url = string.Format(ApiUrl.TASK_TYPE_GET_BY_ID, id);
+                var response = await HttpService.Send<GetTaskTypePagingResponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new TaskTypeModel { Id = response.Data.Id, Name = response.Data.Name, SortOrder = response.Data.SortOrder });
+                }
+
+                return await Fail<TaskTypeModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<TaskTypeModel>(exception);
+            }
         }
 
         #endregion
