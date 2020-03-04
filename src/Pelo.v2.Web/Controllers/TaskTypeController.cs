@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Pelo.Common.Dtos.TaskType;
 using Pelo.v2.Web.Models.TaskType;
 using Pelo.v2.Web.Services.TaskType;
 
@@ -31,6 +32,56 @@ namespace Pelo.v2.Web.Controllers
         {
             var result = await _taskTypeService.Delete(id);
             return Json(result);
+        }
+
+        public async Task<IActionResult> Add()
+        {
+            return View(new TaskTypeModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(TaskTypeModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _taskTypeService.Insert(new InsertTaskType { Name = model.Name, SortOrder = model.SortOrder });
+                if (result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", result.Message);
+            }
+            return View(model);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var model = await _taskTypeService.GetById(id);
+            if (model.IsSuccess)
+            {
+                return View(model.Data);
+            }
+
+            return View("Notfound");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(TaskTypeModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _taskTypeService.Update(new UpdateTaskType { Id = model.Id, Name = model.Name, SortOrder = model.SortOrder });
+                if (result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", result.Message);
+            }
+            return View(model);
         }
     }
 }

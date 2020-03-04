@@ -20,6 +20,12 @@ namespace Pelo.v2.Web.Services.TaskType
         Task<TaskTypeListModel> GetByPaging(TaskTypeSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<bool>> Insert(InsertTaskType insertTaskType);
+        
+        Task<TResponse<bool>> Update(UpdateTaskType updateTaskType);
+        
+        Task<TResponse<TaskTypeModel>> GetById(int id);
     }
 
     public class TaskTypeService : BaseService,
@@ -137,6 +143,21 @@ namespace Pelo.v2.Web.Services.TaskType
             {
                 return await Fail<bool>(exception);
             }
+        }
+
+        public async Task<TResponse<bool>> Insert(InsertTaskType insertTaskType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateTaskType updateTaskType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TResponse<TaskTypeModel>> GetById(int id)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

@@ -193,7 +193,7 @@ namespace Pelo.v2.Web.Services.CustomerVip
                 var url = ApiUrl.CUSTOMER_VIP_UPDATE;
                 var response = await HttpService.Send<bool>(url,
                                                             model,
-                                                            HttpMethod.Post,
+                                                            HttpMethod.Put,
                                                             true);
                 if (response.IsSuccess)
                 {

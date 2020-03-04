@@ -149,7 +149,7 @@ namespace Pelo.v2.Web.Services.CustomerGroup
         {
             try
             {
-                var url = string.Format(ApiUrl.CUSTOMER_SOURCE_GET_BY_ID, id);
+                var url = string.Format(ApiUrl.CUSTOMER_GROUP_GET_BY_ID, id);
                 var response = await HttpService.Send<GetCustomerGroupByIdResponse>(url,
                                                                       null,
                                                                       HttpMethod.Get,
@@ -171,7 +171,7 @@ namespace Pelo.v2.Web.Services.CustomerGroup
         {
             try
             {
-                var url = ApiUrl.CUSTOMER_SOURCE_UPDATE;
+                var url = ApiUrl.CUSTOMER_GROUP_UPDATE;
                 var response = await HttpService.Send<bool>(url,
                                                             model,
                                                             HttpMethod.Put,
@@ -193,7 +193,7 @@ namespace Pelo.v2.Web.Services.CustomerGroup
         {
             try
             {
-                var url = ApiUrl.CUSTOMER_SOURCE_UPDATE;
+                var url = ApiUrl.CUSTOMER_GROUP_UPDATE;
                 var response = await HttpService.Send<bool>(url,
                                                             model,
                                                             HttpMethod.Post,

@@ -54,7 +54,7 @@ namespace Pelo.v2.Web.Controllers
             var model = await _customerVipService.GetById(id);
             if (model.IsSuccess)
             {
-                return View(model);
+                return View(model.Data);
             }
 
             return View("Notfound");
