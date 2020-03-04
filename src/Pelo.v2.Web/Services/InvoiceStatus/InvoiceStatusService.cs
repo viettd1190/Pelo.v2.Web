@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
+using Pelo.Common.Dtos.Invoice;
 using Pelo.Common.Dtos.InvoiceStatus;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
@@ -20,6 +22,9 @@ namespace Pelo.v2.Web.Services.InvoiceStatus
         Task<InvoiceStatusListModel> GetByPaging(InvoiceStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<bool>> Insert(InsertInvoiceStatus insertInvoiceRequest);
+        Task<TResponse<bool>> Update(UpdateInvoiceStatus updateInvoiceStatus);
+        Task<TResponse<InvoiceStatusModel>> GetById(int id);
     }
 
     public class InvoiceStatusService : BaseService,
@@ -137,6 +142,67 @@ namespace Pelo.v2.Web.Services.InvoiceStatus
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(InsertInvoiceStatus insertInvoiceRequest)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.INVOICE_STATUS_UPDATE,
+                                                            insertInvoiceRequest,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateInvoiceStatus updateInvoiceStatus)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.INVOICE_STATUS_UPDATE,
+                                                            updateInvoiceStatus,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<InvoiceStatusModel>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.INVOICE_STATUS_GET_BY_ID, id);
+                var response = await HttpService.Send<GetInvoiceStatusResponse>(url, null, HttpMethod.Get, true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(new InvoiceStatusModel { Id = response.Data.Id, Name = response.Data.Name, Color = response.Data.Color, IsSendSms = response.Data.IsSendSms, SmsContent = response.Data.SmsContent });
+                }
+
+                return await Fail<InvoiceStatusModel>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<InvoiceStatusModel>(exception);
             }
         }
 

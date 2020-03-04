@@ -89,6 +89,10 @@
 @section js{ 
     <script>
         $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liInvoices').addClass('opened');
+            $('#liPayMethod').addClass('row-active');
             $('.panel').lobiPanel({
                 sortable: false,
                 draggable: false,

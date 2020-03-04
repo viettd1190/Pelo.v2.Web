@@ -24,6 +24,9 @@ namespace Pelo.v2.Web.Models.InvoiceStatus
         [JsonProperty("IsSendSms")]
         public bool IsSendSms{ get; set; }
 
+        [JsonProperty("SmsContent")]
+        public string SmsContent { get; set; }
+
         [JsonProperty("PageSize")]
         public int PageSize { get; set; }
 

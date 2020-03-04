@@ -93,7 +93,11 @@
 
 @section js{ 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liTasks').addClass('opened');
+            $('#liTaskType').addClass('row-active');
             $('.panel').lobiPanel({
                     sortable:false,
                     draggable:false,

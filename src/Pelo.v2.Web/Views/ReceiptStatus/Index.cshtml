@@ -87,7 +87,11 @@
 
 @section js{
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liReceipt').addClass('opened');
+            $('#liReceiptStatus').addClass('row-active');
             $('.panel').lobiPanel({
                     sortable:false,
                     draggable:false,

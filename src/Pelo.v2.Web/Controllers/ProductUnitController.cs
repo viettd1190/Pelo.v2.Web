@@ -33,6 +33,10 @@ namespace Pelo.v2.Web.Controllers
             var result = await _productUnitService.Delete(id);
             return Json(result);
         }
+        public async Task<IActionResult> Add()
+        {
+            return View(new ProductUnitModel());
+        }
         [HttpPost]
         public async Task<IActionResult> Add(ProductUnitModel model)
         {

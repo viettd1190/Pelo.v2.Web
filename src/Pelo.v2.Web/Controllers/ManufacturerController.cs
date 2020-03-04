@@ -56,7 +56,7 @@ namespace Pelo.v2.Web.Controllers
             var result = await _manufacturerService.GetById(id);
             if (result.IsSuccess)
             {
-                return View(result);
+                return View(result.Data);
             }
             return View("Notfound");
         }
@@ -65,7 +65,7 @@ namespace Pelo.v2.Web.Controllers
         public async Task<IActionResult> Edit(ManufacturerModel model)
         {
             var result = await _manufacturerService.Edit(new UpdateManufacturerRequest { Id = model.Id, Name = model.Name });
-            TempData["Update"] = result;
+            TempData["Update"] = result.ToJson();
             if (result.IsSuccess)
             {
                 return RedirectToAction("Index");

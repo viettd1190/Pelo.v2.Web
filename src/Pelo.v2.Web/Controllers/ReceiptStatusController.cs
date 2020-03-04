@@ -62,7 +62,7 @@ namespace Pelo.v2.Web.Controllers
             var model = await _receiptStatusService.GetById(id);
             if (model.IsSuccess)
             {
-                return View(model);
+                return View(model.Data);
             }
 
             return View("Notfound");

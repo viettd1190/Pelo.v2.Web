@@ -95,18 +95,18 @@ else
             console.log(xhr);
             console.log(code);
             },*@
-            data: function(data) {
-            @if (Model.Filters != null)
+        data: function(data) {
+        @if (Model.Filters != null)
+        {
+            foreach (var filter in Model.Filters)
             {
-                foreach (var filter in Model.Filters)
+                if (filter.Type == typeof(string))
                 {
-                    if (filter.Type == typeof(string))
+                    if (Model.IsChildTable
+                       && !string.IsNullOrEmpty(filter.ParentName))
                     {
-                        if (Model.IsChildTable
-                           && !string.IsNullOrEmpty(filter.ParentName))
-                        {
-                            <text>
-                            data.@filter.Name = row.data().@filter.ParentName;
+                        <text>
+                        data.@filter.Name = row.data().@filter.ParentName;
     </text>
     continue;
 }
@@ -144,11 +144,11 @@ if (int.TryParse(filter.Value.ToString(),
 }
 }
 }
-            return data;
-            }
-            },
-            </text>
+        return data;
         }
+        },
+        </text>
+    }
 scrollX: true,
 info: @Model.Info.ToString().ToLower(),
 paging: @Model.Paging.ToString().ToLower(),
@@ -280,7 +280,7 @@ else
                 case RenderCheckBox checkBox:
                     <text>
                         render: function (data, type, row, meta) {
-                        return (data === true)
+                        return row==null?<div class="checkbox" style="margin:auto;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" /><label></label></div>:(data === true)
                         ? '<div class="checkbox" style="margin:auto;text-align:center;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" checked="checked" /><label></label></div>'
                         : '<div class="checkbox" style="margin:auto;text-align:center"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" /><label></label></div>';
                         },

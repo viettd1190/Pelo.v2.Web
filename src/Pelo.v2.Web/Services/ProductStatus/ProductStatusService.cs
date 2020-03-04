@@ -145,7 +145,7 @@ namespace Pelo.v2.Web.Services.ProductStatus
         {
             try
             {
-                var response = await HttpService.Send<bool>(ApiUrl.PRODUCT_GROUP_UPDATE,
+                var response = await HttpService.Send<bool>(ApiUrl.PRODUCT_STATUS_UPDATE,
                                                             updateProductStatus,
                                                             HttpMethod.Put,
                                                             true);
@@ -166,7 +166,7 @@ namespace Pelo.v2.Web.Services.ProductStatus
         {
             try
             {
-                var response = await HttpService.Send<bool>(ApiUrl.PRODUCT_GROUP_UPDATE,
+                var response = await HttpService.Send<bool>(ApiUrl.PRODUCT_STATUS_UPDATE,
                                                             insertProductStatus,
                                                             HttpMethod.Post,
                                                             true);

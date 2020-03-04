@@ -30,7 +30,7 @@ namespace Pelo.v2.Web.Controllers
             await _baseModelFactory.PrepareProductGroups(searchModel.AvaiableProductGroups);
             await _baseModelFactory.PrepareProductUnits(searchModel.AvaiableProductUnits);
             await _baseModelFactory.PrepareProductStatuses(searchModel.AvaiableProductStatuses);
-            //await _baseModelFactory.PrepareCountries(searchModel.AvaiableCountries);
+            await _baseModelFactory.PrepareCountries(searchModel.AvaiableCountries);
 
             return View(searchModel);
         }
