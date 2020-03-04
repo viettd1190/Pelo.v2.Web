@@ -9,7 +9,7 @@ using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.Customer;
 using Pelo.v2.Web.Services.Http;
-
+    
 namespace Pelo.v2.Web.Services.Customer
 {
     public interface ICustomerService

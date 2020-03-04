@@ -475,6 +475,9 @@
         </a>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-database.js"></script>
     <script src="~/startui/js/lib/tether/tether.min.js"></script>
     <script src="~/startui/js/lib/bootstrap/bootstrap.min.js"></script>
     <script src="~/startui/js/plugins.js"></script>
@@ -482,7 +485,8 @@
     <script type="text/javascript" src="~/startui/js/lib/jqueryui/jquery-ui.min.js"></script>
     <script type="text/javascript" src="~/startui/js/lib/lobipanel/lobipanel.min.js"></script>
     <script type="text/javascript" src="~/startui/js/lib/match-height/jquery.matchHeight.min.js"></script>
-    <script src="~/startui/js/lib/select2/select2.full.min.js"></script>
+<script src="~/startui/js/lib/select2/select2.full.min.js"></script>
+@await Html.PartialAsync("Firebase")
     <script src="~/js/site.js"></script>
     <script src="~/startui/js/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
     <script src="~/startui/js/app.js"></script>
