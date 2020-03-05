@@ -2,7 +2,7 @@
 @model Pelo.v2.Web.Models.Crm.UpdateCrmModel
 
 @{
-    ViewBag.Title = "Thông tin CRM "+Model.Code;
+    ViewBag.Title = "Thông tin CRM " + Model.Code;
     Layout = "_Layout";
 }
 
@@ -10,6 +10,7 @@
     <link href="~/startui/css/separate/vendor/bootstrap-datetimepicker.css" rel="stylesheet" />
     <link href="~/startui/css/separate/vendor/bootstrap-daterangepicker.css" rel="stylesheet" />
     <link href="~/startui/css/lib/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" />
+    <link href="~/startui/css/separate/pages/activity.css" rel="stylesheet" />
 }
 
 @section css{
@@ -45,10 +46,10 @@
 
 <section class="card">
     <div class="card-block">
-        <form id="insert-crm" method="post">
-            @Html.HiddenFor(c => c.CustomerId)
-            @Html.ValidationSummary()
-            <div class="row">
+        <div class="row">
+            <form id="insert-crm" method="post">
+                @Html.HiddenFor(c => c.CustomerId)
+                @Html.ValidationSummary()
                 <div class="col-lg-12">
                     <h3>Thông tin khách hàng</h3>
                 </div>
@@ -60,85 +61,331 @@
                 <div class="col-lg-12">
                     <h3>Chi tiết cơ hội bán hàng</h3>
                 </div>
-                @Html.HiddenFor(c=>c.Id)
-            <div class="col-lg-6">
-                <fieldset class="form-group">
-                    <nop-label asp-for="Code" text-display="Mã cơ hội" />
-                    <nop-editor asp-for="Code" asp-disabled="true" />
-                    @Html.ValidationMessageFor(c => c.Need)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="UserCreated" text-display="Người tạo" />
-                    <nop-editor asp-for="UserCreated" asp-disabled="true" />
-                    @Html.ValidationMessageFor(c => c.UserCreated)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="DateCreated" text-display="Ngày tạo" />
-                    <input class="form-control" value="@string.Format(AppUtil.DATE_TIME_FORMAT,Model.DateCreated)" disabled="disabled" />
-                    @Html.ValidationMessageFor(c => c.DateCreated)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="Need" text-display="Nhu cầu" />
-                    <nop-editor asp-for="Need" placeholder="Nhu cầu" />
-                    @Html.ValidationMessageFor(c => c.Need)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="Description" text-display="Ghi chú" />
-                    <textarea asp-for="Description" class="form-control" type="text" placeholder="Ghi chú"></textarea>
-                    @Html.ValidationMessageFor(c => c.Description)
-                </fieldset>
-                <fieldset class="form-group">
-                    <label class="form-label semibold" for="ContactDate">Ngày liên hệ</label>
-                    <nop-editor asp-for="ContactDate" />
-                    @Html.ValidationMessageFor(c => c.ContactDate)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="UserCareIds" text-display="Người phụ trách" />
-                    <nop-select asp-for="UserCareIds" asp-items="Model.AvaiableUserCares" asp-multiple="true" />
-                    @Html.ValidationMessageFor(c => c.UserCareIds)
-                </fieldset>
-            </div>
-            <div class="col-lg-6">
-                <fieldset class="form-group">
-                    <nop-label asp-for="CrmPriorityId" text-display="Mức độ khẩn cấp" />
-                    <nop-select asp-for="CrmPriorityId" asp-items="Model.AvaiableCrmPriorities" />
-                    @Html.ValidationMessageFor(c => c.CrmPriorityId)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="CrmStatusId" text-display="Trạng thái CRM" />
-                    <nop-select asp-for="CrmStatusId" asp-items="Model.AvaiableCrmStatuses" />
-                    @Html.ValidationMessageFor(c => c.CrmStatusId)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="CustomerSourceId" text-display="Nguồn khách hàng" />
-                    <nop-select asp-for="CustomerSourceId" asp-items="Model.AvaiableCustomerSources" />
-                    @Html.ValidationMessageFor(c => c.CustomerSourceId)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="ProductGroupId" text-display="Nhóm sản phẩm" />
-                    <nop-select asp-for="ProductGroupId" asp-items="Model.AvaiableProductGroups" />
-                    @Html.ValidationMessageFor(c => c.ProductGroupId)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="CrmTypeId" text-display="Kiểu chốt" />
-                    <nop-select asp-for="CrmTypeId" asp-items="Model.AvaiableCrmTypes" />
-                    @Html.ValidationMessageFor(c => c.CrmTypeId)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="IsVisit" text-display="Đến cửa hàng" />
-                    <nop-select asp-for="IsVisit" asp-items="Model.AvaiableVisits" />
-                    @Html.ValidationMessageFor(c => c.IsVisit)
-                </fieldset>
-            </div>
+                @Html.HiddenFor(c => c.Id)
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="Code" text-display="Mã cơ hội" />
+                        <nop-editor asp-for="Code" asp-disabled="true" />
+                        @Html.ValidationMessageFor(c => c.Need)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="UserCreated" text-display="Người tạo" />
+                        <nop-editor asp-for="UserCreated" asp-disabled="true" />
+                        @Html.ValidationMessageFor(c => c.UserCreated)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="DateCreated" text-display="Ngày tạo" />
+                        <input class="form-control" value="@string.Format(AppUtil.DATE_TIME_FORMAT, Model.DateCreated)" disabled="disabled" />
+                        @Html.ValidationMessageFor(c => c.DateCreated)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="Need" text-display="Nhu cầu" />
+                        <nop-editor asp-for="Need" placeholder="Nhu cầu" />
+                        @Html.ValidationMessageFor(c => c.Need)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="Description" text-display="Ghi chú" />
+                        <textarea asp-for="Description" class="form-control" type="text" placeholder="Ghi chú"></textarea>
+                        @Html.ValidationMessageFor(c => c.Description)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="ContactDate">Ngày liên hệ</label>
+                        <nop-editor asp-for="ContactDate" />
+                        @Html.ValidationMessageFor(c => c.ContactDate)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="UserCareIds" text-display="Người phụ trách" />
+                        <nop-select asp-for="UserCareIds" asp-items="Model.AvaiableUserCares" asp-multiple="true" />
+                        @Html.ValidationMessageFor(c => c.UserCareIds)
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="CrmPriorityId" text-display="Mức độ khẩn cấp" />
+                        <nop-select asp-for="CrmPriorityId" asp-items="Model.AvaiableCrmPriorities" />
+                        @Html.ValidationMessageFor(c => c.CrmPriorityId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="CrmStatusId" text-display="Trạng thái CRM" />
+                        <nop-select asp-for="CrmStatusId" asp-items="Model.AvaiableCrmStatuses" />
+                        @Html.ValidationMessageFor(c => c.CrmStatusId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="CustomerSourceId" text-display="Nguồn khách hàng" />
+                        <nop-select asp-for="CustomerSourceId" asp-items="Model.AvaiableCustomerSources" />
+                        @Html.ValidationMessageFor(c => c.CustomerSourceId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="ProductGroupId" text-display="Nhóm sản phẩm" />
+                        <nop-select asp-for="ProductGroupId" asp-items="Model.AvaiableProductGroups" />
+                        @Html.ValidationMessageFor(c => c.ProductGroupId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="CrmTypeId" text-display="Kiểu chốt" />
+                        <nop-select asp-for="CrmTypeId" asp-items="Model.AvaiableCrmTypes" />
+                        @Html.ValidationMessageFor(c => c.CrmTypeId)
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <nop-label asp-for="IsVisit" text-display="Đến cửa hàng" />
+                        <nop-select asp-for="IsVisit" asp-items="Model.AvaiableVisits" />
+                        @Html.ValidationMessageFor(c => c.IsVisit)
+                    </fieldset>
+                </div>
                 <div class="col-lg-12">
                     <fieldset class="form-group">
                         <button type="submit" class="btn btn-primary">Cập nhật</button>
                         <a class="btn btn-default" href="@Url.Action("Index", "Crm")">Hủy</a>
                     </fieldset>
                 </div>
-            </div>
+            </form>
+            <form id="comment-crm" asp-controller="Crm" asp-action="Comment" method="post">
+                <div class="col-lg-12">
+                    <div class="divider"></div>
+                </div>
+                <div class="col-lg-4">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Comment">Bình luận</label>
+                        <textarea type="text" class="form-control" id="Comment" name="Comment"></textarea>
+                        <small class="text-muted">Bạn phải bình luận hoặc đính kèm file để thực hiện chức năng này</small>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <section class="activity-line">
+                        <article class="activity-line-item box-typical">
+                            <div class="activity-line-date">
+                                Tuesday<br>
+                                sep 9
+                            </div>
+                            <header class="activity-line-item-header">
+                                <div class="activity-line-item-user">
+                                    <div class="activity-line-item-user-photo">
+                                        <a href="#">
+                                            <img src="img/photo-64-2.jpg" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="activity-line-item-user-name">Tim Colins</div>
+                                    <div class="activity-line-item-user-status">Developer, Palo Alto</div>
+                                </div>
+                            </header>
+                            <div class="activity-line-action-list">
+                                <section class="activity-line-action">
+                                    <div class="time">10:40 AM</div>
+                                    <div class="cont">
+                                        <div class="cont-in">
+                                            <p>Uploaded 3 Images to Daily UI Album</p>
+                                            <ul class="previews">
+                                                <li>
+                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
+                                                        <img src="http://placehold.it/120x80" alt="">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
+                                                        <img src="http://placehold.it/120x80" alt="">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
+                                                        <img src="http://placehold.it/120x80" alt="">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
+                                                        <img src="http://placehold.it/120x80" alt="">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
+                                                        <img src="http://placehold.it/120x80" alt="">
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <ul class="meta">
+                                                <li><a href="#">5 Comments</a></li>
+                                                <li><a href="#">5 Likes</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section><!--.activity-line-action-->
+                                <section class="activity-line-action">
+                                    <div class="time">10:40 AM</div>
+                                    <div class="cont">
+                                        <div class="cont-in">
+                                            <p>Left a comment to <a href="#">Olga Gozha’s</a> Image</p>
+                                            <div class="tbl img-comment">
+                                                <div class="tbl-row">
+                                                    <div class="tbl-cell tbl-cell-img">
+                                                        <img src="http://placehold.it/120x80" alt="">
+                                                    </div>
+                                                    <div class="tbl-cell tbl-cell-txt">
+                                                        «Had a meeting about shopping cart experience, with Isobel Patterson, Josh Weller»
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <ul class="meta">
+                                                <li><a href="#">5 Comments</a></li>
+                                                <li><a href="#">5 Likes</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section><!--.activity-line-action-->
+                                <section class="activity-line-action">
+                                    <div class="time">10:40 AM</div>
+                                    <div class="cont">
+                                        <div class="cont-in">
+                                            <p>Uploaded 3 files</p>
+                                            <ul class="attach-list">
+                                                <li>
+                                                    <i class="font-icon font-icon-page"></i>
+                                                    <a href="#">example.avi</a>
+                                                </li>
+                                                <li>
+                                                    <i class="font-icon font-icon-page"></i>
+                                                    <a href="#">activity.psd</a>
+                                                </li>
+                                                <li>
+                                                    <i class="font-icon font-icon-page"></i>
+                                                    <a href="#">example.psd</a>
+                                                </li>
+                                            </ul>
+                                            <ul class="meta">
+                                                <li><a href="#">5 Comments</a></li>
+                                                <li><a href="#">5 Likes</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section><!--.activity-line-action-->
+                            </div><!--.activity-line-action-list-->
+                        </article><!--.activity-line-item-->
 
-        </form>
+                        <article class="activity-line-item box-typical">
+                            <div class="activity-line-date">
+                                Monday<br>
+                                sep 8
+                            </div>
+                            <header class="activity-line-item-header">
+                                <div class="activity-line-item-user">
+                                    <div class="activity-line-item-user-photo">
+                                        <a href="#">
+                                            <img src="img/photo-64-2.jpg" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="activity-line-item-user-name">Tim Colins</div>
+                                    <div class="activity-line-item-user-status">Developer, Palo Alto</div>
+                                </div>
+                            </header>
+                            <div class="activity-line-action-list">
+                                <section class="activity-line-action">
+                                    <div class="time">10:40 AM</div>
+                                    <div class="cont">
+                                        <div class="cont-in">
+                                            <p>Started nes UI migration</p>
+                                            <ul class="meta">
+                                                <li><a href="#">5 Comments</a></li>
+                                                <li><a href="#">5 Likes</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section><!--.activity-line-action-->
+                                <section class="activity-line-action">
+                                    <div class="dot"></div>
+                                    <div class="time">10:40 AM</div>
+                                    <div class="cont">
+                                        <div class="cont-in">
+                                            <p>Had a meeting about shopping cart experience, with Isobel Patterson, Josh Weller, Mark Taylor</p>
+                                            <ul class="meta">
+                                                <li><a href="#">5 Comments</a></li>
+                                                <li><a href="#">5 Likes</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section><!--.activity-line-action-->
+                                <section class="activity-line-action">
+                                    <div class="time">10:40 AM</div>
+                                    <div class="cont">
+                                        <div class="cont-in">
+                                            <p>Had a meeting about shopping cart experience, with Isobel Patterson, Josh Weller, Mark Taylor</p>
+                                            <ul class="meta">
+                                                <li><a href="#">5 Comments</a></li>
+                                                <li><a href="#">1 Likes</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section><!--.activity-line-action-->
+                            </div><!--.activity-line-action-list-->
+                        </article><!--.activity-line-item-->
+
+                        <article class="activity-line-item box-typical">
+                            <div class="activity-line-date">
+                                Sunday<br>
+                                sep 7
+                            </div>
+                            <header class="activity-line-item-header">
+                                <div class="activity-line-item-user">
+                                    <div class="activity-line-item-user-photo">
+                                        <a href="#">
+                                            <img src="img/photo-64-3.jpg" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="activity-line-item-user-name">Vasilisa</div>
+                                    <div class="activity-line-item-user-status">Product Manager, San Francisco</div>
+                                </div>
+                            </header>
+                            <div class="activity-line-action-list">
+                                <section class="activity-line-action">
+                                    <div class="time">10:40 AM</div>
+                                    <div class="cont">
+                                        <div class="cont-in">
+                                            <p>Scheduled a meeting for new shopping cart experience with Development team</p>
+                                            <ul class="meta">
+                                                <li><a href="#">5 Comments</a></li>
+                                                <li><a href="#">5 Likes</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section><!--.activity-line-action-->
+                                <section class="activity-line-action">
+                                    <div class="time">10:40 AM</div>
+                                    <div class="cont">
+                                        <div class="cont-in">
+                                            <p>Had a meeting about shopping cart experience, with Isobel Patterson, Josh Weller, Mark Taylor</p>
+                                            <div class="alert alert-info">
+                                                New Notification E-Mail: Past Due Request Reminder<br>
+                                                Recap: For requests, 3 e-mails are generated
+                                            </div>
+                                            <div class="alert alert-danger">
+                                                New Notification E-Mail: Past Due Request Reminder<br>
+                                                Recap: For requests, 3 e-mails are generated
+                                            </div>
+                                            <div class="alert alert-warning">
+                                                New Notification E-Mail: Past Due Request Reminder<br>
+                                                Recap: For requests, 3 e-mails are generated
+                                            </div>
+                                            <div class="alert alert-success">
+                                                New Notification E-Mail: Past Due Request Reminder<br>
+                                                Recap: For requests, 3 e-mails are generated
+                                            </div>
+                                            <div class="alert alert-purple">
+                                                New Notification E-Mail: Past Due Request Reminder<br>
+                                                Recap: For requests, 3 e-mails are generated
+                                            </div>
+                                            <ul class="meta">
+                                                <li><a href="#">5 Comments</a></li>
+                                                <li><a href="#">5 Likes</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section><!--.activity-line-action-->
+                                <div class="activity-line-more">
+                                    <a href="#">See more</a>
+                                </div>
+                            </div><!--.activity-line-action-list-->
+                        </article><!--.activity-line-item-->
+                    </section>
+                </div>
+            </form>
+
+        </div>
     </div>
 </section>
 
