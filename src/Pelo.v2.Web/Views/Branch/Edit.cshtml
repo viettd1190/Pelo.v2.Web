@@ -41,22 +41,27 @@
                         @Html.ValidationMessageFor(c => c.Hotline)
                     </fieldset>
                 </div>
-                <fieldset class="form-group">
-                    <nop-label asp-for="ProvinceId" text-display="Tỉnh thành" />
-                    <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces" />
-                    @Html.ValidationMessageFor(c => c.ProvinceId)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="DistrictId" text-display="Quận huyện" />
-                    <nop-select asp-for="DistrictId" asp-items="Model.AvaiableDistricts" />
-                    @Html.ValidationMessageFor(c => c.DistrictId)
-                </fieldset>
-                <fieldset class="form-group">
-                    <nop-label asp-for="WardId" text-display="Xã phường" />
-                    <nop-select asp-for="WardId" asp-items="Model.AvaiableWards" />
-                    @Html.ValidationMessageFor(c => c.WardId)
-                </fieldset>
-
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="ProvinceId" text-display="Tỉnh thành" />
+                        <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces" />
+                        @Html.ValidationMessageFor(c => c.ProvinceId)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="DistrictId" text-display="Quận huyện" />
+                        <nop-select asp-for="DistrictId" asp-items="Model.AvaiableDistricts" />
+                        @Html.ValidationMessageFor(c => c.DistrictId)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="WardId" text-display="Xã phường" />
+                        <nop-select asp-for="WardId" asp-items="Model.AvaiableWards" />
+                        @Html.ValidationMessageFor(c => c.WardId)
+                    </fieldset>
+                </div>
                 <div class="col-lg-12">
                     <fieldset class="form-group">
                         <button type="submit" class="btn btn-primary">Cập nhật</button>
@@ -75,6 +80,64 @@
             $('.row-active').removeClass('row-active');
             $('#liSystem').addClass('opened');
             $('#liBranch').addClass('row-active');
+            $("#@Html.IdFor(model => model.ProvinceId)").change(function() {
+                var selectedItem=$(this).val();
+                var dllDistricts=$("#@Html.IdFor(model => model.DistrictId)");
+                $.ajax({
+                        cache:true,
+                        type:"POST",
+                        url:"@Url.Action("GetDistrictByProvinceId", "District")",
+                        data:{
+                                "provinceId":selectedItem,
+                                "addAll":"true"
+                            },
+                        success:function(data,textStatus,jqXHR) {
+                            dllDistricts.html('');
+                            $.each(data,
+                                function(id,option) {
+                                    dllDistricts.append($('<option></option>').val(option.Id)
+                                        .html(option.Type+' '+option.Name));
+                                });
+                            loadWards(99999999);
+                        },
+                        error:function(jqXHR,textStatus,errorThrown) {
+                            $("#statesAlert").click();
+                            console.log("jqXHR: "+jqXHR);
+                            console.log("textStatus: "+textStatus);
+                            console.log("errorThrown: "+errorThrown);
+                        }
+                    });
+            });
+            $("#@Html.IdFor(model => model.DistrictId)").change(function() {
+                var selectedItem=$(this).val();
+                loadWards(selectedItem);
+            });
         })
+        function loadWards(districtId) {
+            var dllWards=$("#@Html.IdFor(model => model.WardId)");
+            $.ajax({
+                    cache:true,
+                    type:"POST",
+                    url:"@Url.Action("GetWardByDistrictId", "Ward")",
+                    data:{
+                            "districtId":districtId,
+                            "addAll":"true"
+                        },
+                    success:function(data,textStatus,jqXHR) {
+                        dllWards.html('');
+                        $.each(data,
+                            function(id,option) {
+                                dllWards.append($('<option></option>').val(option.Id)
+                                    .html(option.Type+' '+option.Name));
+                            });
+                    },
+                    error:function(jqXHR,textStatus,errorThrown) {
+                        $("#statesAlert").click();
+                        console.log("jqXHR: "+jqXHR);
+                        console.log("textStatus: "+textStatus);
+                        console.log("errorThrown: "+errorThrown);
+                    }
+                });
+        }
     </script>
 }

@@ -161,11 +161,16 @@
 @section js{
     <script>
         $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liSystem').addClass('opened');
+            $('#liUser').addClass('row-active');
             $('#@nameof(Model.Status)').val(1).trigger('change');
             $('.panel').lobiPanel({
                     sortable:false,
                     draggable:false,
-                    resize:'none'
+                    resize: 'none',
+                    minimize: false
                 });
             reloadDataWhenEnter('@nameof(Model.Code)');
             reloadDataWhenEnter('@nameof(Model.FullName)');

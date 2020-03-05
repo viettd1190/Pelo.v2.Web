@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Pelo.Common.Dtos.Ward;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Ward;
 using Pelo.v2.Web.Services.Province;
@@ -44,19 +45,19 @@ namespace Pelo.v2.Web.Controllers
                                                              bool addAll = true)
         {
             var districts = await _wardService.GetAll(districtId);
-            if(districts.IsSuccess)
+            if (districts.IsSuccess)
             {
-                if(districts.Data != null)
+                if (districts.Data != null)
                 {
                     var result = districts.Data.ToList();
-                    if(addAll)
+                    if (addAll)
                     {
                         result.Insert(0,
-                                      new WardModel
+                                      new Models.Ward.WardModel
                                       {
-                                              Id = 0,
-                                              Type = "Tất cả",
-                                              Name = string.Empty
+                                          Id = 0,
+                                          Type = "Tất cả",
+                                          Name = string.Empty
                                       });
                     }
 
@@ -77,9 +78,9 @@ namespace Pelo.v2.Web.Controllers
         public async Task<IActionResult> Add()
         {
             var model = new UpdateWardModel();
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
                                                      model.ProvinceId);
-            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             return View(model);
         }
 
@@ -88,16 +89,22 @@ namespace Pelo.v2.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var rs = await _wardService.Add(model);
+                var rs = await _wardService.Add(new InsertWard
+                {
+                    SortOrder = model.SortOrder,
+                    Name = model.Name,
+                    DistrictId = model.DistrictId,
+                    Type = model.Type
+                });
                 if (rs.IsSuccess)
                 {
                     TempData["Update"] = JsonConvert.SerializeObject(rs);
                     return RedirectToAction("Index");
                 }
             }
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
                                                      model.ProvinceId);
-            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             return View(model);
         }
         public async Task<IActionResult> Edit(int id)
@@ -113,9 +120,9 @@ namespace Pelo.v2.Web.Controllers
                     SortOrder = result.Data.SortOrder,
                     DistrictId = result.Data.DistrictId
                 };
-                await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
-                                                     model.ProvinceId);
                 await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
+                await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
+                                                         model.ProvinceId);
                 return View(model);
             }
             return View("Notfound");
@@ -123,15 +130,22 @@ namespace Pelo.v2.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(UpdateWardModel model)
         {
-            var result = await _wardService.Edit(model);
+            var result = await _wardService.Edit(new UpdateWard
+            {
+                Id = model.Id,
+                SortOrder = model.SortOrder,
+                Name = model.Name,
+                DistrictId = model.DistrictId,
+                Type = model.Type
+            });
             if (result.IsSuccess)
             {
                 TempData["Update"] = JsonConvert.SerializeObject(result);
                 return RedirectToAction("Index");
             }
+            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
                                                      model.ProvinceId);
-            await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
             return View(model);
         }
     }

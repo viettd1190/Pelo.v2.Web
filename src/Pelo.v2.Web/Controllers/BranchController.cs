@@ -72,10 +72,16 @@ namespace Pelo.v2.Web.Controllers
             if (rs.IsSuccess)
             {
                 var model = new UpdateBranchModel();
-                model.Id = model.Id; model.Address = model.Address; model.ProvinceId = model.ProvinceId; model.Hotline = model.Hotline; model.WardId = model.WardId; model.DistrictId = model.DistrictId; model.Name = model.Name;
+                model.Id = rs.Data.Id; 
+                model.Address = rs.Data.Address; 
+                model.ProvinceId = rs.Data.ProvinceId; 
+                model.Hotline = rs.Data.Hotline; 
+                model.WardId = rs.Data.WardId; 
+                model.DistrictId = rs.Data.DistrictId; 
+                model.Name = rs.Data.Name;
                 await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
                 await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts, model.ProvinceId);
-                await _baseModelFactory.PrepareWards(model.AvaiableWards, model.WardId);
+                await _baseModelFactory.PrepareWards(model.AvaiableWards, model.DistrictId);
                 return View(model);
             }
 

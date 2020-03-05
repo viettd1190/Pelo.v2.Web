@@ -51,10 +51,11 @@ namespace Pelo.v2.Web.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var model = await _taskLoopService.GetById(id);
-            if (model.IsSuccess)
+            var response = await _taskLoopService.GetById(id);
+            if (response.IsSuccess)
             {
-                return View(new TaskLoopModel { Id = model.Data.Id, Name = model.Data.Name });
+                
+                return View(new TaskLoopModel { Id = response.Data.Id, DayCount = response.Data.DayCount, Name = response.Data.Name, SortOrder = response.Data.SortOrder });
             }
 
             return View("Notfound");

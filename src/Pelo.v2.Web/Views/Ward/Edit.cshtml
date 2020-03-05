@@ -18,12 +18,19 @@
     <div class="card-block">
         <form asp-controller="Ward" asp-action="Edit" method="post" id="ward-form">
             @Html.ValidationSummary()
+            @Html.HiddenFor(c => c.Id)
             <div class="row">
                 <div class="col-lg-12">
                     <fieldset class="form-group">
                         <label class="form-label semibold" for="Name">Tên</label>
                         <input asp-for="Name" class="form-control" type="text" placeholder="Tên" />
                         @Html.ValidationMessageFor(c => c.Name)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="ProvinceId" text-display="Tỉnh thành" />
+                        <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces" />
                     </fieldset>
                 </div>
                 <div class="col-lg-12">
@@ -35,8 +42,8 @@
                 </div>
                 <div class="col-lg-12">
                     <fieldset class="form-group">
-                        <label class="form-label semibold" for="S">SortOrder</label>
-                        <input asp-for="SortOrder" class="form-control" type="text" placeholder="SortOrder" />
+                        <label class="form-label semibold" for="SortOrder">Vị trí</label>
+                        <input asp-for="SortOrder" class="form-control" type="text" placeholder="Vị trí" />
                         @Html.ValidationMessageFor(c => c.SortOrder)
                     </fieldset>
                 </div>
@@ -65,6 +72,34 @@
             $('.row-active').removeClass('row-active');
             $('#liAppConfig').addClass('opened');
             $('#liWard').addClass('row-active');
+            $("#@Html.IdFor(model => model.ProvinceId)").change(function() {
+                var selectedItem=$(this).val();
+                var dllDistricts=$("#@Html.IdFor(model => model.DistrictId)");
+                $.ajax({
+                        cache:true,
+                        type:"POST",
+                        url:"@Url.Action("GetDistrictByProvinceId", "District")",
+                        data:{
+                                "provinceId":selectedItem,
+                                "addAll":"true"
+                            },
+                        success:function(data,textStatus,jqXHR) {
+                            dllDistricts.html('');
+                            $.each(data,
+                                function(id,option) {
+                                    dllDistricts.append($('<option></option>').val(option.Id)
+                                        .html(option.Type+' '+option.Name));
+                                });
+                            loadWards(99999999);
+                        },
+                        error:function(jqXHR,textStatus,errorThrown) {
+                            $("#statesAlert").click();
+                            console.log("jqXHR: "+jqXHR);
+                            console.log("textStatus: "+textStatus);
+                            console.log("errorThrown: "+errorThrown);
+                        }
+                    });
+            });
         })
     </script>
 }

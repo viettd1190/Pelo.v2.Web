@@ -20,7 +20,7 @@ namespace Pelo.v2.Web.Services.TaskLoop
         Task<TaskLoopListModel> GetByPaging(TaskLoopSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
-        Task<TResponse<TaskLoopModel>> GetById(int id);
+        Task<TResponse<GetTaskLoopPagingResponse>> GetById(int id);
         Task<TResponse<bool>> Insert(TaskLoopModel model);
         Task<TResponse<bool>> Update(TaskLoopModel model);
     }
@@ -143,7 +143,7 @@ namespace Pelo.v2.Web.Services.TaskLoop
             }
         }
 
-        public async Task<TResponse<TaskLoopModel>> GetById(int id)
+        public async Task<TResponse<GetTaskLoopPagingResponse>> GetById(int id)
         {
             try
             {
@@ -154,14 +154,14 @@ namespace Pelo.v2.Web.Services.TaskLoop
                                                                       true);
                 if (response.IsSuccess)
                 {
-                    return await Ok(new TaskLoopModel { Id = response.Data.Id, DayCount = response.Data.DayCount, Name = response.Data.Name, SortOrder = response.Data.SortOrder });
+                    return await Ok(response.Data);
                 }
 
-                return await Fail<TaskLoopModel>(response.Message);
+                return await Fail<GetTaskLoopPagingResponse>(response.Message);
             }
             catch (Exception exception)
             {
-                return await Fail<TaskLoopModel>(exception);
+                return await Fail<GetTaskLoopPagingResponse>(exception);
             }
         }
 

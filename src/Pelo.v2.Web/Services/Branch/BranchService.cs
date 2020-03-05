@@ -22,7 +22,7 @@ namespace Pelo.v2.Web.Services.Branch
 
         Task<TResponse<bool>> Insert(InsertBranch request);
 
-        Task<TResponse<UpdateBranchModel>> GetById(int id);
+        Task<TResponse<BranchModel>> GetById(int id);
 
         Task<TResponse<bool>> Update(UpdateBranch request);
 
@@ -182,7 +182,7 @@ namespace Pelo.v2.Web.Services.Branch
             }
         }
 
-        public async Task<TResponse<UpdateBranchModel>> GetById(int id)
+        public async Task<TResponse<BranchModel>> GetById(int id)
         {
             try
             {
@@ -193,14 +193,14 @@ namespace Pelo.v2.Web.Services.Branch
                                                                       true);
                 if (response.IsSuccess)
                 {
-                    return await Ok(new UpdateBranchModel { Id = response.Data.Id, Name = response.Data.Name, DistrictId = response.Data.DistrictId, WardId = response.Data.WardId, Hotline = response.Data.Hotline, ProvinceId = response.Data.ProvinceId, Address = response.Data.Address });
+                    return await Ok(response.Data);
                 }
 
-                return await Fail<UpdateBranchModel>(response.Message);
+                return await Fail<BranchModel>(response.Message);
             }
             catch (Exception exception)
             {
-                return await Fail<UpdateBranchModel>(exception);
+                return await Fail<BranchModel>(exception);
             }
         }
     }
