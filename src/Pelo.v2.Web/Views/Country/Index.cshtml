@@ -1,0 +1,209 @@
+﻿@using Microsoft.AspNetCore.Routing
+@using Pelo.v2.Web.Models.Branch
+@using Pelo.v2.Web.Models.Datatables
+@using Pelo.v2.Web.Models.Datatables.Render
+@model Pelo.v2.Web.Models.Branch.BranchSearchModel
+@{
+  ViewBag.Title = "Danh sách chi nhánh";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section cssPlugin{ 
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{ 
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height:auto !important;
+        }
+    </style>
+}
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12 dahsboard-column">
+        <section class="box-typical box-typical-dashboard panel panel-default scrollable">
+            <header class="box-typical-header panel-heading">
+                <h3 class="panel-title">Danh sách chi nhánh</h3>
+            </header>
+            <div class="box-typical-body panel-body">
+                <div class="row" style="padding:15px;">
+                    <div class="col-lg-4">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="ProvinceId" text-display="Tỉnh thành" />
+                            <nop-select asp-for="ProvinceId" asp-items="Model.AvaiableProvinces" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-4">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="DistrictId" text-display="Quận huyện" />
+                            <nop-select asp-for="DistrictId" asp-items="Model.AvaiableDistricts" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-4">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="WardId" text-display="Phường xã" />
+                            <nop-select asp-for="WardId" asp-items="Model.AvaiableWards" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-4">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="Name" text-display="Tên chi nhánh" />
+                            <input asp-for="Name" class="form-control" type="text" placeholder="Tên chi nhánh" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-4">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="HotLine" text-display="Số điện thoại" />
+                            <input asp-for="HotLine" class="form-control" type="text" placeholder="Số điện thoại" />
+                        </fieldset>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary" id="search-branch">Tìm kiếm</button>
+                        <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-block">
+        @await Html.PartialAsync("Table",new DataTablesModel
+   {
+       Name="branch-grid",
+       UrlRead = new DataUrl("GetList","Branch",null),
+       UrlDelete = new DataUrl("Delete","Branch",null),
+       SearchButtonId = "search-branch",
+       Ordering = true,
+       Filters = new List<FilterParameter> {
+                                                   new FilterParameter(nameof(Model.Name)),
+                                                   new FilterParameter(nameof(Model.HotLine)),
+                                                   new FilterParameter(nameof(Model.ProvinceId)),
+                                                   new FilterParameter(nameof(Model.DistrictId)),
+                                                   new FilterParameter(nameof(Model.WardId))
+                                           },
+       ColumnCollection = new List<ColumnProperty> {
+                                                           new ColumnProperty(nameof(BranchModel.Name))
+                                                           {
+                                                                   Title = "Tên chi nhánh"
+                                                           },
+                                                           new ColumnProperty(nameof(BranchModel.Address))
+                                                           {
+                                                                   Title = "Địa chỉ",
+                                                                   Orderable = false,
+                                                                   Render = new RenderCustom("formatAddress")
+                                                           },
+                                                           new ColumnProperty(nameof(BranchModel.Hotline))
+                                                           {
+                                                                   Title = "Số điện thoại"
+                                                           },
+                                                           new ColumnProperty(nameof(BranchModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "40",
+                                                                   Orderable = false,
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonEdit(new DataUrl("Branch/Edit"))
+                                                           },
+                                                           new ColumnProperty(nameof(BranchModel.Id))
+                                                           {
+                                                                   Title = "",
+                                                                   Width = "40",
+                                                                   Orderable = false,
+                                                                   ClassName =  NopColumnClassDefaults.Button,
+                                                                   Render = new RenderButtonRemove("Remove")
+                                                           }
+                                                   }
+   })
+    </div>
+</section>
+
+@section js{ 
+    <script>
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liSystem').addClass('opened');
+            $('#liBranch').addClass('row-active');
+            $('.panel').lobiPanel({
+                    sortable:false,
+                    draggable:false,
+                    resize:'none'
+                });
+            $("#@Html.IdFor(model => model.ProvinceId)").change(function() {
+                var selectedItem=$(this).val();
+                var dllDistricts=$("#@Html.IdFor(model => model.DistrictId)");
+                $.ajax({
+                        cache:true,
+                        type:"POST",
+                        url:"@Url.Action("GetDistrictByProvinceId", "District")",
+                        data:{
+                                "provinceId":selectedItem,
+                                "addAll":"true"
+                            },
+                        success:function(data,textStatus,jqXHR) {
+                            dllDistricts.html('');
+                            $.each(data,
+                                function(id,option) {
+                                    dllDistricts.append($('<option></option>').val(option.Id)
+                                        .html(option.Type+' '+option.Name));
+                                });
+                            loadWards(99999999);
+                        },
+                        error:function(jqXHR,textStatus,errorThrown) {
+                            $("#statesAlert").click();
+                            console.log("jqXHR: "+jqXHR);
+                            console.log("textStatus: "+textStatus);
+                            console.log("errorThrown: "+errorThrown);
+                        }
+                    });
+            });
+            $("#@Html.IdFor(model => model.DistrictId)").change(function() {
+                var selectedItem=$(this).val();
+                loadWards(selectedItem);
+            });
+            reloadDataWhenEnter('@nameof(Model.Name)');
+            reloadDataWhenEnter('@nameof(Model.HotLine)');
+            reloadDataWhenSelect('WardId');
+        });
+        function loadWards(districtId) {
+            var dllWards=$("#@Html.IdFor(model => model.WardId)");
+            $.ajax({
+                    cache:true,
+                    type:"POST",
+                    url:"@Url.Action("GetWardByDistrictId", "Ward")",
+                    data:{
+                            "districtId":districtId,
+                            "addAll":"true"
+                        },
+                    success:function(data,textStatus,jqXHR) {
+                        dllWards.html('');
+                        $.each(data,
+                            function(id,option) {
+                                dllWards.append($('<option></option>').val(option.Id)
+                                    .html(option.Type+' '+option.Name));
+                            });
+                    },
+                    error:function(jqXHR,textStatus,errorThrown) {
+                        $("#statesAlert").click();
+                        console.log("jqXHR: "+jqXHR);
+                        console.log("textStatus: "+textStatus);
+                        console.log("errorThrown: "+errorThrown);
+                    }
+                });
+        }
+        function formatAddress(data,type,row,meta) {
+            if(row.Province) {
+                return '<span>'+data+', '+row.Ward+', '+row.District+', '+row.Province+'</span>';
+            }
+            return data;
+        }
+    </script>
+}
