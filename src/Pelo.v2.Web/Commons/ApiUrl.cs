@@ -250,6 +250,8 @@
 
         public const string CRM_KHACH_TOI_HEN_NGAY_MAI = BASE_API_URL + "/api/crm/khach_toi_hen_ngay_mai?page={0}&page_size={1}";
 
+        public const string CRM_GET_LOGS = BASE_API_URL + "/api/crm/log/{0}";
+
         #endregion
 
         #region Province / District / Ward

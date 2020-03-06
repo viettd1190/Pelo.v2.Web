@@ -10,7 +10,7 @@
     <link href="~/startui/css/separate/vendor/bootstrap-datetimepicker.css" rel="stylesheet" />
     <link href="~/startui/css/separate/vendor/bootstrap-daterangepicker.css" rel="stylesheet" />
     <link href="~/startui/css/lib/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" />
-    <link href="~/startui/css/separate/pages/activity.css" rel="stylesheet" />
+    <link href="~/startui/css/separate/pages/widgets.css" rel="stylesheet" />
 }
 
 @section css{
@@ -149,238 +149,83 @@
                         <small class="text-muted">Bạn phải bình luận hoặc đính kèm file để thực hiện chức năng này</small>
                     </fieldset>
                 </div>
-                <div class="col-lg-6">
-                    <section class="activity-line">
-                        <article class="activity-line-item box-typical">
-                            <div class="activity-line-date">
-                                Tuesday<br>
-                                sep 9
+                <div class="col-lg-8">
+                    <section class="widget widget-activity" style="margin-top:25px;">
+                        <header class="widget-header">
+                            Bình luận
+                            <span class="label label-pill label-primary" id="countLogs">0</span>
+                        </header>
+                        <div id="logContent">
+                            @*<div class="widget-activity-item">
+                                <div class="user-card-row">
+                                    <div class="tbl-row">
+                                        <div class="tbl-cell tbl-cell-photo">
+                                            <a href="#">
+                                                <img src="img/photo-64-2.jpg" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="tbl-cell">
+                                            <p>
+                                                <a href="#" class="semibold">Nina Jones</a>
+                                                added a new product
+                                                <a href="#">Free UI Kit</a>
+                                            </p>
+                                            <p>Just Now</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <header class="activity-line-item-header">
-                                <div class="activity-line-item-user">
-                                    <div class="activity-line-item-user-photo">
-                                        <a href="#">
-                                            <img src="img/photo-64-2.jpg" alt="">
-                                        </a>
+                            <div class="widget-activity-item">
+                                <div class="user-card-row">
+                                    <div class="tbl-row">
+                                        <div class="tbl-cell tbl-cell-photo">
+                                            <a href="#">
+                                                <img src="img/avatar-1-64.png" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="tbl-cell">
+                                            <p>
+                                                <a href="#" class="semibold">James Smith</a>
+                                                commpleted task
+                                                <a href="#">Free PSD Template</a>
+                                            </p>
+                                            <p>40 minutes ago</p>
+                                        </div>
                                     </div>
-                                    <div class="activity-line-item-user-name">Tim Colins</div>
-                                    <div class="activity-line-item-user-status">Developer, Palo Alto</div>
                                 </div>
-                            </header>
-                            <div class="activity-line-action-list">
-                                <section class="activity-line-action">
-                                    <div class="time">10:40 AM</div>
-                                    <div class="cont">
-                                        <div class="cont-in">
-                                            <p>Uploaded 3 Images to Daily UI Album</p>
-                                            <ul class="previews">
-                                                <li>
-                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
-                                                        <img src="http://placehold.it/120x80" alt="">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
-                                                        <img src="http://placehold.it/120x80" alt="">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
-                                                        <img src="http://placehold.it/120x80" alt="">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
-                                                        <img src="http://placehold.it/120x80" alt="">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="fancybox" rel="gall-1" href="img/pic.jpg">
-                                                        <img src="http://placehold.it/120x80" alt="">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <ul class="meta">
-                                                <li><a href="#">5 Comments</a></li>
-                                                <li><a href="#">5 Likes</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </section><!--.activity-line-action-->
-                                <section class="activity-line-action">
-                                    <div class="time">10:40 AM</div>
-                                    <div class="cont">
-                                        <div class="cont-in">
-                                            <p>Left a comment to <a href="#">Olga Gozha’s</a> Image</p>
-                                            <div class="tbl img-comment">
-                                                <div class="tbl-row">
-                                                    <div class="tbl-cell tbl-cell-img">
-                                                        <img src="http://placehold.it/120x80" alt="">
-                                                    </div>
-                                                    <div class="tbl-cell tbl-cell-txt">
-                                                        «Had a meeting about shopping cart experience, with Isobel Patterson, Josh Weller»
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <ul class="meta">
-                                                <li><a href="#">5 Comments</a></li>
-                                                <li><a href="#">5 Likes</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </section><!--.activity-line-action-->
-                                <section class="activity-line-action">
-                                    <div class="time">10:40 AM</div>
-                                    <div class="cont">
-                                        <div class="cont-in">
-                                            <p>Uploaded 3 files</p>
-                                            <ul class="attach-list">
-                                                <li>
-                                                    <i class="font-icon font-icon-page"></i>
-                                                    <a href="#">example.avi</a>
-                                                </li>
-                                                <li>
-                                                    <i class="font-icon font-icon-page"></i>
-                                                    <a href="#">activity.psd</a>
-                                                </li>
-                                                <li>
-                                                    <i class="font-icon font-icon-page"></i>
-                                                    <a href="#">example.psd</a>
-                                                </li>
-                                            </ul>
-                                            <ul class="meta">
-                                                <li><a href="#">5 Comments</a></li>
-                                                <li><a href="#">5 Likes</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </section><!--.activity-line-action-->
-                            </div><!--.activity-line-action-list-->
-                        </article><!--.activity-line-item-->
-
-                        <article class="activity-line-item box-typical">
-                            <div class="activity-line-date">
-                                Monday<br>
-                                sep 8
                             </div>
-                            <header class="activity-line-item-header">
-                                <div class="activity-line-item-user">
-                                    <div class="activity-line-item-user-photo">
-                                        <a href="#">
-                                            <img src="img/photo-64-2.jpg" alt="">
-                                        </a>
+                            <div class="widget-activity-item">
+                                <div class="user-card-row">
+                                    <div class="tbl-row">
+                                        <div class="tbl-cell tbl-cell-photo">
+                                            <a href="#">
+                                                <img src="img/avatar-2-64.png" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="tbl-cell">
+                                            <p>
+                                                <a href="#" class="semibold">Alex Clooney</a>
+                                                commpleted task
+                                                <a href="#">Sumu Website</a>
+                                            </p>
+                                            <p>1 hours ago</p>
+                                        </div>
                                     </div>
-                                    <div class="activity-line-item-user-name">Tim Colins</div>
-                                    <div class="activity-line-item-user-status">Developer, Palo Alto</div>
                                 </div>
-                            </header>
-                            <div class="activity-line-action-list">
-                                <section class="activity-line-action">
-                                    <div class="time">10:40 AM</div>
-                                    <div class="cont">
-                                        <div class="cont-in">
-                                            <p>Started nes UI migration</p>
-                                            <ul class="meta">
-                                                <li><a href="#">5 Comments</a></li>
-                                                <li><a href="#">5 Likes</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </section><!--.activity-line-action-->
-                                <section class="activity-line-action">
-                                    <div class="dot"></div>
-                                    <div class="time">10:40 AM</div>
-                                    <div class="cont">
-                                        <div class="cont-in">
-                                            <p>Had a meeting about shopping cart experience, with Isobel Patterson, Josh Weller, Mark Taylor</p>
-                                            <ul class="meta">
-                                                <li><a href="#">5 Comments</a></li>
-                                                <li><a href="#">5 Likes</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </section><!--.activity-line-action-->
-                                <section class="activity-line-action">
-                                    <div class="time">10:40 AM</div>
-                                    <div class="cont">
-                                        <div class="cont-in">
-                                            <p>Had a meeting about shopping cart experience, with Isobel Patterson, Josh Weller, Mark Taylor</p>
-                                            <ul class="meta">
-                                                <li><a href="#">5 Comments</a></li>
-                                                <li><a href="#">1 Likes</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </section><!--.activity-line-action-->
-                            </div><!--.activity-line-action-list-->
-                        </article><!--.activity-line-item-->
-
-                        <article class="activity-line-item box-typical">
-                            <div class="activity-line-date">
-                                Sunday<br>
-                                sep 7
                             </div>
-                            <header class="activity-line-item-header">
-                                <div class="activity-line-item-user">
-                                    <div class="activity-line-item-user-photo">
-                                        <a href="#">
-                                            <img src="img/photo-64-3.jpg" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="activity-line-item-user-name">Vasilisa</div>
-                                    <div class="activity-line-item-user-status">Product Manager, San Francisco</div>
-                                </div>
-                            </header>
-                            <div class="activity-line-action-list">
-                                <section class="activity-line-action">
-                                    <div class="time">10:40 AM</div>
-                                    <div class="cont">
-                                        <div class="cont-in">
-                                            <p>Scheduled a meeting for new shopping cart experience with Development team</p>
-                                            <ul class="meta">
-                                                <li><a href="#">5 Comments</a></li>
-                                                <li><a href="#">5 Likes</a></li>
-                                            </ul>
+                            <div class="widget-activity-item">
+                                <div class="user-card-row">
+                                    <div class="tbl-row">
+                                        <div class="tbl-cell tbl-cell-photo">
+                                            <a href="#"><img src="img/avatar-3-64.png" alt=""></a>
                                         </div>
+                                        <div class="tbl-cell">
+                                            <p><a href="#" class="semibold">Nina Jones</a>added a new product<a href="#">Free UI Kit</a></p><p>Just Now</p>
+                                            </div>
                                     </div>
-                                </section><!--.activity-line-action-->
-                                <section class="activity-line-action">
-                                    <div class="time">10:40 AM</div>
-                                    <div class="cont">
-                                        <div class="cont-in">
-                                            <p>Had a meeting about shopping cart experience, with Isobel Patterson, Josh Weller, Mark Taylor</p>
-                                            <div class="alert alert-info">
-                                                New Notification E-Mail: Past Due Request Reminder<br>
-                                                Recap: For requests, 3 e-mails are generated
-                                            </div>
-                                            <div class="alert alert-danger">
-                                                New Notification E-Mail: Past Due Request Reminder<br>
-                                                Recap: For requests, 3 e-mails are generated
-                                            </div>
-                                            <div class="alert alert-warning">
-                                                New Notification E-Mail: Past Due Request Reminder<br>
-                                                Recap: For requests, 3 e-mails are generated
-                                            </div>
-                                            <div class="alert alert-success">
-                                                New Notification E-Mail: Past Due Request Reminder<br>
-                                                Recap: For requests, 3 e-mails are generated
-                                            </div>
-                                            <div class="alert alert-purple">
-                                                New Notification E-Mail: Past Due Request Reminder<br>
-                                                Recap: For requests, 3 e-mails are generated
-                                            </div>
-                                            <ul class="meta">
-                                                <li><a href="#">5 Comments</a></li>
-                                                <li><a href="#">5 Likes</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </section><!--.activity-line-action-->
-                                <div class="activity-line-more">
-                                    <a href="#">See more</a>
                                 </div>
-                            </div><!--.activity-line-action-list-->
-                        </article><!--.activity-line-item-->
+                            </div>*@
+                        </div>
                     </section>
                 </div>
             </form>
@@ -399,7 +244,37 @@
         $(document).ready(function() {
             $('#ContactDate').val('@string.Format(AppUtil.DATE_TIME_FORMAT,Model.ContactDate)');
             $('#UserCareIds').val(JSON.parse('@JsonConvert.SerializeObject(Model.UserCareIds)')).trigger('change');
-        })
+            displayLogs();
+        });
+        function displayLogs() {
+            $.post('@Url.Action("GetLogs","Crm")',
+                {id:'@Model.Id'},
+                function(result) {
+                    var liContent='';
+                    for(var i=0;i<result.length;i++) {
+                        liContent+='<div class="widget-activity-item">'+
+                            '<div class="user-card-row">'+
+                            '<div class="tbl-row">'+
+                            '<div class="tbl-cell tbl-cell-photo"><a href="#"><img src="'+
+                            result[i].avatar+
+                            '" alt=""></a></div>'+
+                            '<div class="tbl-cell"><p><a href="tel:'+
+                            result[i].phoneNumber+
+                            '" class="semibold">'+
+                            result[i].name+
+                            '</a> '+
+                            result[i].content+
+                            '</p><p>'+
+                            result[i].logDate+
+                            '</p></div>'+
+                            '</div>'+
+                            '</div>'+
+                            '</div>';
+                    }
+                    $('#logContent').html(liContent);
+                    $('#countLogs').html(result.length);
+                });
+        }
     </script>
 }
 

@@ -33,6 +33,8 @@ namespace Pelo.v2.Web.Services.Crm
         Task<CrmListModel> GetByCustomerIdPaging(CustomerComponentSearchModel request);
 
         Task<UpdateCrmModel> GetById(int id);
+
+        Task<IEnumerable<CrmLogResponse>> GetLogs(int id);
     }
 
     public class CrmService : BaseService,
@@ -333,6 +335,25 @@ namespace Pelo.v2.Web.Services.Crm
                                    UserCreated = response.Data.UserCreated,
                                    UserCreatedPhone = response.Data.UserCreatedPhone
                            };
+                }
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<IEnumerable<CrmLogResponse>> GetLogs(int id)
+        {
+            try
+            {
+                string url = string.Format(ApiUrl.CRM_GET_LOGS, id);
+                var response = await HttpService.Send<IEnumerable<CrmLogResponse>>(url, null, HttpMethod.Get, true);
+                if(response.IsSuccess)
+                {
+                    return response.Data;
                 }
 
                 throw new PeloException(response.Message);

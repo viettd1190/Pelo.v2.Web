@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Pelo.Common.Extensions;
 using Pelo.v2.Web.Factories;
@@ -165,7 +168,7 @@ namespace Pelo.v2.Web.Controllers
                                                }
                             };
 
-                await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources,false);
+                await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources, false);
                 await _baseModelFactory.PrepareCrmTypes(model.AvaiableCrmTypes, false);
                 await _baseModelFactory.PrepareCrmPriorities(model.AvaiableCrmPriorities, false);
                 await _baseModelFactory.PrepareUsers(model.AvaiableUserCares, false);
@@ -207,11 +210,10 @@ namespace Pelo.v2.Web.Controllers
         public async Task<IActionResult> Detail(int id)
         {
             var model = await _crmService.GetById(id);
-            if(model!=null)
+            if(model != null)
             {
-                
                 var customer = await _customerService.GetDetail(model.CustomerId);
-                if(customer!=null)
+                if(customer != null)
                 {
                     model.Customer = new CustomerDetailModel
                                      {
@@ -243,6 +245,36 @@ namespace Pelo.v2.Web.Controllers
             }
 
             return View("Notfound");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetLogs(int id)
+        {
+            var logs = await _crmService.GetLogs(id);
+            var result = new List<CrmLogDetail>();
+
+            foreach (var log in logs)
+            {
+                var crmLog = new CrmLogDetail
+                             {
+                                     Name=log.User?.Name??string.Empty,
+                                     PhoneNumber = log.User?.PhoneNumber??string.Empty,
+                                     Avatar = log.User?.Avatar??string.Empty,
+                                     Content = log.Comment,
+                                     LogDate = string.Format(AppUtil.DATE_TIME_FORMAT, log.LogDate),
+                                     AttachmentModels = new List<AttachmentModel>()
+                             };
+
+                crmLog.AttachmentModels.AddRange(log.Attachments.Select(c => new AttachmentModel
+                                                                             {
+                                                                                     Name = c.AttachmentName,
+                                                                                     Url = c.Attachment
+                                                                             }));
+                
+                result.Add(crmLog);
+            }
+
+            return Json(result);
         }
     }
 }
