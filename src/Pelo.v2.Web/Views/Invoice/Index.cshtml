@@ -104,7 +104,7 @@
                     </div>
                     <div class="col-xs-12">
                         <button class="btn btn-primary" id="search-invoice">Tìm kiếm</button>
-                        <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
+                        <a class="btn btn-success" href="@Url.Action("FindCustomer")">Thêm mới</a>
                     </div>
                 </div>
             </div>
@@ -165,12 +165,6 @@
                                                                    Title = "Ngày giao",
                                                                    Width = "120",
                                                                    Render = new RenderCustom("displayDate")
-                                                           },
-                                                           new ColumnProperty(nameof(InvoiceModel.DateCreated))
-                                                           {
-                                                                   Title = "Ngày tạo",
-                                                                   Width = "120",
-                                                                   Render = new RenderCustom("displayDate")
                                                            }
                                                    }
    })
@@ -179,7 +173,11 @@
 
 @section js{
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liInvoices').addClass('opened');
+            $('#liInvoice').addClass('row-active');
             $('.panel').lobiPanel({
                     sortable:false,
                     draggable:false,

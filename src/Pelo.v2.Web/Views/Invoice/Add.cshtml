@@ -1,8 +1,136 @@
-﻿@model Pelo.v2.Web.Models.AppConfig.AppConfigInsert
+﻿@using Pelo.Common.Dtos.Product
+@using Pelo.v2.Web.Models.Product
+@model Pelo.v2.Web.Models.Invoice.InvoiceInsertModel
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Thêm mới đơn hàng";
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+@section cssPlugin{
+    <link href="~/startui/css/separate/vendor/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/separate/vendor/bootstrap-daterangepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/lib/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" />
+}
+
+@section css{
+    <style>
+        .label-content {
+            color: #6b6fb9;
+            font-weight: 600;
+        }
+
+        .divider {
+            border: 1px solid #c6c6c6;
+            margin-bottom: 20px;
+        }
+
+        a.btn.title-history {
+            width: 100% !important;
+            background-color: white !important;
+            color: black !important;
+            text-align: left !important;
+            border-color: #c6c6c6 !important;
+        }
+
+        .dataTables_length {
+            display: none;
+        }
+    </style>
+}
+
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Invoice")">Danh sách đơn hàng</a></li>
+    <li class="active">Thêm mới đơn hàng</li>
+</ol>
+
+<section class="card">
+    <div class="card-block">
+        <form id="insert-crm" method="post">
+            @Html.HiddenFor(c => c.CustomerId)
+            @Html.HiddenFor(c=>c.Products)
+            @Html.ValidationSummary()
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>Thông tin khách hàng</h3>
+                </div>
+                @await Component.InvokeAsync("CustomerDetail",
+                                             Model.Customer)
+                <div class="col-lg-12">
+                    <div class="divider"></div>
+                </div>
+                <div class="col-lg-12">
+                    <h3>Lên đơn</h3>
+                </div>
+                <div class="col-lg-6">
+                    <select class="form-control select2" onchange="selectProduct();" id="listProducts">
+                        <option value="0">--Chọn thêm sản phẩm--</option>
+                        @{
+                            var products = ViewBag.Products as List<ProductSimpleModel>;
+                            if(products!=null) {
+                                foreach (var product in products)
+                                {
+                                    <option value="@product.Id" data-price="@product.SellPrice">@product.Name</option>
+                                }
+                            }
+                            
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-12" style="margin-top:20px;">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Ghi chú</th>
+                                    <th>Đơn giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-12" style="margin-top:20px;">
+                    <fieldset class="form-group">
+                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <a class="btn btn-default" href="@Url.Action("Index", "Invoice")">Hủy</a>
+                    </fieldset>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+@section jsPlugin{
+    <script src="~/startui/js/lib/moment/moment-with-locales.js"></script>
+    <script src="~/startui/js/lib/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker-init.js"></script>
+    <script src="~/startui/js/lib/daterangepicker/daterangepicker.js"></script>
+    <script>
+        var index=0;
+        function selectProduct() {
+            var productId=$('#listProducts').val();
+            if (productId != 0) {
+                var product = $('[value=' + productId + ']');
+                if(product) {
+                    var content='<tr id="tr-'+index+'"><td>'+
+                        product.text()+
+                        '</td><td><input class="form-control" placeholder="Ghi chú"/></td><td>'+
+                        '<input class="form-control" value="' + Util.number.format(product.data().price)+'"/>'+
+                        '</td><td><input class="form-control" value="1" /></td><td>'+
+                        '<input class="form-control" value="' + Util.number.format(product.data().price) + '"/>' +
+                        '</td><td><a href="javascript:deleteProduct('+index+')" class="btn btn-danger"><i class="fa fa-remove"></i></a></td></tr>';
+                    $('tbody').append(content);
+                    index++;
+                }
+            }
+        }
+        function deleteProduct(index) {$('#tr-'+index).remove();}
+    </script>
+}

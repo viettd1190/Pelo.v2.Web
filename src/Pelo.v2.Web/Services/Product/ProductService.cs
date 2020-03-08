@@ -16,7 +16,7 @@ namespace Pelo.v2.Web.Services.Product
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductModel>> GetAll();
+        Task<IEnumerable<ProductSimpleModel>> GetAll();
 
         Task<ProductListModel> GetByPaging(ProductSearchModel request);
 
@@ -40,14 +40,14 @@ namespace Pelo.v2.Web.Services.Product
 
         #region IProductService Members
 
-        public async Task<IEnumerable<ProductModel>> GetAll()
+        public async Task<IEnumerable<ProductSimpleModel>> GetAll()
         {
             try
             {
-                var response = await HttpService.Send<IEnumerable<ProductModel>>(ApiUrl.PRODUCT_GET_ALL,
-                                                                                 null,
-                                                                                 HttpMethod.Get,
-                                                                                 true);
+                var response = await HttpService.Send<IEnumerable<ProductSimpleModel>>(ApiUrl.PRODUCT_GET_ALL,
+                                                                                       null,
+                                                                                       HttpMethod.Get,
+                                                                                       true);
 
                 if(response.IsSuccess)
                     return response.Data;
@@ -169,22 +169,22 @@ namespace Pelo.v2.Web.Services.Product
                 var response = await HttpService.Send<bool>(ApiUrl.PRODUCT_UPDATE,
                                                             new InsertProduct
                                                             {
-                                                                Name = model.Name,
-                                                                CountryId = model.CountryId,
-                                                                Description = model.Description,
-                                                                ImportPrice = model.ImportPrice,
-                                                                ManufacturerId = model.ManufacturerId,
-                                                                MaxCount = model.MaxCount,
-                                                                MinCount = model.MinCount,
-                                                                ProductGroupId = model.ProductGroupId,
-                                                                ProductStatusId = model.ProductStatusId,
-                                                                ProductUnitId = model.ProductUnitId,
-                                                                SellPrice = model.SellPrice,
-                                                                WarrantyMonth = model.WarrantyMonth
+                                                                    Name = model.Name,
+                                                                    CountryId = model.CountryId,
+                                                                    Description = model.Description,
+                                                                    ImportPrice = model.ImportPrice,
+                                                                    ManufacturerId = model.ManufacturerId,
+                                                                    MaxCount = model.MaxCount,
+                                                                    MinCount = model.MinCount,
+                                                                    ProductGroupId = model.ProductGroupId,
+                                                                    ProductStatusId = model.ProductStatusId,
+                                                                    ProductUnitId = model.ProductUnitId,
+                                                                    SellPrice = model.SellPrice,
+                                                                    WarrantyMonth = model.WarrantyMonth
                                                             },
                                                             HttpMethod.Post,
                                                             true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -204,23 +204,23 @@ namespace Pelo.v2.Web.Services.Product
                 var response = await HttpService.Send<bool>(ApiUrl.PRODUCT_UPDATE,
                                                             new UpdateProduct
                                                             {
-                                                                Id = model.Id,
-                                                                Name = model.Name,
-                                                                CountryId = model.CountryId,
-                                                                Description = model.Description,
-                                                                ImportPrice = model.ImportPrice,
-                                                                ManufacturerId = model.ManufacturerId,
-                                                                MaxCount = model.MaxCount,
-                                                                MinCount = model.MinCount,
-                                                                ProductGroupId = model.ProductGroupId,
-                                                                ProductStatusId = model.ProductStatusId,
-                                                                ProductUnitId = model.ProductUnitId,
-                                                                SellPrice = model.SellPrice,
-                                                                WarrantyMonth = model.WarrantyMonth
+                                                                    Id = model.Id,
+                                                                    Name = model.Name,
+                                                                    CountryId = model.CountryId,
+                                                                    Description = model.Description,
+                                                                    ImportPrice = model.ImportPrice,
+                                                                    ManufacturerId = model.ManufacturerId,
+                                                                    MaxCount = model.MaxCount,
+                                                                    MinCount = model.MinCount,
+                                                                    ProductGroupId = model.ProductGroupId,
+                                                                    ProductStatusId = model.ProductStatusId,
+                                                                    ProductUnitId = model.ProductUnitId,
+                                                                    SellPrice = model.SellPrice,
+                                                                    WarrantyMonth = model.WarrantyMonth
                                                             },
                                                             HttpMethod.Put,
                                                             true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -237,13 +237,19 @@ namespace Pelo.v2.Web.Services.Product
         {
             try
             {
-                var url = string.Format(ApiUrl.CRM_TYPE_GET_BY_ID, id);
-                var response = await HttpService.Send<Pelo.Common.Dtos.Product.ProductModel>(url, null,
-                                                            HttpMethod.Get,
-                                                            true);
-                if (response.IsSuccess)
+                var url = string.Format(ApiUrl.CRM_TYPE_GET_BY_ID,
+                                        id);
+                var response = await HttpService.Send<Common.Dtos.Product.ProductModel>(url,
+                                                                                        null,
+                                                                                        HttpMethod.Get,
+                                                                                        true);
+                if(response.IsSuccess)
                 {
-                    return await Ok(new ProductModel { Id = response.Data.Id, Name = response.Data.Name });
+                    return await Ok(new ProductModel
+                                    {
+                                            Id = response.Data.Id,
+                                            Name = response.Data.Name
+                                    });
                 }
 
                 return await Fail<ProductModel>(response.Message);
