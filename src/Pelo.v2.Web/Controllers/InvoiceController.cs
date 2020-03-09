@@ -123,5 +123,16 @@ namespace Pelo.v2.Web.Controllers
 
             return View("Notfound");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(InvoiceInsertModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }

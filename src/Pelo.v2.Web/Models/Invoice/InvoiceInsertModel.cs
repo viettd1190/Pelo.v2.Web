@@ -44,6 +44,8 @@ namespace Pelo.v2.Web.Models.Invoice
 
         public IList<ProductInInvoiceModel> Products { get; set; }
 
+        public string ProductRaw { get; set; }
+
         
     }
 
