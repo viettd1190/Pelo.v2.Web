@@ -23,6 +23,8 @@ namespace Pelo.v2.Web.Services.AppConfig
         Task<TResponse<bool>> Update(AppConfigUpdate request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<string>> GetByName(string name);
     }
 
     public class AppConfigService : BaseService,
@@ -154,7 +156,7 @@ namespace Pelo.v2.Web.Services.AppConfig
                                                             request,
                                                             HttpMethod.Put,
                                                             true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -187,6 +189,29 @@ namespace Pelo.v2.Web.Services.AppConfig
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<string>> GetByName(string name)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.APP_CONFIG_GET_BY_NAME,
+                                        name);
+                var response = await HttpService.Send<string>(url,
+                                                              null,
+                                                              HttpMethod.Get,
+                                                              true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<string>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<string>(exception);
             }
         }
 

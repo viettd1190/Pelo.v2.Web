@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Customer;
 using Pelo.v2.Web.Models.Invoice;
+using Pelo.v2.Web.Services.AppConfig;
 using Pelo.v2.Web.Services.Customer;
 using Pelo.v2.Web.Services.Invoice;
 using Pelo.v2.Web.Services.Product;
+using Pelo.v2.Web.Services.Role;
 
 namespace Pelo.v2.Web.Controllers
 {
@@ -14,21 +16,29 @@ namespace Pelo.v2.Web.Controllers
     {
         private readonly IBaseModelFactory _baseModelFactory;
 
-        private readonly IInvoiceService _invoiceService;
-
         private readonly ICustomerService _customerService;
 
-        private IProductService _productService;
+        private readonly IInvoiceService _invoiceService;
+
+        private readonly IAppConfigService _appConfigService;
+
+        private readonly IProductService _productService;
+
+        private readonly IRoleService _roleService;
 
         public InvoiceController(IInvoiceService invoiceService,
                                  IBaseModelFactory baseModelFactory,
                                  ICustomerService customerService,
-                                 IProductService productService)
+                                 IProductService productService,
+                                 IRoleService roleService,
+                                 IAppConfigService appConfigService)
         {
             _invoiceService = invoiceService;
             _baseModelFactory = baseModelFactory;
             _customerService = customerService;
             _productService = productService;
+            _roleService = roleService;
+            _appConfigService = appConfigService;
         }
 
         public async Task<IActionResult> Index()
@@ -116,7 +126,19 @@ namespace Pelo.v2.Web.Controllers
                 await _baseModelFactory.PrepareProducts(model.AvaiableProducts,
                                                         false);
 
-                ViewBag.Products =(await _productService.GetAll()).ToList();
+                ViewBag.Products = (await _productService.GetAll()).ToList();
+                ViewBag.DefaultRole = false;
+
+                var currentRole = (await _roleService.GetCurrentRoleName()).Data;
+                var defaultRoleAcceptInvoice = (await _appConfigService.GetByName("DefaultInvoiceAcceptRoles"));
+                if(defaultRoleAcceptInvoice.IsSuccess)
+                {
+                    if(defaultRoleAcceptInvoice.Data.Split(' ')
+                                               .Contains(currentRole))
+                    {
+                        ViewBag.DefaultRole = true;
+                    }
+                }
 
                 return View(model);
             }
@@ -129,7 +151,6 @@ namespace Pelo.v2.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-                
             }
 
             return RedirectToAction("Index");

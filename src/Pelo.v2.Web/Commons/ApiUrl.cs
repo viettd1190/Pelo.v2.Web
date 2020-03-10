@@ -25,6 +25,8 @@
 
         public const string GET_ROLE_ID = BASE_API_URL + "/api/role/{0}";
 
+        public const string GET_CURRENT_ROLE_NAME = BASE_API_URL + "/api/role/get_current_role";
+
         #endregion
 
         #region Branch
@@ -88,6 +90,8 @@
         public const string APP_CONFIG_GET_BY_ID = BASE_API_URL + "/api/app_config/{0}";
 
         public const string APP_CONFIG_UPDATE = BASE_API_URL + "/api/app_config";
+
+        public const string APP_CONFIG_GET_BY_NAME = BASE_API_URL + "/api/app_config/get_by_name?name={0}";
 
         #endregion
 

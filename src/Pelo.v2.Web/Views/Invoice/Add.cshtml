@@ -47,7 +47,7 @@
 
 <section class="card">
     <div class="card-block">
-        <form id="insert-crm" method="post">
+        <form id="insert-crm" method="post" onsubmit="return saveProducts();">
             @Html.HiddenFor(c => c.CustomerId)
             @Html.HiddenFor(c=>c.Products)
             @Html.HiddenFor(c=>c.ProductRaw)
@@ -69,13 +69,14 @@
                         <option value="0">--Chọn thêm sản phẩm--</option>
                         @{
                             var products = ViewBag.Products as List<ProductSimpleModel>;
-                            if(products!=null) {
+                            if (products != null)
+                            {
                                 foreach (var product in products)
                                 {
-                                    <option value="@product.Id" data-price="@product.SellPrice">@product.Name</option>
+                                    <option data-tag="product-@product.Id" value="@product.Id" data-price="@product.SellPrice">@product.Name</option>
                                 }
                             }
-                            
+
                         }
                     </select>
                 </div>
@@ -83,35 +84,86 @@
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
-                                <tr>
-                                    <th>Tên sản phẩm</th>
-                                    <th>Ghi chú</th>
-                                    <th>Đơn giá</th>
-                                    <th>Số lượng</th>
-                                    <th>Thành tiền</th>
-                                    <th></th>
-                                </tr>
+                            <tr>
+                                <th colspan="2">Tên sản phẩm</th>
+                                <th colspan="2">Ghi chú</th>
+                                <th>Đơn giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                                <th></th>
+                            </tr>
                             </thead>
                             <tbody></tbody>
                             <tfoot>
-                                <tr>
-                                    <th colspan="2"></th>
-                                    <th>Tổng cộng:</th>
-                                    <th colspan="2"><input id="txtTotal" class="form-control money-mask-input" value="0" readonly="readonly" style="text-align:right;"/></th>
-                                </tr>
-                                <tr>
-                                    <th colspan="2"></th>
-                                    <th>Giảm giá:</th>
-                                    <th colspan="2"><input asp-for="Discount" class="form-control money-mask-input" placeholder="Giảm giá" onblur="changeDiscount();" value="@Model.Discount" style="text-align:right;"/></th>
-                                </tr>
-                                <tr>
-                                    <th colspan="2"></th>
-                                    <th>Thanh toán:</th>
-                                    <th colspan="2"><input id="txtAmount" class="form-control money-mask-input" value="0" readonly="readonly" style="text-align:right;"/></th>
-                                </tr>
+                            <tr>
+                                <th colspan="4"></th>
+                                <th>Tổng cộng:</th>
+                                <th colspan="2"><input id="txtTotal" class="form-control money-mask-input" value="0" readonly="readonly" style="text-align:right;" /></th>
+                            </tr>
+                            <tr>
+                                <th colspan="4"></th>
+                                <th>Giảm giá:</th>
+                                <th colspan="2"><input asp-for="Discount" type="text" class="form-control" placeholder="Giảm giá" onblur="changeDiscount();" value="@Model.Discount" style="text-align:right;" /></th>
+                            </tr>
+                            <tr>
+                                <th colspan="4"></th>
+                                <th>Thanh toán:</th>
+                                <th colspan="2"><input id="txtAmount" class="form-control money-mask-input" value="0" readonly="readonly" style="text-align:right;" /></th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Hình thức thanh toán:
+                                </th>
+                                <th>
+                                    <nop-select asp-for="PayMethodId" asp-items="Model.AvaiablePayMethods" />
+                                </th>
+                                <th>
+                                    Đã trả:
+                                </th>
+                                <th>
+                                    <input asp-for="Deposit" type="text" class="form-control" placeholder="Đã trả" onblur="changeDeposit();" value="@Model.Deposit" style="text-align:right;" />
+                                </th>
+                                <th>Còn lại: </th>
+                                <th colspan="2"><input id="txtAfterDeposit" class="form-control money-mask-input" value="0" readonly="readonly" style="text-align:right;" /></th>
+                            </tr>
                             </tfoot>
                         </table>
                     </div>
+                </div>
+                @{
+                    if(ViewBag.DefaultRole==true) {
+                        <div class="col-lg-6">
+                            <fieldset class="form-group">
+                                <nop-label asp-for="UserSellId" text-display="Nhân viên bán hàng" />
+                                <nop-select asp-for="UserSellId" asp-items="Model.AvaiableUsers" />
+                                @Html.ValidationMessageFor(c => c.AvaiableUsers)
+                            </fieldset>
+                        </div>        
+                    }
+                }
+                
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="BranchId" text-display="Chi nhánh" />
+                        <nop-select asp-for="BranchId" asp-items="Model.AvaiableBranches" />
+                        @Html.ValidationMessageFor(c => c.BranchId)
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="DeliveryDate">Thời gian giao hàng</label>
+                        <nop-editor asp-for="DeliveryDate" />
+                        @Html.ValidationMessageFor(c => c.DeliveryDate)
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Description">Ghi chú</label>
+                        @Html.TextAreaFor(c => c.Description, new {
+                                                                          @class="form-control",
+                                                                          @placeholder="Ghi chú"
+                                                                  })
+                    </fieldset>
                 </div>
                 <div class="col-lg-12" style="margin-top:20px;">
                     <fieldset class="form-group">
@@ -135,20 +187,26 @@
     <script src="~/startui/js/lib/input-mask/input-mask-init.js"></script>
     <script>
         var index = 0;
-        var products=[];
+        var products = [];
+        $(document).ready(function() {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liInvoices').addClass('opened');
+            $('#liInvoice').addClass('row-active');
+        });
         function selectProduct() {
             var productId=$('#listProducts').val();
             if (productId != 0) {
-                var product = $('[value=' + productId + ']');
+                var product = $('[data-tag=product-' + productId + ']');
                 if(product) {
                     var content='<tr id="tr-'+index+'"><td>'+
                         product.text()+
-                        '</td><td><input id="productDescription-'+index+'" class="form-control" placeholder="Ghi chú" onblur="changeDescription('+index+')"/></td><td>'+
-                        //'<input id="productPrice" class="form-control" value="' + Util.number.format(product.data().price)+'" onblur="changePrice('+index+')" type="number"/>'+
-                        '<input id="productPrice" class="form-control money-mask-input" value="' + product.data().price+'" onblur="changePrice('+index+')"/>'+
-                        '</td><td><input id="productQuantity" class="form-control" value="1" type="number" onblur="changeQuantity('+index+')"/></td><td>'+
-                        '<input id="productAmount" class="form-control money-mask-input" value="' + product.data().price + '" readonly="readonly"/>' +
-                        '</td><td><a href="javascript:deleteProduct('+index+')" class="btn btn-danger"><i class="fa fa-remove"></i></a></td></tr>';
+                        '</td>'+
+                        '<td colspan="2"><input id="productDescription-'+index+'" class="form-control" placeholder="Ghi chú" onblur="changeDescription('+index+')"/></td>'+
+                        '<td colspan="2"><input id="productPrice" class="form-control money-mask-input" value="' + product.data().price+'" onblur="changePrice('+index+')"/></td>'+
+                        '<td><input id="productQuantity" class="form-control" value="1" type="number" onblur="changeQuantity('+index+')" style="text-align:right;"/></td>'+
+                        '<td><input id="productAmount" class="form-control money-mask-input" value="' + product.data().price + '" readonly="readonly"/></td>'+
+                        '<td><a href="javascript:deleteProduct('+index+')" class="btn btn-danger"><i class="fa fa-remove"></i></a></td></tr>';
                     $('tbody').append(content);
                     products.push({ index: index, id: productId, description: '', quantity: 1, price: product.data().price });
                     recallTotal();
@@ -186,12 +244,34 @@
             $('#productAmount').val(Util.number.format(quantity * product.price));
             recallTotal();
         }
+        function changeDiscount() {
+            var discount=parseInt($('#Discount').val().replace(/\,/g,''));
+            $('#Discount').val(Util.number.format(discount));
+            recallTotal();
+        }
+        function changeDeposit() {
+            var deposit=parseInt($('#Deposit').val().replace(/\,/g,''));
+            $('#Deposit').val(Util.number.format(deposit));
+            recallTotal();
+        }
         function getProductByIndex(index) { return products.find(c => c.index === index); }
         function recallTotal() {
             var total=products.sum(c => c.price*c.quantity);
             $('#txtTotal').val(Util.number.format(total));
             var discount = parseInt($('#Discount').val().replace(/\,/g, ''));
-            $('#txtAmount').val(Util.number.format(total-discount));
+            var totalAfterDiscount=total-discount;
+            $('#txtAmount').val(Util.number.format(totalAfterDiscount));
+            var deposit = parseInt($('#Deposit').val().replace(/\,/g, ''));
+            var totalAfterDeposit = totalAfterDiscount - deposit;
+            $('#txtAfterDeposit').val(Util.number.format(totalAfterDeposit));
+        }
+        function saveProducts() {
+            if (products.length === 0) {
+                alert('Bạn chưa chọn sản phẩm nào');
+                return false;
+            }
+            $('#ProductRaw').val(JSON.parse(products));
+            return true;
         }
     </script>
 }

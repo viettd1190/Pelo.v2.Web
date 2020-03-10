@@ -90,11 +90,6 @@ else
         type: "@WebRequestMethods.Http.Post",
         dataType: "json",
         dataSrc: "data",
-        @*error: function (xhr, error, code)
-            {
-            console.log(xhr);
-            console.log(code);
-            },*@
         data: function(data) {
         @if (Model.Filters != null)
         {

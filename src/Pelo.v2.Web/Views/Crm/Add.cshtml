@@ -72,7 +72,6 @@
                     </fieldset>
                     <fieldset class="form-group">
                         <label class="form-label semibold" for="ContactDate">Ngày liên hệ</label>
-                        @*<input asp-for="ContactDate" class="form-control" type="text" placeholder="Ngày liên hệ" />*@
                         <nop-editor asp-for="ContactDate" />
                         @Html.ValidationMessageFor(c => c.ContactDate)
                     </fieldset>

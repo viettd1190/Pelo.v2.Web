@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pelo.v2.Web.Models.Customer;
 
@@ -26,6 +27,7 @@ namespace Pelo.v2.Web.Models.Invoice
 
         public int BranchId { get; set; }
 
+        [UIHint("DateTime")]
         public DateTime DeliveryDate { get; set; }
 
         public string Description { get; set; }
