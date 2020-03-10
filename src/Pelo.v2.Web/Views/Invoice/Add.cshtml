@@ -203,9 +203,9 @@
                         product.text()+
                         '</td>'+
                         '<td colspan="2"><input id="productDescription-'+index+'" class="form-control" placeholder="Ghi chú" onblur="changeDescription('+index+')"/></td>'+
-                        '<td colspan="2"><input id="productPrice" class="form-control money-mask-input" value="' + product.data().price+'" onblur="changePrice('+index+')"/></td>'+
-                        '<td><input id="productQuantity" class="form-control" value="1" type="number" onblur="changeQuantity('+index+')" style="text-align:right;"/></td>'+
-                        '<td><input id="productAmount" class="form-control money-mask-input" value="' + product.data().price + '" readonly="readonly"/></td>'+
+                        '<td colspan="2"><input id="productPrice-'+index+'" class="form-control money-mask-input" value="' + product.data().price+'" onblur="changePrice('+index+')"/></td>'+
+                        '<td><input id="productQuantity-'+index+'" class="form-control" value="1" type="number" onblur="changeQuantity('+index+')" style="text-align:right;"/></td>'+
+                        '<td><input id="productAmount-'+index+'" class="form-control money-mask-input" value="' + product.data().price + '" readonly="readonly"/></td>'+
                         '<td><a href="javascript:deleteProduct('+index+')" class="btn btn-danger"><i class="fa fa-remove"></i></a></td></tr>';
                     $('tbody').append(content);
                     products.push({ index: index, id: productId, description: '', quantity: 1, price: product.data().price });
@@ -230,18 +230,18 @@
         function changePrice(index) {
             var product = getProductByIndex(index);
             if (product) {
-                var price = parseInt($('#productPrice').val().replace(/\,/g,''));
+                var price = parseInt($('#productPrice-'+index).val().replace(/\,/g,''));
                 product.price = price;
-                $('#productAmount').val(Util.number.format(price * product.quantity));
+                $('#productAmount-'+index).val(Util.number.format(price * product.quantity));
                 recallTotal();
             }
             
         }
         function changeQuantity(index) {
             var product=getProductByIndex(index);
-            var quantity = $('#productQuantity').val();
+            var quantity=parseInt($('#productQuantity-'+index).val());
             product.quantity = quantity;
-            $('#productAmount').val(Util.number.format(quantity * product.price));
+            $('#productAmount-'+index).val(Util.number.format(quantity * product.price));
             recallTotal();
         }
         function changeDiscount() {
@@ -271,6 +271,8 @@
                 return false;
             }
             $('#ProductRaw').val(JSON.parse(products));
+            $('#Deposit').val(parseInt($('#Deposit').val().replace(/\,/g,'')));
+            $('#Discount').val($('#Discount').val().replace(/\,/g,''));
             return true;
         }
     </script>

@@ -20,6 +20,8 @@ namespace Pelo.v2.Web.Services.Invoice
         Task<TResponse<bool>> Delete(int id);
 
         Task<InvoiceListModel> GetByCustomerIdPaging(CustomerInvoiceSearchModel request);
+
+        Task<TResponse<bool>> Insert(InvoiceInsertModel model);
     }
 
     public class InvoiceService : BaseService,
@@ -208,6 +210,45 @@ namespace Pelo.v2.Web.Services.Invoice
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(InvoiceInsertModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_INSERT,
+                                                            new InsertInvoiceRequest
+                                                            {
+                                                                    CustomerId = model.CustomerId,
+                                                                    BranchId = model.BranchId,
+                                                                    DeliveryDate = model.DeliveryDate,
+                                                                    Deposit = model.Deposit,
+                                                                    Description = model.Description,
+                                                                    Discount = model.Discount,
+                                                                    PayMethodId = model.PayMethodId,
+                                                                    UserSellId = model.UserSellId,
+                                                                    Products = model.Products.Select(c => new InsertProductInInvoiceRequest
+                                                                                                          {
+                                                                                                                  Id = c.Id,
+                                                                                                                  Description = c.Description,
+                                                                                                                  Price = c.SellPrice,
+                                                                                                                  Quantity = c.Quantity
+                                                                                                          })
+                                                                                    .ToList()
+                                                            },
+                                                            HttpMethod.Post,
+                                                            true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 

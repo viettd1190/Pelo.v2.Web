@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Pelo.Common.Extensions;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Customer;
 using Pelo.v2.Web.Models.Invoice;
@@ -12,7 +14,7 @@ using Pelo.v2.Web.Services.Role;
 
 namespace Pelo.v2.Web.Controllers
 {
-    public class InvoiceController : Controller
+    public class InvoiceController : BaseController
     {
         private readonly IBaseModelFactory _baseModelFactory;
 
@@ -149,11 +151,54 @@ namespace Pelo.v2.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(InvoiceInsertModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
+                if(model.UserSellId==0)
+                {
+                    model.UserSellId = GetUserId();
+                }
+
+                if(!string.IsNullOrEmpty(model.ProductRaw))
+                {
+                    var products=new List<ProductInInvoiceModel>();
+                    products.AddRange(model.ProductRaw.ToObject<IEnumerable<ProductInInvoiceModel>>());
+                }
+
+                var result = await _invoiceService.Insert(model);
+                if (result.IsSuccess)
+                {
+                    TempData["Update"] = result.ToJson();
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("",
+                                         result.Message);
             }
 
-            return RedirectToAction("Index");
+            await _baseModelFactory.PrepareBranches(model.AvaiableBranches,
+                                                    false);
+            await _baseModelFactory.PreparePayMethods(model.AvaiablePayMethods,
+                                                      false);
+            await _baseModelFactory.PrepareUsers(model.AvaiableUsers,
+                                                 false);
+            await _baseModelFactory.PrepareProducts(model.AvaiableProducts,
+                                                    false);
+
+            ViewBag.Products = (await _productService.GetAll()).ToList();
+            ViewBag.DefaultRole = false;
+
+            var currentRole = (await _roleService.GetCurrentRoleName()).Data;
+            var defaultRoleAcceptInvoice = (await _appConfigService.GetByName("DefaultInvoiceAcceptRoles"));
+            if (defaultRoleAcceptInvoice.IsSuccess)
+            {
+                if (defaultRoleAcceptInvoice.Data.Split(' ')
+                                            .Contains(currentRole))
+                {
+                    ViewBag.DefaultRole = true;
+                }
+            }
+
+            return View(model);
         }
     }
 }

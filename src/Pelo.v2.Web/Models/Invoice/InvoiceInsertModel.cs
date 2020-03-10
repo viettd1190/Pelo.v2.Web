@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using Pelo.v2.Web.Models.Customer;
 
 namespace Pelo.v2.Web.Models.Invoice
@@ -14,7 +15,7 @@ namespace Pelo.v2.Web.Models.Invoice
             AvaiableUsers = new List<SelectListItem>();
             AvaiablePayMethods = new List<SelectListItem>();
             AvaiableProducts = new List<SelectListItem>();
-            Products=new List<ProductInInvoiceModel>();
+            Products = new List<ProductInInvoiceModel>();
         }
 
         public CustomerDetailModel Customer { get; set; }
@@ -47,20 +48,23 @@ namespace Pelo.v2.Web.Models.Invoice
         public IList<ProductInInvoiceModel> Products { get; set; }
 
         public string ProductRaw { get; set; }
-
-        
     }
 
     public class ProductInInvoiceModel
     {
+        [JsonProperty("id")]
         public int Id { get; set; }
 
+        [JsonProperty("description")]
         public string Description { get; set; }
 
+        [JsonProperty("price")]
         public int SellPrice { get; set; }
 
+        [JsonProperty("quantity")]
         public int Quantity { get; set; }
 
-        public string Amount { get; set; }
+        [JsonProperty("amount")]
+        public int Amount => SellPrice * Quantity;
     }
 }

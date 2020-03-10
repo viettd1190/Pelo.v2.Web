@@ -336,6 +336,8 @@
 
         public const string INVOICE_GET_ALL = BASE_API_URL + "/api/invoice/all";
 
+        public const string INVOICE_INSERT = BASE_API_URL + "/api/invoice";
+
         #endregion
 
         #region Product
