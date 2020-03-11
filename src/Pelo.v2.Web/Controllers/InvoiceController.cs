@@ -162,6 +162,7 @@ namespace Pelo.v2.Web.Controllers
                 {
                     var products=new List<ProductInInvoiceModel>();
                     products.AddRange(model.ProductRaw.ToObject<IEnumerable<ProductInInvoiceModel>>());
+                    model.Products = products;
                 }
 
                 var result = await _invoiceService.Insert(model);
@@ -173,6 +174,28 @@ namespace Pelo.v2.Web.Controllers
 
                 ModelState.AddModelError("",
                                          result.Message);
+            }
+
+            var customer = await _customerService.GetDetail(model.CustomerId);
+            if(customer.IsSuccess)
+            {
+                model.Customer = new CustomerDetailModel
+                                 {
+                                         Code = customer.Data.Code,
+                                         Name = customer.Data.Name,
+                                         Phone = customer.Data.Phone,
+                                         Phone2 = customer.Data.Phone2,
+                                         Phone3 = customer.Data.Phone3,
+                                         Province = customer.Data.Province,
+                                         District = customer.Data.District,
+                                         Ward = customer.Data.Ward,
+                                         Address = customer.Data.Address,
+                                         CustomerGroup = customer.Data.CustomerGroup,
+                                         CustomerVip = customer.Data.CustomerVip,
+                                         Email = customer.Data.Email,
+                                         DateCreated = customer.Data.DateCreated,
+                                         Description = customer.Data.Description
+                                 };
             }
 
             await _baseModelFactory.PrepareBranches(model.AvaiableBranches,

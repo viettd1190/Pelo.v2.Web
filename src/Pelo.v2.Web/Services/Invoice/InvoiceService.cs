@@ -217,7 +217,7 @@ namespace Pelo.v2.Web.Services.Invoice
         {
             try
             {
-                var response = await HttpService.Send<bool>(ApiUrl.CRM_INSERT,
+                var response = await HttpService.Send<bool>(ApiUrl.INVOICE_INSERT,
                                                             new InsertInvoiceRequest
                                                             {
                                                                     CustomerId = model.CustomerId,
