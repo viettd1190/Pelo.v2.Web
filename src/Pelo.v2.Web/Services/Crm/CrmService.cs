@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Pelo.Common.Dtos.Crm;
@@ -35,6 +36,8 @@ namespace Pelo.v2.Web.Services.Crm
         Task<UpdateCrmModel> GetById(int id);
 
         Task<IEnumerable<CrmLogResponse>> GetLogs(int id);
+
+        Task<TResponse<bool>> Comment(CrmCommentModel model);
     }
 
     public class CrmService : BaseService,
@@ -361,6 +364,50 @@ namespace Pelo.v2.Web.Services.Crm
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Comment(CrmCommentModel model,List<IFormFile> files)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var form = new MultipartFormDataContent();
+                    using (var fileStream = files[0].OpenReadStream())
+                    {
+                        var url = ApiUrl.CRM_COMMENT;
+
+                        form.Add(new StreamContent(fileStream), "avatar", avatar.FileName);
+                        using (var response = await client.PutAsync(url, form))
+                        {
+                            response.EnsureSuccessStatusCode();
+
+                            var res = await response.Content.ReadAsStringAsync();
+                            var obj = JsonConvert.DeserializeObject<TResponse<bool>>(res);
+                            if (obj.IsSuccess)
+                            {
+                                return await Task.FromResult(new TResponse<bool>
+                                {
+                                    Data = obj.Data,
+                                    IsSuccess = true,
+                                    Message = string.Empty
+                                });
+                            }
+
+                            return await Task.FromResult(new TResponse<bool>
+                            {
+                                Data = default(bool),
+                                IsSuccess = false,
+                                Message = obj.Message
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 

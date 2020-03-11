@@ -1,4 +1,5 @@
 ﻿@using Newtonsoft.Json
+@using Pelo.v2.Web.Models.Crm
 @model Pelo.v2.Web.Models.Crm.UpdateCrmModel
 
 @{
@@ -138,7 +139,7 @@
                     </fieldset>
                 </div>
             </form>
-            <form id="comment-crm" asp-controller="Crm" asp-action="Comment" method="post">
+            <form id="comment-crm" asp-controller="Crm" asp-action="Comment" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
                 <div class="col-lg-12">
                     <div class="divider"></div>
                 </div>
@@ -148,6 +149,15 @@
                         <textarea type="text" class="form-control" id="Comment" name="Comment"></textarea>
                         <small class="text-muted">Bạn phải bình luận hoặc đính kèm file để thực hiện chức năng này</small>
                     </fieldset>
+                    <fieldset>
+                        <label></label>
+                        <input type="file" id="files" name="files" multiple="multiple" @*onchange="previewFile(this);"*@ />
+                        <div id="preview"></div>
+                    </fieldset>
+                    <br/>
+                    <fieldset class="form-group">
+                        <button type="submit" class="btn btn-primary">Bình luận</button>
+                    </fieldset>
                 </div>
                 <div class="col-lg-8">
                     <section class="widget widget-activity" style="margin-top:25px;">
@@ -156,75 +166,6 @@
                             <span class="label label-pill label-primary" id="countLogs">0</span>
                         </header>
                         <div id="logContent">
-                            @*<div class="widget-activity-item">
-                                <div class="user-card-row">
-                                    <div class="tbl-row">
-                                        <div class="tbl-cell tbl-cell-photo">
-                                            <a href="#">
-                                                <img src="img/photo-64-2.jpg" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="tbl-cell">
-                                            <p>
-                                                <a href="#" class="semibold">Nina Jones</a>
-                                                added a new product
-                                                <a href="#">Free UI Kit</a>
-                                            </p>
-                                            <p>Just Now</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="widget-activity-item">
-                                <div class="user-card-row">
-                                    <div class="tbl-row">
-                                        <div class="tbl-cell tbl-cell-photo">
-                                            <a href="#">
-                                                <img src="img/avatar-1-64.png" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="tbl-cell">
-                                            <p>
-                                                <a href="#" class="semibold">James Smith</a>
-                                                commpleted task
-                                                <a href="#">Free PSD Template</a>
-                                            </p>
-                                            <p>40 minutes ago</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="widget-activity-item">
-                                <div class="user-card-row">
-                                    <div class="tbl-row">
-                                        <div class="tbl-cell tbl-cell-photo">
-                                            <a href="#">
-                                                <img src="img/avatar-2-64.png" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="tbl-cell">
-                                            <p>
-                                                <a href="#" class="semibold">Alex Clooney</a>
-                                                commpleted task
-                                                <a href="#">Sumu Website</a>
-                                            </p>
-                                            <p>1 hours ago</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="widget-activity-item">
-                                <div class="user-card-row">
-                                    <div class="tbl-row">
-                                        <div class="tbl-cell tbl-cell-photo">
-                                            <a href="#"><img src="img/avatar-3-64.png" alt=""></a>
-                                        </div>
-                                        <div class="tbl-cell">
-                                            <p><a href="#" class="semibold">Nina Jones</a>added a new product<a href="#">Free UI Kit</a></p><p>Just Now</p>
-                                            </div>
-                                    </div>
-                                </div>
-                            </div>*@
                         </div>
                     </section>
                 </div>
@@ -275,6 +216,21 @@
                     $('#countLogs').html(result.length);
                 });
         }
+        //function previewFile(input) {
+        //    var file=input.files;
+        //    var preview = document.getElementById('preview');
+        //    var reader = new FileReader();
+
+        //    reader.onload = e => {
+        //        var img=document.createElement('img');
+        //        img.src = e.target.result;
+        //        img.width = 200;
+        //        img.height = 200;
+        //        img.alt = 'file';
+        //        preview.appendChild(img);
+        //    }
+        //    reader.readAsDataURL(file[0]);
+        //}
     </script>
 }
 

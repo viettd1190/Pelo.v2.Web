@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pelo.Common.Extensions;
 using Pelo.v2.Web.Factories;
@@ -275,6 +276,12 @@ namespace Pelo.v2.Web.Controllers
             }
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Comment(CrmCommentModel model, List<IFormFile> files)
+        {
+            return RedirectToAction("Index");
         }
     }
 }
