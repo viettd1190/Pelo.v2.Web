@@ -256,6 +256,8 @@
 
         public const string CRM_GET_LOGS = BASE_API_URL + "/api/crm/log/{0}";
 
+        public const string CRM_COMMENT = BASE_API_URL + "/api/crm/comment";
+
         #endregion
 
         #region Province / District / Ward
