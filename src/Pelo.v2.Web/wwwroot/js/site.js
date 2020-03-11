@@ -12,6 +12,10 @@
         }
     }
 });
+Array.prototype.sum = function (propertySelector = obj => obj) {
+    const intialValue = 0;
+    return this.reduce((sum, obj) => sum + propertySelector(obj), intialValue);
+};
 function showNotification(data) {
     //if (data.length == 0) {
     //    return;

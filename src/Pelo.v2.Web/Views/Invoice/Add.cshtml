@@ -1,8 +1,287 @@
-﻿@model Pelo.v2.Web.Models.AppConfig.AppConfigInsert
+﻿@using Pelo.Common.Dtos.Product
+@using Pelo.v2.Web.Models.Invoice
+@using Pelo.v2.Web.Models.Product
+@model Pelo.v2.Web.Models.Invoice.InvoiceInsertModel
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Thêm mới đơn hàng";
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+@section cssPlugin{
+    <link href="~/startui/css/separate/vendor/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/separate/vendor/bootstrap-daterangepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/lib/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" />
+}
+
+@section css{
+    <style>
+        .label-content {
+            color: #6b6fb9;
+            font-weight: 600;
+        }
+
+        .divider {
+            border: 1px solid #c6c6c6;
+            margin-bottom: 20px;
+        }
+
+        a.btn.title-history {
+            width: 100% !important;
+            background-color: white !important;
+            color: black !important;
+            text-align: left !important;
+            border-color: #c6c6c6 !important;
+        }
+
+        .dataTables_length {
+            display: none;
+        }
+    </style>
+}
+
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Invoice")">Danh sách đơn hàng</a></li>
+    <li class="active">Thêm mới đơn hàng</li>
+</ol>
+
+<section class="card">
+    <div class="card-block">
+        <form id="insert-crm" method="post" onsubmit="return saveProducts();">
+            @Html.HiddenFor(c => c.CustomerId)
+            @Html.HiddenFor(c => c.Products)
+            @Html.HiddenFor(c => c.ProductRaw)
+            @Html.ValidationSummary()
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>Thông tin khách hàng</h3>
+                </div>
+                @await Component.InvokeAsync("CustomerDetail",
+                                             Model.Customer)
+                <div class="col-lg-12">
+                    <div class="divider"></div>
+                </div>
+                <div class="col-lg-12">
+                    <h3>Lên đơn</h3>
+                </div>
+                <div class="col-lg-6">
+                    <select class="form-control select2" onchange="selectProduct();" id="listProducts">
+                        <option value="0">--Chọn thêm sản phẩm--</option>
+                        @{
+                            var products = ViewBag.Products as List<ProductSimpleModel>;
+                            if (products != null)
+                            {
+                                foreach (var product in products)
+                                {
+                                    <option data-tag="product-@product.Id" value="@product.Id" data-price="@product.SellPrice">@product.Name</option>
+                                }
+                            }
+
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-12" style="margin-top:20px;">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Tên sản phẩm</th>
+                                    <th colspan="2">Ghi chú</th>
+                                    <th>Đơn giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4"></th>
+                                    <th>Tổng cộng:</th>
+                                    <th colspan="2"><input id="txtTotal" class="form-control money-mask-input" value="0" readonly="readonly" style="text-align:right;" /></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="4"></th>
+                                    <th>Giảm giá:</th>
+                                    <th colspan="2"><input asp-for="Discount" type="text" class="form-control" placeholder="Giảm giá" onblur="changeDiscount();" value="@Model.Discount" style="text-align:right;" /></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="4"></th>
+                                    <th>Thanh toán:</th>
+                                    <th colspan="2"><input id="txtAmount" class="form-control money-mask-input" value="0" readonly="readonly" style="text-align:right;" /></th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Hình thức thanh toán:
+                                    </th>
+                                    <th>
+                                        <nop-select asp-for="PayMethodId" asp-items="Model.AvaiablePayMethods" />
+                                    </th>
+                                    <th>
+                                        Đã trả:
+                                    </th>
+                                    <th>
+                                        <input asp-for="Deposit" type="text" class="form-control" placeholder="Đã trả" onblur="changeDeposit();" value="@Model.Deposit" style="text-align:right;" />
+                                    </th>
+                                    <th>Còn lại: </th>
+                                    <th colspan="2"><input id="txtAfterDeposit" class="form-control money-mask-input" value="0" readonly="readonly" style="text-align:right;" /></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                @{
+                    if (ViewBag.DefaultRole == true)
+                    {
+                        <div class="col-lg-6">
+                            <fieldset class="form-group">
+                                <nop-label asp-for="UserSellId" text-display="Nhân viên bán hàng" />
+                                <nop-select asp-for="UserSellId" asp-items="Model.AvaiableUsers" />
+                                @Html.ValidationMessageFor(c => c.AvaiableUsers)
+                            </fieldset>
+                        </div>
+                    }
+                }
+
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="BranchId" text-display="Chi nhánh" />
+                        <nop-select asp-for="BranchId" asp-items="Model.AvaiableBranches" />
+                        @Html.ValidationMessageFor(c => c.BranchId)
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="DeliveryDate">Thời gian giao hàng</label>
+                        <nop-editor asp-for="DeliveryDate" />
+                        @Html.ValidationMessageFor(c => c.DeliveryDate)
+                    </fieldset>
+                </div>
+                <div class="col-lg-6">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Description">Ghi chú</label>
+                        @Html.TextAreaFor(c => c.Description, new
+                        {
+                                                                          @class = "form-control",
+                                                                          @placeholder = "Ghi chú"
+                                                                  })
+                    </fieldset>
+                </div>
+                <div class="col-lg-12" style="margin-top:20px;">
+                    <fieldset class="form-group">
+                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <a class="btn btn-default" href="@Url.Action("Index", "Invoice")">Hủy</a>
+                    </fieldset>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+@section jsPlugin{
+    <script src="~/startui/js/lib/moment/moment-with-locales.js"></script>
+    <script src="~/startui/js/lib/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker-init.js"></script>
+    <script src="~/startui/js/lib/daterangepicker/daterangepicker.js"></script>
+    <script src="~/startui/js/lib/input-mask/jquery.mask.min.js"></script>
+    <script src="~/startui/js/lib/input-mask/input-mask-init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+    <script id="template-new-row" type="x-tmpl-mustache">
+        <tr id="tr-{{index}}">
+            <td>{{name}}</td>
+            <td colspan="2"><input id="productDescription-{{index}}" class="form-control" placeholder="Ghi chú" onblur="changeDescription({{index}});"/></td>
+            <td colspan="2"><input id="productPrice-{{index}}" class="form-control money-mask-input" value="{{price}}" onblur="changePrice({{index}});"/></td>
+            <td><input id="productQuantity-{{index}}" class="form-control" value="1" type="number" onblur="changeQuantity({{index}});" style="text-align:right;"/></td>
+            <td><input id="productAmount-{{index}}" class="form-control money-mask-input" value="{{price}}" readonly="readonly"/></td>
+            <td><a href="javascript:deleteProduct({{index}});" class="btn btn-danger"><i class="fa fa-remove"></i></a></td>
+        </tr>
+    </script>
+    <script>
+        var index=0;
+        var products=[];
+        var tmpl=$('#template-new-row').html();
+        $(document).ready(function() {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liInvoices').addClass('opened');
+            $('#liInvoice').addClass('row-active');
+            Mustache.parse(tmpl);
+        });
+        function selectProduct() {
+            var productId=$('#listProducts').val();
+            if(productId!=0) {
+                var product=$('[data-tag=product-'+productId+']');
+                if(product) {
+                    var obj = { index: index, name: product.text(), price: product.data().price };
+                    var rendered = Mustache.render(tmpl, obj);
+                    $("tbody").append(rendered);
+                }
+                products.push({index:index,id:productId,description:'',quantity:1,price:product.data().price});
+                recallTotal();
+                index++;
+            }
+        }
+        function deleteProduct(index) {
+            var productIndex=products.findIndex(c => c.index===index);
+            if(productIndex) {
+                products=products.splice(productIndex,productIndex>=0?1:0);
+            }
+            $('#tr-'+index).remove();
+        }
+        function changeDescription(index) {
+            var product=getProductByIndex(index);
+            if(product) {
+                product.description=$('#productDescription-'+index).val();
+            }
+        }
+        function changePrice(index) {
+            var product=getProductByIndex(index);
+            if(product) {
+                var price=parseInt($('#productPrice-'+index).val().replace(/\,/g,''));
+                product.price=price;
+                $('#productAmount-'+index).val(Util.number.format(price*product.quantity));
+                recallTotal();
+            }
+        }
+        function changeQuantity(index) {
+            var product=getProductByIndex(index);
+            var quantity=parseInt($('#productQuantity-'+index).val());
+            product.quantity=quantity;
+            $('#productAmount-'+index).val(Util.number.format(quantity*product.price));
+            recallTotal();
+        }
+        function changeDiscount() {
+            var discount=parseInt($('#Discount').val().replace(/\,/g,''));
+            $('#Discount').val(Util.number.format(discount));
+            recallTotal();
+        }
+        function changeDeposit() {
+            var deposit=parseInt($('#Deposit').val().replace(/\,/g,''));
+            $('#Deposit').val(Util.number.format(deposit));
+            recallTotal();
+        }
+        function getProductByIndex(index) {return products.find(c => c.index===index);}
+        function recallTotal() {
+            var total=products.sum(c => c.price*c.quantity);
+            $('#txtTotal').val(Util.number.format(total));
+            var discount=parseInt($('#Discount').val().replace(/\,/g,''));
+            var totalAfterDiscount=total-discount;
+            $('#txtAmount').val(Util.number.format(totalAfterDiscount));
+            var deposit=parseInt($('#Deposit').val().replace(/\,/g,''));
+            var totalAfterDeposit=totalAfterDiscount-deposit;
+            $('#txtAfterDeposit').val(Util.number.format(totalAfterDeposit));
+        }
+        function saveProducts() {
+            if(products.length===0) {
+                alert('Bạn chưa chọn sản phẩm nào');
+                return false;
+            }
+            $('#ProductRaw').val(JSON.stringify(products));
+            $('#Deposit').val(parseInt($('#Deposit').val().replace(/\,/g,'')));
+            $('#Discount').val($('#Discount').val().replace(/\,/g,''));
+            return true;
+        }
+    </script>
+}

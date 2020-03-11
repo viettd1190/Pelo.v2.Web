@@ -6,20 +6,20 @@
 }
 
 <ol class="breadcrumb">
-    <li><a href="@Url.Action("Index","Crm")">Danh sách CRM</a></li>
+    <li><a href="@Url.Action("Index","Invoice")">Danh sách đơn hàng</a></li>
     <li class="active">Thông tin khách hàng</li>
 </ol>
 
 <section class="card">
     <div class="card-block">
-        <form asp-controller="Crm" asp-action="FindCustomer" method="post" id="crm-find-customer-form">
+        <form asp-controller="Invoice" asp-action="FindCustomer" method="post" id="invoice-find-customer-form">
             @Html.ValidationSummary()
             @await Component.InvokeAsync("CustomerFindByPhone", Model)
             <div class="row">
                 <div class="col-lg-12">
                     <fieldset class="form-group">
                         <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                        <a class="btn btn-default" href="@Url.Action("Index", "Crm")">Hủy</a>
+                        <a class="btn btn-default" href="@Url.Action("Index", "Invoice")">Hủy</a>
                     </fieldset>
                 </div>
             </div>
@@ -32,8 +32,8 @@
         $(document).ready(function () {
             $('.opened').removeClass('opened');
             $('.row-active').removeClass('row-active');
-            $('#liCrm').addClass('opened');
-            $('#liCrmList').addClass('row-active');
+            $('#liInvoices').addClass('opened');
+            $('#liInvoice').addClass('row-active');
         })
     </script>
 }

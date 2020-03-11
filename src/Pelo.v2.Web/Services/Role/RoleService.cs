@@ -18,10 +18,16 @@ namespace Pelo.v2.Web.Services.Role
         Task<IEnumerable<RoleSimpleModel>> GetAll();
 
         Task<RoleListModel> GetByPaging(RoleSearchModel request);
+
         Task<TResponse<bool>> Insert(RoleModel model);
+
         Task<TResponse<GetRoleReponse>> GetById(int id);
+
         Task<TResponse<bool>> Update(RoleModel model);
+
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<string>> GetCurrentRoleName();
     }
 
     public class RoleService : BaseService,
@@ -33,6 +39,8 @@ namespace Pelo.v2.Web.Services.Role
         {
         }
 
+        #region IRoleService Members
+
         public async Task<TResponse<bool>> Delete(int id)
         {
             try
@@ -43,7 +51,7 @@ namespace Pelo.v2.Web.Services.Role
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -55,8 +63,6 @@ namespace Pelo.v2.Web.Services.Role
                 return await Fail<bool>(exception);
             }
         }
-
-        #region IRoleService Members
 
         public async Task<IEnumerable<RoleSimpleModel>> GetAll()
         {
@@ -85,7 +91,7 @@ namespace Pelo.v2.Web.Services.Role
                                                                       null,
                                                                       HttpMethod.Get,
                                                                       true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(response.Data);
                 }
@@ -165,10 +171,13 @@ namespace Pelo.v2.Web.Services.Role
             {
                 var url = ApiUrl.ROLE_INSERT;
                 var response = await HttpService.Send<bool>(url,
-                                                            new InsertRole { Name = model.Name },
+                                                            new InsertRole
+                                                            {
+                                                                    Name = model.Name
+                                                            },
                                                             HttpMethod.Post,
                                                             true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -187,10 +196,14 @@ namespace Pelo.v2.Web.Services.Role
             {
                 var url = ApiUrl.ROLE_UPDATE;
                 var response = await HttpService.Send<bool>(url,
-                                                            new UpdateRole { Id = model.Id, Name = model.Name },
+                                                            new UpdateRole
+                                                            {
+                                                                    Id = model.Id,
+                                                                    Name = model.Name
+                                                            },
                                                             HttpMethod.Put,
                                                             true);
-                if (response.IsSuccess)
+                if(response.IsSuccess)
                 {
                     return await Ok(true);
                 }
@@ -200,6 +213,27 @@ namespace Pelo.v2.Web.Services.Role
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<string>> GetCurrentRoleName()
+        {
+            try
+            {
+                var response = await HttpService.Send<string>(ApiUrl.GET_CURRENT_ROLE_NAME,
+                                                              null,
+                                                              HttpMethod.Get,
+                                                              true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<string>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<string>(exception);
             }
         }
 
