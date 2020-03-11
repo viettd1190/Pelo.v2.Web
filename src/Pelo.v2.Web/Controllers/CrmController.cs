@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pelo.Common.Extensions;
+using Pelo.Common.Models;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Crm;
 using Pelo.v2.Web.Models.Customer;
@@ -169,12 +169,18 @@ namespace Pelo.v2.Web.Controllers
                                                }
                             };
 
-                await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources, false);
-                await _baseModelFactory.PrepareCrmTypes(model.AvaiableCrmTypes, false);
-                await _baseModelFactory.PrepareCrmPriorities(model.AvaiableCrmPriorities, false);
-                await _baseModelFactory.PrepareUsers(model.AvaiableUserCares, false);
-                await _baseModelFactory.PrepareProductGroups(model.AvaiableProductGroups, false);
-                await _baseModelFactory.PrepareCrmStatuses(model.AvaiableCrmStatuses, false);
+                await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources,
+                                                               false);
+                await _baseModelFactory.PrepareCrmTypes(model.AvaiableCrmTypes,
+                                                        false);
+                await _baseModelFactory.PrepareCrmPriorities(model.AvaiableCrmPriorities,
+                                                             false);
+                await _baseModelFactory.PrepareUsers(model.AvaiableUserCares,
+                                                     false);
+                await _baseModelFactory.PrepareProductGroups(model.AvaiableProductGroups,
+                                                             false);
+                await _baseModelFactory.PrepareCrmStatuses(model.AvaiableCrmStatuses,
+                                                           false);
 
                 return View(model);
             }
@@ -198,12 +204,18 @@ namespace Pelo.v2.Web.Controllers
                                          result.Message);
             }
 
-            await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources, false);
-            await _baseModelFactory.PrepareCrmTypes(model.AvaiableCrmTypes, false);
-            await _baseModelFactory.PrepareCrmPriorities(model.AvaiableCrmPriorities, false);
-            await _baseModelFactory.PrepareUsers(model.AvaiableUserCares, false);
-            await _baseModelFactory.PrepareProductGroups(model.AvaiableProductGroups, false);
-            await _baseModelFactory.PrepareCrmStatuses(model.AvaiableCrmStatuses, false);
+            await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources,
+                                                           false);
+            await _baseModelFactory.PrepareCrmTypes(model.AvaiableCrmTypes,
+                                                    false);
+            await _baseModelFactory.PrepareCrmPriorities(model.AvaiableCrmPriorities,
+                                                         false);
+            await _baseModelFactory.PrepareUsers(model.AvaiableUserCares,
+                                                 false);
+            await _baseModelFactory.PrepareProductGroups(model.AvaiableProductGroups,
+                                                         false);
+            await _baseModelFactory.PrepareCrmStatuses(model.AvaiableCrmStatuses,
+                                                       false);
 
             return View(model);
         }
@@ -234,12 +246,18 @@ namespace Pelo.v2.Web.Controllers
                                              Description = customer.Data.Description
                                      };
 
-                    await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources, false);
-                    await _baseModelFactory.PrepareCrmTypes(model.AvaiableCrmTypes, false);
-                    await _baseModelFactory.PrepareCrmPriorities(model.AvaiableCrmPriorities, false);
-                    await _baseModelFactory.PrepareUsers(model.AvaiableUserCares, false);
-                    await _baseModelFactory.PrepareProductGroups(model.AvaiableProductGroups, false);
-                    await _baseModelFactory.PrepareCrmStatuses(model.AvaiableCrmStatuses, false);
+                    await _baseModelFactory.PrepareCustomerSources(model.AvaiableCustomerSources,
+                                                                   false);
+                    await _baseModelFactory.PrepareCrmTypes(model.AvaiableCrmTypes,
+                                                            false);
+                    await _baseModelFactory.PrepareCrmPriorities(model.AvaiableCrmPriorities,
+                                                                 false);
+                    await _baseModelFactory.PrepareUsers(model.AvaiableUserCares,
+                                                         false);
+                    await _baseModelFactory.PrepareProductGroups(model.AvaiableProductGroups,
+                                                                 false);
+                    await _baseModelFactory.PrepareCrmStatuses(model.AvaiableCrmStatuses,
+                                                               false);
 
                     return View(model);
                 }
@@ -258,11 +276,12 @@ namespace Pelo.v2.Web.Controllers
             {
                 var crmLog = new CrmLogDetail
                              {
-                                     Name=log.User?.Name??string.Empty,
-                                     PhoneNumber = log.User?.PhoneNumber??string.Empty,
-                                     Avatar = log.User?.Avatar??string.Empty,
+                                     Name = log.User?.Name ?? string.Empty,
+                                     PhoneNumber = log.User?.PhoneNumber ?? string.Empty,
+                                     Avatar = log.User?.Avatar ?? string.Empty,
                                      Content = log.Comment,
-                                     LogDate = string.Format(AppUtil.DATE_TIME_FORMAT, log.LogDate),
+                                     LogDate = string.Format(AppUtil.DATE_TIME_FORMAT,
+                                                             log.LogDate),
                                      AttachmentModels = new List<AttachmentModel>()
                              };
 
@@ -271,7 +290,7 @@ namespace Pelo.v2.Web.Controllers
                                                                                      Name = c.AttachmentName,
                                                                                      Url = c.Attachment
                                                                              }));
-                
+
                 result.Add(crmLog);
             }
 
@@ -279,9 +298,48 @@ namespace Pelo.v2.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Comment(CrmCommentModel model, List<IFormFile> files)
+        public async Task<IActionResult> Comment(CrmCommentModel model,
+                                                 List<IFormFile> files)
         {
-            return RedirectToAction("Index");
+            if(string.IsNullOrWhiteSpace(model.Comment)
+               && (files == null || !files.Any()))
+            {
+                TempData["Update"] = (new TResponse<bool>
+                                      {
+                                              Data = false,
+                                              IsSuccess = false,
+                                              Message = "Bạn phải bình luận hoặc đính kèm file để thực hiện chức năng này"
+                                      }).ToJson();
+                return RedirectToAction("Detail",
+                                        "Crm",
+                                        new
+                                        {
+                                                id = model.Id
+                                        });
+            }
+
+            var result = await _crmService.Comment(model,
+                                                   files);
+
+            if(result.IsSuccess)
+            {
+                TempData["Update"] = result.ToJson();
+                return RedirectToAction("Index");
+            }
+
+            TempData["Update"] = (new TResponse<bool>
+                                  {
+                                          Data = false,
+                                          IsSuccess = false,
+                                          Message = result.Message
+                                  }).ToJson();
+
+            return RedirectToAction("Detail",
+                                    "Crm",
+                                    new
+                                    {
+                                            id = model.Id
+                                    });
         }
     }
 }

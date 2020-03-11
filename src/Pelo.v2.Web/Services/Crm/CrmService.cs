@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Pelo.Common.Dtos.Crm;
 using Pelo.Common.Exceptions;
+using Pelo.Common.Extensions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models;
@@ -38,7 +42,8 @@ namespace Pelo.v2.Web.Services.Crm
 
         Task<IEnumerable<CrmLogResponse>> GetLogs(int id);
 
-        //Task<TResponse<bool>> Comment(CrmCommentModel model);
+        Task<TResponse<bool>> Comment(CrmCommentModel model,
+                                      List<IFormFile> files);
     }
 
     public class CrmService : BaseService,
@@ -180,13 +185,6 @@ namespace Pelo.v2.Web.Services.Crm
         {
             try
             {
-                //DateTime date = DateTime.Now;
-                //if(!string.IsNullOrEmpty(model.ContactDate)
-                //   && !string.IsNullOrEmpty(model.ContactTime))
-                //{
-                //    date = DateTime.Parse($"{model.ContactDate} {model.ContactTime}");
-                //}
-
                 var response = await HttpService.Send<bool>(ApiUrl.CRM_INSERT,
                                                             new InsertCrmRequest
                                                             {
@@ -353,8 +351,12 @@ namespace Pelo.v2.Web.Services.Crm
         {
             try
             {
-                string url = string.Format(ApiUrl.CRM_GET_LOGS, id);
-                var response = await HttpService.Send<IEnumerable<CrmLogResponse>>(url, null, HttpMethod.Get, true);
+                string url = string.Format(ApiUrl.CRM_GET_LOGS,
+                                           id);
+                var response = await HttpService.Send<IEnumerable<CrmLogResponse>>(url,
+                                                                                   null,
+                                                                                   HttpMethod.Get,
+                                                                                   true);
                 if(response.IsSuccess)
                 {
                     return response.Data;
@@ -368,51 +370,73 @@ namespace Pelo.v2.Web.Services.Crm
             }
         }
 
-        //public async Task<TResponse<bool>> Comment(CrmCommentModel model,List<IFormFile> files)
-        //{
-        //    try
-        //    {
-        //        using (HttpClient client = new HttpClient())
-        //        {
-        //            var form = new MultipartFormDataContent();
-        //            using (var fileStream = files[0].OpenReadStream())
-        //            {
-        //                var url = ApiUrl.CRM_COMMENT;
+        public async Task<TResponse<bool>> Comment(CrmCommentModel model,
+                                                   List<IFormFile> files)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (var form = new MultipartFormDataContent())
+                    {
+                        foreach (var file in files)
+                        {
+                            var fileStream = file.OpenReadStream();
+                            form.Add(CreateFileContent(fileStream,
+                                                       file.FileName,
+                                                       file.ContentType));
+                        }
 
-        //                form.Add(new StreamContent(fileStream), "avatar", avatar.FileName);
-        //                using (var response = await client.PutAsync(url, form))
-        //                {
-        //                    response.EnsureSuccessStatusCode();
+                        form.Add(new StringContent(model.ToJson(),
+                                                   Encoding.UTF8,
+                                                   "application/json"));
 
-        //                    var res = await response.Content.ReadAsStringAsync();
-        //                    var obj = JsonConvert.DeserializeObject<TResponse<bool>>(res);
-        //                    if (obj.IsSuccess)
-        //                    {
-        //                        return await Task.FromResult(new TResponse<bool>
-        //                        {
-        //                            Data = obj.Data,
-        //                            IsSuccess = true,
-        //                            Message = string.Empty
-        //                        });
-        //                    }
+                        var response = await client.PostAsync(ApiUrl.CRM_COMMENT,
+                                                              form);
+                        response.EnsureSuccessStatusCode();
 
-        //                    return await Task.FromResult(new TResponse<bool>
-        //                    {
-        //                        Data = default(bool),
-        //                        IsSuccess = false,
-        //                        Message = obj.Message
-        //                    });
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        return await Fail<bool>(exception);
-        //    }
-        //}
+                        var res = await response.Content.ReadAsStringAsync();
+                        var obj = JsonConvert.DeserializeObject<TResponse<bool>>(res);
+                        if(obj.IsSuccess)
+                        {
+                            return await Task.FromResult(new TResponse<bool>
+                                                         {
+                                                                 Data = obj.Data,
+                                                                 IsSuccess = true,
+                                                                 Message = string.Empty
+                                                         });
+                        }
+
+                        return await Task.FromResult(new TResponse<bool>
+                                                     {
+                                                             Data = default,
+                                                             IsSuccess = false,
+                                                             Message = obj.Message
+                                                     });
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
 
         #endregion
+
+        private StreamContent CreateFileContent(Stream stream,
+                                                string fileName,
+                                                string contentType)
+        {
+            var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                                                     {
+                                                             Name = "\"files\"",
+                                                             FileName = "\"" + fileName + "\""
+                                                     }; // the extra quotes are key here
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+            return fileContent;
+        }
 
         public async Task<CrmListModel> XuLyCrm(BaseSearchModel request,
                                                 string baseUrl)
