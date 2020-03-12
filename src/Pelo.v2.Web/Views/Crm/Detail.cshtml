@@ -17,7 +17,7 @@
 @section css{
     <style>
         .label-content {
-            color: #6b6fb9;
+            color: #6b6fb9 !important;
             font-weight: 600;
         }
 
@@ -154,7 +154,7 @@
                         <input type="file" id="files" name="files" multiple="multiple" @*onchange="previewFile(this);"*@ />
                         <div id="preview"></div>
                     </fieldset>
-                    <br/>
+                    <br />
                     <fieldset class="form-group">
                         <button type="submit" class="btn btn-primary">Bình luận</button>
                     </fieldset>
@@ -181,56 +181,61 @@
     <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker.min.js"></script>
     <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker-init.js"></script>
     <script src="~/startui/js/lib/daterangepicker/daterangepicker.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+    <script id="template-comment" type="x-tmpl-mustache">
+        <div class="widget-activity-item">
+            <div class="user-card-row">
+                <div class="tbl-row">
+                    <div class="tbl-cell tbl-cell-photo">
+                        <a href="#"><img src="{{avatar}}" alt="Avatar"></a>
+                    </div>
+                    <div class="tbl-cell">
+                        <p>
+                            <a href="tel:{{phoneNumber}}" class="semibold">{{name}}</a>
+                            {{content}}
+                        </p>
+                        {{#attachments}}
+                        <p>
+                            <a class="label-content" href="{{url}}">{{name}}</a>
+                        </p>
+                        {{/attachments}}
+                        <p>
+                            <small>{{logDate}}</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
     <script>
+        var tmpl=$('#template-comment').html();
         $(document).ready(function() {
-            $('#ContactDate').val('@string.Format(AppUtil.DATE_TIME_FORMAT,Model.ContactDate)');
+            $('#ContactDate').val('@string.Format(AppUtil.DATE_TIME_FORMAT, Model.ContactDate)');
             $('#UserCareIds').val(JSON.parse('@JsonConvert.SerializeObject(Model.UserCareIds)')).trigger('change');
+            Mustache.parse(tmpl);
             displayLogs();
         });
         function displayLogs() {
-            $.post('@Url.Action("GetLogs","Crm")',
+            $.post('@Url.Action("GetLogs", "Crm")',
                 {id:'@Model.Id'},
                 function(result) {
-                    var liContent='';
+                    //var liContent='';
                     for(var i=0;i<result.length;i++) {
-                        liContent+='<div class="widget-activity-item">'+
-                            '<div class="user-card-row">'+
-                            '<div class="tbl-row">'+
-                            '<div class="tbl-cell tbl-cell-photo"><a href="#"><img src="'+
-                            result[i].avatar+
-                            '" alt=""></a></div>'+
-                            '<div class="tbl-cell"><p><a href="tel:'+
-                            result[i].phoneNumber+
-                            '" class="semibold">'+
-                            result[i].name+
-                            '</a> '+
-                            result[i].content+
-                            '</p><p>'+
-                            result[i].logDate+
-                            '</p></div>'+
-                            '</div>'+
-                            '</div>'+
-                            '</div>';
+                        var obj={
+                                avatar:result[i].avatar,
+                                name:result[i].name,
+                                phoneNumber:result[i].phoneNumber,
+                                content:result[i].content,
+                                logDate:result[i].logDate,
+                                attachments:result[i].attachmentModels
+                            };
+                        var rendered=Mustache.render(tmpl,obj);
+                        $("#logContent").append(rendered);
                     }
-                    $('#logContent').html(liContent);
+                    //$('#logContent').html(liContent);
                     $('#countLogs').html(result.length);
                 });
         }
-        //function previewFile(input) {
-        //    var file=input.files;
-        //    var preview = document.getElementById('preview');
-        //    var reader = new FileReader();
-
-        //    reader.onload = e => {
-        //        var img=document.createElement('img');
-        //        img.src = e.target.result;
-        //        img.width = 200;
-        //        img.height = 200;
-        //        img.alt = 'file';
-        //        preview.appendChild(img);
-        //    }
-        //    reader.readAsDataURL(file[0]);
-        //}
     </script>
 }
 

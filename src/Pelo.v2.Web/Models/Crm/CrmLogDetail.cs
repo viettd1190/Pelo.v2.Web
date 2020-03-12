@@ -24,5 +24,7 @@ namespace Pelo.v2.Web.Models.Crm
         public string Name { get; set; }
 
         public string Url { get; set; }
+
+        public bool IsImage { get; set; }
     }
 }

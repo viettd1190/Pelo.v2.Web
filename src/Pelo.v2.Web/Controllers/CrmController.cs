@@ -285,16 +285,34 @@ namespace Pelo.v2.Web.Controllers
                                      AttachmentModels = new List<AttachmentModel>()
                              };
 
-                crmLog.AttachmentModels.AddRange(log.Attachments.Select(c => new AttachmentModel
-                                                                             {
-                                                                                     Name = c.AttachmentName,
-                                                                                     Url = c.Attachment
-                                                                             }));
+                crmLog.AttachmentModels.AddRange(log.Attachments.Where(c => !string.IsNullOrEmpty(c.AttachmentName))
+                                                    .Select(c => new AttachmentModel
+                                                                 {
+                                                                         Name = c.AttachmentName,
+                                                                         Url = $"http://103.77.167.96:20001/Attachments/{c.Attachment}",
+                                                                         IsImage = CheckStringIsImageExtension(c.AttachmentName)
+                                                                 })
+                                                    .OrderByDescending(c => CheckStringIsImageExtension(c.Name)));
 
                 result.Add(crmLog);
             }
 
             return Json(result);
+        }
+
+        private bool CheckStringIsImageExtension(string fileName)
+        {
+            if(string.IsNullOrEmpty(fileName))
+            {
+                return false;
+            }
+
+            if(fileName.EndsWith(".jpg")||fileName.EndsWith(".jpeg")||fileName.EndsWith(".png") || fileName.EndsWith(".bmp") || fileName.EndsWith(".gif"))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         [HttpPost]

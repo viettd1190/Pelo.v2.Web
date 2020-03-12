@@ -387,9 +387,15 @@ namespace Pelo.v2.Web.Services.Crm
                                                        file.ContentType));
                         }
 
-                        form.Add(new StringContent(model.ToJson(),
-                                                   Encoding.UTF8,
-                                                   "application/json"));
+                        var paras=new List<KeyValuePair<string, string>>();
+                        paras.Add(new KeyValuePair<string, string>("id", model.Id.ToString()));
+                        paras.Add(new KeyValuePair<string, string>("comment", model.Comment));
+
+                        form.Add(new FormUrlEncodedContent(paras));
+
+                        //form.Add(new StringContent(model.ToJson(),
+                        //                           Encoding.UTF8,
+                        //                           "application/json"));
 
                         var response = await client.PostAsync(ApiUrl.CRM_COMMENT,
                                                               form);
