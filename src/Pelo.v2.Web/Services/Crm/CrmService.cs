@@ -391,16 +391,12 @@ namespace Pelo.v2.Web.Services.Crm
                         }
 
                         var paras = new List<KeyValuePair<string, string>>();
-                        var para = new Tuple<int,string>(model.Id,model.Comment);
+                        var para = new Tuple<int, string>(model.Id, model.Comment);
                         paras.Add(new KeyValuePair<string, string>("para", para.ToJson()));
 
                         form.Add(new FormUrlEncodedContent(paras));
-                        client.DefaultRequestHeaders.Authorization=new AuthenticationHeaderValue("Bearer",_contextHelper.GetToken());
-                        //form.Headers.Add("Authorization", $"Bearer {_contextHelper.GetToken()}");
 
-                        //form.Add(new StringContent(model.ToJson(),
-                        //                           Encoding.UTF8,
-                        //                           "application/json"));
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _contextHelper.GetToken());
 
                         var response = await client.PostAsync(ApiUrl.CRM_COMMENT,
                                                               form);
