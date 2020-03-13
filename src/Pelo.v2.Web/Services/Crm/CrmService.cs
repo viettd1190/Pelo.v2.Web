@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -49,10 +48,14 @@ namespace Pelo.v2.Web.Services.Crm
     public class CrmService : BaseService,
                               ICrmService
     {
+        private readonly ContextHelper _contextHelper;
+
         public CrmService(IHttpService httpService,
+                          ContextHelper contextHelper,
                           ILogger<BaseService> logger) : base(httpService,
                                                               logger)
         {
+            _contextHelper = contextHelper;
         }
 
         #region ICrmService Members
@@ -387,11 +390,13 @@ namespace Pelo.v2.Web.Services.Crm
                                                        file.ContentType));
                         }
 
-                        var paras=new List<KeyValuePair<string, string>>();
-                        paras.Add(new KeyValuePair<string, string>("id", model.Id.ToString()));
-                        paras.Add(new KeyValuePair<string, string>("comment", model.Comment));
+                        var paras = new List<KeyValuePair<string, string>>();
+                        var para = new Tuple<int,string>(model.Id,model.Comment);
+                        paras.Add(new KeyValuePair<string, string>("para", para.ToJson()));
 
                         form.Add(new FormUrlEncodedContent(paras));
+                        client.DefaultRequestHeaders.Authorization=new AuthenticationHeaderValue("Bearer",_contextHelper.GetToken());
+                        //form.Headers.Add("Authorization", $"Bearer {_contextHelper.GetToken()}");
 
                         //form.Add(new StringContent(model.ToJson(),
                         //                           Encoding.UTF8,
