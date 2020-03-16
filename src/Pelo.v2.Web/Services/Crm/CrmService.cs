@@ -35,6 +35,8 @@ namespace Pelo.v2.Web.Services.Crm
 
         Task<TResponse<bool>> Insert(InsertCrmModel model);
 
+        Task<TResponse<bool>> Update(UpdateCrmModel model);
+
         Task<CrmListModel> GetByCustomerIdPaging(CustomerComponentSearchModel request);
 
         Task<UpdateCrmModel> GetById(int id);
@@ -197,13 +199,47 @@ namespace Pelo.v2.Web.Services.Crm
                                                                     CrmPriorityId = model.CrmPriorityId,
                                                                     CrmTypeId = model.CrmTypeId,
                                                                     Need = model.Need,
-                                                                    Description = string.Empty,
+                                                                    Description = model.Description,
                                                                     CustomerSourceId = model.CustomerSourceId,
                                                                     Visit = model.IsVisit,
                                                                     ContactDate = model.ContactDate,
                                                                     UserIds = model.UserCareIds.ToList()
                                                             },
                                                             HttpMethod.Post,
+                                                            true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateCrmModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_UPDATE,
+                                                            new UpdateCrmRequest
+                                                            {
+                                                                    Id = model.Id,
+                                                                    ContactDate = model.ContactDate,
+                                                                    CrmPriorityId = model.CrmPriorityId,
+                                                                    CrmStatusId = model.CrmStatusId,
+                                                                    CrmTypeId = model.CrmTypeId,
+                                                                    CustomerSourceId = model.CustomerSourceId,
+                                                                    Description = model.Description,
+                                                                    Need = model.Need,
+                                                                    ProductGroupId = model.ProductGroupId,
+                                                                    UserIds = model.UserCareIds.ToList(),
+                                                                    Visit = model.IsVisit
+                                                            },
+                                                            HttpMethod.Put,
                                                             true);
                 if(response.IsSuccess)
                 {

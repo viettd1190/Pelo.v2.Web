@@ -37,6 +37,11 @@
         .dataTables_length {
             display: none;
         }
+
+        .widget-activity-item {
+            border: 1px solid rebeccapurple;
+            margin-top:10px;
+        }
     </style>
 }
 
@@ -48,8 +53,9 @@
 <section class="card">
     <div class="card-block">
         <div class="row">
-            <form id="insert-crm" method="post">
+            <form id="update-crm" asp-controller="Crm" asp-action="Update" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" onsubmit="return checkSubmit();">
                 @Html.HiddenFor(c => c.CustomerId)
+                @Html.HiddenFor(c=>c.CrmStatusDeleted)
                 @Html.ValidationSummary()
                 <div class="col-lg-12">
                     <h3>Thông tin khách hàng</h3>
@@ -108,8 +114,13 @@
                     </fieldset>
                     <fieldset class="form-group">
                         <nop-label asp-for="CrmStatusId" text-display="Trạng thái CRM" />
-                        <nop-select asp-for="CrmStatusId" asp-items="Model.AvaiableCrmStatuses" />
+                        <nop-select asp-for="CrmStatusId" asp-items="Model.AvaiableCrmStatuses" onchange="changeCrmStatus();" />
                         @Html.ValidationMessageFor(c => c.CrmStatusId)
+                    </fieldset>
+                    <fieldset class="form-group" id="divReason">
+                        <nop-label asp-for="Reason" text-display="Lý do HỦY" />
+                        <nop-editor asp-for="Reason" placeholder="Lý do HỦY" />
+                        @Html.ValidationMessageFor(c => c.Reason)
                     </fieldset>
                     <fieldset class="form-group">
                         <nop-label asp-for="CustomerSourceId" text-display="Nguồn khách hàng" />
@@ -192,12 +203,21 @@
                     <div class="tbl-cell">
                         <p>
                             <a href="tel:{{phoneNumber}}" class="semibold">{{name}}</a>
-                            {{content}}
+                            {{{content}}}
                         </p>
                         {{#attachments}}
-                        <p>
-                            <a class="label-content" href="{{url}}">{{name}}</a>
-                        </p>
+                            {{#isImage}}
+                                <p>
+                                    <a class="label-content" href="{{url}}" download>
+                                        <img src="{{url}}" alt="Attachment file" width="104" height="142" />
+                                    </a>
+                                </p>
+                            {{/isImage}}
+                            {{^isImage}}
+                                <p>
+                                    <a class="label-content" href="{{url}}" download>{{name}}</a>
+                                </p>        
+                            {{/isImage}}
                         {{/attachments}}
                         <p>
                             <small>{{logDate}}</small>
@@ -210,11 +230,26 @@
     <script>
         var tmpl=$('#template-comment').html();
         $(document).ready(function() {
+            $('#divReason').css('display','none');
             $('#ContactDate').val('@string.Format(AppUtil.DATE_TIME_FORMAT, Model.ContactDate)');
             $('#UserCareIds').val(JSON.parse('@JsonConvert.SerializeObject(Model.UserCareIds)')).trigger('change');
             Mustache.parse(tmpl);
             displayLogs();
         });
+        function changeCrmStatus() {
+            var crmStatus=$('#CrmStatusId').val();
+            if(crmStatus=='@Model.CrmStatusDeleted') {
+                $('#divReason').css('display','');
+            } else {
+                $('#divReason').css('display','none');
+            }
+        }
+        function checkSubmit() {
+            var contactDate=$('#ContactDate').val();
+            var formatedDate=moment(contactDate,'DD-MM-YYYY HH:mm');
+            $('#ContactDate').val(moment(formatedDate).format('YYYY-MM-DD HH:mm:ss'));
+            return true;
+        }
         function displayLogs() {
             $.post('@Url.Action("GetLogs", "Crm")',
                 {id:'@Model.Id'},

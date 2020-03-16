@@ -280,16 +280,32 @@ namespace Pelo.v2.Web.Services.Customer
                 if (response.IsSuccess)
                 {
                     return await Ok(new GetCustomerDetailResponse
-                    {
-                        Id = response.Data.Id,
-                        Address = response.Data.Address,
-                        Description = response.Data.Description,
-                        Name = response.Data.Name,
-                        Code = response.Data.Code,
-                        Phone = response.Data.Phone,
-                        Phone2 = response.Data.Phone2,
-                        Phone3 = response.Data.Phone3,
-                    });
+                                    {
+                                            Id = response.Data.Id,
+                                            Address = response.Data.Address,
+                                            Description = response.Data.Description,
+                                            Name = response.Data.Name,
+                                            Code = response.Data.Code,
+                                            Phone = response.Data.Phone,
+                                            Phone2 = response.Data.Phone2,
+                                            Phone3 = response.Data.Phone3,
+                                            Province = string.IsNullOrEmpty(response.Data.ProvinceType)
+                                                               ? string.Empty
+                                                               : $"{response.Data.ProvinceType} {response.Data.Province}",
+                                            District = string.IsNullOrEmpty(response.Data.DistrictType)
+                                                               ? string.Empty
+                                                               : $"{response.Data.DistrictType} {response.Data.District}",
+                                            Ward = string.IsNullOrEmpty(response.Data.WardType)
+                                                           ? string.Empty
+                                                           : $"{response.Data.WardType} {response.Data.Ward}",
+                                            UserCreated = response.Data.UserCreated,
+                                            UserCreatedPhone = response.Data.UserCreatedPhone,
+                                            DateCreated = response.Data.DateCreated,
+                                            CustomerGroup = response.Data.CustomerGroup,
+                                            CustomerVip = response.Data.CustomerVip,
+                                            DateUpdated = response.Data.DateCreated,
+                                            Email = response.Data.Email
+                                    });
                 }
 
                 return await Fail<GetCustomerDetailResponse>(response.Message);

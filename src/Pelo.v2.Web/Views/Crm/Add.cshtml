@@ -44,7 +44,7 @@
 
 <section class="card">
     <div class="card-block">
-        <form id="insert-crm" method="post">
+        <form id="insert-crm" method="post" onsubmit="return checkSubmit();">
             @Html.HiddenFor(c => c.CustomerId)
             @Html.ValidationSummary()
             <div class="row">
@@ -131,4 +131,12 @@
     <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker.min.js"></script>
     <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker-init.js"></script>
     <script src="~/startui/js/lib/daterangepicker/daterangepicker.js"></script>
+    <script>
+        function checkSubmit() {
+            var contactDate = $('#ContactDate').val();
+            var formatedDate = moment(contactDate, 'DD-MM-YYYY HH:mm');
+            $('#ContactDate').val(moment(formatedDate).format('YYYY-MM-DD HH:mm:ss'));
+            return true;
+        }
+    </script>
 }
