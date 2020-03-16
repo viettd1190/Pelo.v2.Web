@@ -2,8 +2,8 @@
 {
     public class ApiUrl
     {
-        //public const string BASE_API_URL = "http://103.77.167.96:20001";
-        public const string BASE_API_URL = "http://localhost:49577";
+        public const string BASE_API_URL = "http://103.77.167.96:20001";
+        //public const string BASE_API_URL = "http://localhost:49577";
 
         #region Account
 
