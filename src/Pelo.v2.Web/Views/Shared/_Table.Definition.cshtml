@@ -275,7 +275,7 @@ else
                 case RenderCheckBox checkBox:
                     <text>
                         render: function (data, type, row, meta) {
-                        return row==null?<div class="checkbox" style="margin:auto;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" /><label></label></div>:(data === true)
+                        return row==null ? '<div class="checkbox" style="margin:auto;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" /><label></label></div>':(data === true)
                         ? '<div class="checkbox" style="margin:auto;text-align:center;"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" checked="checked" /><label></label></div>'
                         : '<div class="checkbox" style="margin:auto;text-align:center"><input name="@checkBox.Name" value="' + row.Id + '" type="checkbox" /><label></label></div>';
                         },
