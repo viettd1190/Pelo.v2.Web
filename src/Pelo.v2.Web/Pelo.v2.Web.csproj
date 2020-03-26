@@ -32,6 +32,7 @@
     <Folder Include="Services\WarrantyStatusInRole\" />
     <Folder Include="Services\Receipt\" />
     <Folder Include="Services\Warranty\" />
+    <Folder Include="Views\Recruitment\" />
     <Folder Include="Views\Shared\Components\CustomerDetail\" />
     <Folder Include="Views\Shared\Components\CustomerFindByPhone\" />
     <Folder Include="Views\District\" />
