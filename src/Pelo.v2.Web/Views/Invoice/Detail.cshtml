@@ -1,9 +1,7 @@
-﻿@using Newtonsoft.Json
-@using Pelo.v2.Web.Models.Crm
-@model Pelo.v2.Web.Models.Crm.UpdateCrmModel
+﻿@model Pelo.v2.Web.Models.Invoice.InvoiceDetailModel
 
 @{
-    ViewBag.Title = "Thông tin CRM " + Model.Code;
+    ViewBag.Title = "Thông tin đơn hàng " + Model.Code;
     Layout = "_Layout";
 }
 
@@ -40,14 +38,14 @@
 
         .widget-activity-item {
             border: 1px solid rebeccapurple;
-            margin-top:10px;
+            margin-top: 10px;
         }
     </style>
 }
 
 <ol class="breadcrumb">
-    <li><a href="@Url.Action("Index","Crm")">Danh sách CRM</a></li>
-    <li class="active">Thông tin CRM: @Model.Code</li>
+    <li><a href="@Url.Action("Index","Invoice")">Danh sách đơn hàng</a></li>
+    <li class="active">Thông tin đơn hàng: @Model.Code</li>
 </ol>
 
 <section class="card">
@@ -55,7 +53,6 @@
         <div class="row">
             <form id="update-crm" asp-controller="Crm" asp-action="Update" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" onsubmit="return checkSubmit();">
                 @Html.HiddenFor(c => c.CustomerId)
-                @Html.HiddenFor(c=>c.CrmStatusDeleted)
                 @Html.ValidationSummary()
                 <div class="col-lg-12">
                     <h3>Thông tin khách hàng</h3>
@@ -66,10 +63,10 @@
                     <div class="divider"></div>
                 </div>
                 <div class="col-lg-12">
-                    <h3>Chi tiết cơ hội bán hàng</h3>
+                    <h3>Chi tiết đơn hàng</h3>
                 </div>
                 @Html.HiddenFor(c => c.Id)
-                <div class="col-lg-6">
+                @*<div class="col-lg-6">
                     <fieldset class="form-group">
                         <nop-label asp-for="Code" text-display="Mã cơ hội" />
                         <nop-editor asp-for="Code" asp-disabled="true" />
@@ -142,7 +139,7 @@
                         <nop-select asp-for="IsVisit" asp-items="Model.AvaiableVisits" />
                         @Html.ValidationMessageFor(c => c.IsVisit)
                     </fieldset>
-                </div>
+                </div>*@
                 <div class="col-lg-12">
                     <fieldset class="form-group">
                         <button type="submit" class="btn btn-primary">Cập nhật</button>
@@ -206,18 +203,18 @@
                             {{{content}}}
                         </p>
                         {{#attachments}}
-                            {{#isImage}}
-                                <p>
-                                    <a class="label-content" href="{{url}}" download>
-                                        <img src="{{url}}" alt="Attachment file" width="104" height="142" />
-                                    </a>
-                                </p>
-                            {{/isImage}}
-                            {{^isImage}}
-                                <p>
-                                    <a class="label-content" href="{{url}}" download>{{name}}</a>
-                                </p>        
-                            {{/isImage}}
+                        {{#isImage}}
+                        <p>
+                            <a class="label-content" href="{{url}}" download>
+                                <img src="{{url}}" alt="Attachment file" width="104" height="142" />
+                            </a>
+                        </p>
+                        {{/isImage}}
+                        {{^isImage}}
+                        <p>
+                            <a class="label-content" href="{{url}}" download>{{name}}</a>
+                        </p>
+                        {{/isImage}}
                         {{/attachments}}
                         <p>
                             <small>{{logDate}}</small>
@@ -228,11 +225,8 @@
         </div>
     </script>
     <script>
-        var tmpl=$('#template-comment').html();
+        @*var tmpl=$('#template-comment').html();
         $(document).ready(function() {
-            $('#divReason').css('display','none');
-            $('#ContactDate').val('@string.Format(AppUtil.DATE_TIME_FORMAT, Model.ContactDate)');
-            $('#UserCareIds').val(JSON.parse('@JsonConvert.SerializeObject(Model.UserCareIds)')).trigger('change');
             Mustache.parse(tmpl);
             displayLogs();
         });
@@ -270,7 +264,7 @@
                     //$('#logContent').html(liContent);
                     $('#countLogs').html(result.length);
                 });
-        }
+        }*@
     </script>
 }
 

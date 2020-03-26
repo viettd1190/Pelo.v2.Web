@@ -22,6 +22,9 @@ namespace Pelo.v2.Web.Services.Invoice
         Task<InvoiceListModel> GetByCustomerIdPaging(CustomerInvoiceSearchModel request);
 
         Task<TResponse<bool>> Insert(InvoiceInsertModel model);
+
+        Task<TResponse<GetInvoiceByIdResponse>> GetById(int id);
+
     }
 
     public class InvoiceService : BaseService,
@@ -249,6 +252,27 @@ namespace Pelo.v2.Web.Services.Invoice
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<GetInvoiceByIdResponse>> GetById(int id)
+        {
+            try
+            {
+                var response = await HttpService.Send<GetInvoiceByIdResponse>(string.Format(ApiUrl.INVOICE_GET_BY_ID, id),
+                                                                              null,
+                                                                              HttpMethod.Get,
+                                                                              true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<GetInvoiceByIdResponse>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<GetInvoiceByIdResponse>(exception);
             }
         }
 

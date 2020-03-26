@@ -223,5 +223,78 @@ namespace Pelo.v2.Web.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> Detail(int id)
+        {
+            var response = await _invoiceService.GetById(id);
+            if(response.IsSuccess)
+            {
+                var invoice = response.Data;
+
+                if(invoice!=null)
+                {
+                    var model = new InvoiceDetailModel
+                                {
+                                        Id = invoice.Id,
+                                        Code = invoice.Code,
+                                        Customer = new CustomerDetailModel(),
+                                        CustomerId = invoice.CustomerId,
+                                        DateCreated = invoice.DateCreated,
+                                        UserCreated = invoice.UserCreated,
+                                        UserCreatedPhone = invoice.UserCreatedPhone,
+                                        UserSell = invoice.UserSell,
+                                        UserSellPhone = invoice.UserSellPhone,
+                                        Deposit = invoice.Deposit,
+                                        Description = invoice.Description,
+                                        Discount = invoice.Discount,
+                                        DeliveryDate = invoice.DeliveryDate,
+                                        DeliveryCost = invoice.DeliveryCost,
+                                        InvoiceStatusId = invoice.InvoiceStatusId,
+                                        Products = invoice.Products.Select(c => new ProductInInvoiceDetailModel
+                                                                                {
+                                                                                        Name = c.Name,
+                                                                                        Description = c.Description,
+                                                                                        ImportPrice = c.ImportPrice,
+                                                                                        SellPrice = c.Price,
+                                                                                        Quantity = c.Quantity
+                                                                                })
+                                                          .ToList(),
+                                        UserCareIds = invoice.UserCares.Select(c => c.Id)
+                                                             .ToList(),
+                                        UserDeliveryIds = invoice.UserDeliveries.Select(c => c.Id)
+                                                                 .ToList()
+                                };
+
+                    var customer = await _customerService.GetDetail(invoice.CustomerId);
+                    if(customer.IsSuccess&&customer.Data!=null)
+                    {
+                        model.Customer = new CustomerDetailModel
+                                         {
+                                                 Id = customer.Data.Id,
+                                                 Code = customer.Data.Code,
+                                                 Name = customer.Data.Name,
+                                                 Phone = customer.Data.Phone,
+                                                 Phone2 = customer.Data.Phone2,
+                                                 Phone3 = customer.Data.Phone3,
+                                                 Province = customer.Data.Province,
+                                                 District = customer.Data.District,
+                                                 Ward = customer.Data.Ward,
+                                                 Address = customer.Data.Address,
+                                                 CustomerGroup = customer.Data.CustomerGroup,
+                                                 CustomerVip = customer.Data.CustomerVip,
+                                                 Email = customer.Data.Email,
+                                                 DateCreated = customer.Data.DateCreated,
+                                                 Description = customer.Data.Description,
+                                                 UserCreated = customer.Data.UserCreated,
+                                                 UserCreatedPhone = customer.Data.UserCreatedPhone
+                                         };
+                    }
+
+                    return View(model);
+                }
+            }
+
+            return View("Notfound");
+        }
     }
 }

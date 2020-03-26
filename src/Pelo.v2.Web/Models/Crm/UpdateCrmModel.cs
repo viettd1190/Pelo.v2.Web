@@ -63,6 +63,10 @@ namespace Pelo.v2.Web.Models.Crm
         [UIHint("DateTime")]
         public DateTime DateCreated { get; set; }
 
+        public string Reason { get; set; }
+
+        public int CrmStatusDeleted { get; set; }
+
         public IList<SelectListItem> AvaiableCustomerSources { get; set; }
 
         public IList<SelectListItem> AvaiableCrmTypes { get; set; }

@@ -280,7 +280,11 @@
             }
             $('#ProductRaw').val(JSON.stringify(products));
             $('#Deposit').val(parseInt($('#Deposit').val().replace(/\,/g,'')));
-            $('#Discount').val($('#Discount').val().replace(/\,/g,''));
+            $('#Discount').val($('#Discount').val().replace(/\,/g, ''));
+
+            var deliveryDate=$('#DeliveryDate').val();
+            var formatedDate=moment(deliveryDate,'DD-MM-YYYY HH:mm');
+            $('#DeliveryDate').val(moment(formatedDate).format('YYYY-MM-DD HH:mm:ss'));
             return true;
         }
     </script>

@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Pelo.Common.Dtos.Crm;
 using Pelo.Common.Exceptions;
+using Pelo.Common.Extensions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models;
@@ -30,20 +35,29 @@ namespace Pelo.v2.Web.Services.Crm
 
         Task<TResponse<bool>> Insert(InsertCrmModel model);
 
+        Task<TResponse<bool>> Update(UpdateCrmModel model);
+
         Task<CrmListModel> GetByCustomerIdPaging(CustomerComponentSearchModel request);
 
         Task<UpdateCrmModel> GetById(int id);
 
         Task<IEnumerable<CrmLogResponse>> GetLogs(int id);
+
+        Task<TResponse<bool>> Comment(CrmCommentModel model,
+                                      List<IFormFile> files);
     }
 
     public class CrmService : BaseService,
                               ICrmService
     {
+        private readonly ContextHelper _contextHelper;
+
         public CrmService(IHttpService httpService,
+                          ContextHelper contextHelper,
                           ILogger<BaseService> logger) : base(httpService,
                                                               logger)
         {
+            _contextHelper = contextHelper;
         }
 
         #region ICrmService Members
@@ -176,13 +190,6 @@ namespace Pelo.v2.Web.Services.Crm
         {
             try
             {
-                //DateTime date = DateTime.Now;
-                //if(!string.IsNullOrEmpty(model.ContactDate)
-                //   && !string.IsNullOrEmpty(model.ContactTime))
-                //{
-                //    date = DateTime.Parse($"{model.ContactDate} {model.ContactTime}");
-                //}
-
                 var response = await HttpService.Send<bool>(ApiUrl.CRM_INSERT,
                                                             new InsertCrmRequest
                                                             {
@@ -192,13 +199,47 @@ namespace Pelo.v2.Web.Services.Crm
                                                                     CrmPriorityId = model.CrmPriorityId,
                                                                     CrmTypeId = model.CrmTypeId,
                                                                     Need = model.Need,
-                                                                    Description = string.Empty,
+                                                                    Description = model.Description,
                                                                     CustomerSourceId = model.CustomerSourceId,
                                                                     Visit = model.IsVisit,
                                                                     ContactDate = model.ContactDate,
                                                                     UserIds = model.UserCareIds.ToList()
                                                             },
                                                             HttpMethod.Post,
+                                                            true);
+                if(response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateCrmModel model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CRM_UPDATE,
+                                                            new UpdateCrmRequest
+                                                            {
+                                                                    Id = model.Id,
+                                                                    ContactDate = model.ContactDate,
+                                                                    CrmPriorityId = model.CrmPriorityId,
+                                                                    CrmStatusId = model.CrmStatusId,
+                                                                    CrmTypeId = model.CrmTypeId,
+                                                                    CustomerSourceId = model.CustomerSourceId,
+                                                                    Description = model.Description,
+                                                                    Need = model.Need,
+                                                                    ProductGroupId = model.ProductGroupId,
+                                                                    UserIds = model.UserCareIds.ToList(),
+                                                                    Visit = model.IsVisit
+                                                            },
+                                                            HttpMethod.Put,
                                                             true);
                 if(response.IsSuccess)
                 {
@@ -349,8 +390,12 @@ namespace Pelo.v2.Web.Services.Crm
         {
             try
             {
-                string url = string.Format(ApiUrl.CRM_GET_LOGS, id);
-                var response = await HttpService.Send<IEnumerable<CrmLogResponse>>(url, null, HttpMethod.Get, true);
+                string url = string.Format(ApiUrl.CRM_GET_LOGS,
+                                           id);
+                var response = await HttpService.Send<IEnumerable<CrmLogResponse>>(url,
+                                                                                   null,
+                                                                                   HttpMethod.Get,
+                                                                                   true);
                 if(response.IsSuccess)
                 {
                     return response.Data;
@@ -364,7 +409,77 @@ namespace Pelo.v2.Web.Services.Crm
             }
         }
 
+        public async Task<TResponse<bool>> Comment(CrmCommentModel model,
+                                                   List<IFormFile> files)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (var form = new MultipartFormDataContent())
+                    {
+                        foreach (var file in files)
+                        {
+                            var fileStream = file.OpenReadStream();
+                            form.Add(CreateFileContent(fileStream,
+                                                       file.FileName,
+                                                       file.ContentType));
+                        }
+
+                        var paras = new List<KeyValuePair<string, string>>();
+                        var para = new Tuple<int, string>(model.Id, model.Comment);
+                        paras.Add(new KeyValuePair<string, string>("para", para.ToJson()));
+
+                        form.Add(new FormUrlEncodedContent(paras));
+
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _contextHelper.GetToken());
+
+                        var response = await client.PostAsync(ApiUrl.CRM_COMMENT,
+                                                              form);
+                        response.EnsureSuccessStatusCode();
+
+                        var res = await response.Content.ReadAsStringAsync();
+                        var obj = JsonConvert.DeserializeObject<TResponse<bool>>(res);
+                        if(obj.IsSuccess)
+                        {
+                            return await Task.FromResult(new TResponse<bool>
+                                                         {
+                                                                 Data = obj.Data,
+                                                                 IsSuccess = true,
+                                                                 Message = string.Empty
+                                                         });
+                        }
+
+                        return await Task.FromResult(new TResponse<bool>
+                                                     {
+                                                             Data = default,
+                                                             IsSuccess = false,
+                                                             Message = obj.Message
+                                                     });
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
         #endregion
+
+        private StreamContent CreateFileContent(Stream stream,
+                                                string fileName,
+                                                string contentType)
+        {
+            var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                                                     {
+                                                             Name = "\"files\"",
+                                                             FileName = "\"" + fileName + "\""
+                                                     }; // the extra quotes are key here
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+            return fileContent;
+        }
 
         public async Task<CrmListModel> XuLyCrm(BaseSearchModel request,
                                                 string baseUrl)

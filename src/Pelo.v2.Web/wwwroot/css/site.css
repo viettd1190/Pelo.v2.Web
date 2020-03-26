@@ -104,3 +104,11 @@ li.row-active {
     padding: 10px;
     list-style: none;
 }
+
+.tbl-cell, .text-vertical-middle, audio, canvas, img, video {
+    vertical-align:top !important;
+}
+
+.widget-tasks .widget-activity-item:before, .widget-activity .widget-activity-item:before {
+    top:10% !important;
+}
