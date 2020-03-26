@@ -72,8 +72,6 @@ namespace Pelo.v2.Web.Services.CandidateStatus
                                                                                      Name = c.Name,
                                                                                      Color = c.Color,
                                                                                      SortOrder = c.SortOrder,
-                                                                                     IsSendSms = c.IsSendSms,
-                                                                                     SmsContent = c.SmsContent,
                                                                                      PageSize = request.PageSize,
                                                                                      PageSizeOptions = request.AvailablePageSizes
                                                                              })

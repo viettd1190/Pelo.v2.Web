@@ -41,7 +41,7 @@ namespace Pelo.v2.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _candidateStatus.Insert(new InsertCandidateStatus { Color = model.Color, IsSendSms = model.IsSendSms, Name = model.Name, SmsContent = model.SmsContent, SortOrder = model.SortOrder });
+                var result = await _candidateStatus.Insert(new InsertCandidateStatus { Color = model.Color,  Name = model.Name, SortOrder = model.SortOrder });
                 if (result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();
@@ -69,7 +69,7 @@ namespace Pelo.v2.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _candidateStatus.Update(new UpdateCandidateStatus { Id = model.Id, Color = model.Color, IsSendSms = model.IsSendSms, Name = model.Name, SmsContent = model.SmsContent, SortOrder = model.SortOrder });
+                var result = await _candidateStatus.Update(new UpdateCandidateStatus { Id = model.Id, Color = model.Color, Name = model.Name, SortOrder = model.SortOrder });
                 if (result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();
