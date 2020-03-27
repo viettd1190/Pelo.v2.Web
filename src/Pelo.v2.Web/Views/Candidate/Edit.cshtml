@@ -1,6 +1,6 @@
-﻿@model Pelo.v2.Web.Models.CandidateStatus.CandidateStatusModel
+﻿@model Pelo.v2.Web.Models.Candidate.UpdateCandidateModel
 @{
-    ViewBag.Title = "Cập nhật trạng thái ứng viên";
+    ViewBag.Title = "Cập nhật ứng viên";
     Layout = "_Layout";
 }
 @section cssPlugin{
@@ -10,43 +10,57 @@
     <script src="@Url.Content("~/lib/spectrum/spectrum.js")"></script>
 }
 <ol class="breadcrumb">
-    <li><a href="@Url.Action("Index","CandidateStatus")">Danh sách trạng thái ứng viên</a></li>
-    <li class="active">Thêm mới trạng thái ứng viên</li>
+    <li><a href="@Url.Action("Index","CandidateStatus")">Danh sách ứng viên</a></li>
+    <li class="active">Cập nhật ứng viên</li>
 </ol>
 
 <section class="card">
     <div class="card-block">
-        <form asp-controller="CandidateStatus" asp-action="Edit" method="post" id="CandidateStatus-form">
+        <form asp-controller="Candidate" asp-action="Edit" method="post" id="Candidate-form">
             @Html.ValidationSummary()
-            @Html.HiddenFor(c => c.Id)
+            @Html.HiddenFor(c=>c.Id)
             <div class="row">
-                @*<div class="col-lg-12">
+                <div class="col-lg-12">
                     <fieldset class="form-group">
-                        <label class="form-label semibold" for="Name">Tên</label>
-                        <input asp-for="Name" class="form-control" type="text" placeholder="Tên" />
+                        <label class="form-label semibold" for="Name">Tên ứng viên</label>
+                        <input asp-for="Name" class="form-control" type="text" placeholder="Tên ứng viên" />
                         @Html.ValidationMessageFor(c => c.Name)
                     </fieldset>
                 </div>
                 <div class="col-lg-12">
                     <fieldset class="form-group">
-                        <label class="form-label semibold" for="Color">Màu sắc</label>
-                        <input type="color" asp-for="Color" id="color" class='basic' value='#f594d0' />
-                        @Html.ValidationMessageFor(c => c.Color)
+                        <label class="form-label semibold" for="Phone">Số điện thoại</label>
+                        <input asp-for="Phone" class="form-control" type="text" placeholder="Số điện thoại" />
+                        @Html.ValidationMessageFor(c => c.Phone)
                     </fieldset>
                 </div>
                 <div class="col-lg-12">
                     <fieldset class="form-group">
-                        <label class="form-label semibold" for="SortOrder">Vị trí</label>
-                        <input asp-for="SortOrder" class="form-control" type="text" placeholder="Vị trí" />
-                        @Html.ValidationMessageFor(c => c.SortOrder)
+                        <label class="form-label semibold" for="Address">Địa chỉ</label>
+                        <input asp-for="Address" class="form-control" type="text" placeholder="Địa chỉ" />
+                        @Html.ValidationMessageFor(c => c.Address)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Email">Email</label>
+                        <input asp-for="Email" class="form-control" type="text" placeholder="Email" />
+                        @Html.ValidationMessageFor(c => c.Email)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Description">Ghi chú</label>
+                        <textarea asp-for="Description" class="form-control" type="text" placeholder="Ghi chú"></textarea>
+                        @Html.ValidationMessageFor(c => c.Description)
                     </fieldset>
                 </div>
                 <div class="col-lg-12">
                     <fieldset class="form-group">
                         <button type="submit" class="btn btn-primary">Cập nhật</button>
-                        <a class="btn btn-default" href="@Url.Action("Index", "CandidateStatus")">Hủy</a>
+                        <a class="btn btn-default" href="@Url.Action("Index", "Candidate")">Hủy</a>
                     </fieldset>
-                </div>*@
+                </div>
             </div>
         </form>
     </div>
@@ -58,7 +72,7 @@
             $('.opened').removeClass('opened');
             $('.row-active').removeClass('row-active');
             $('#liJob').addClass('opened');
-            $('#liCandidateStatus').addClass('row-active');
+            $('#liCandidate').addClass('row-active');
         })
     </script>
 }

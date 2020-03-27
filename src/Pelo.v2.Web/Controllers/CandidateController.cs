@@ -41,7 +41,7 @@ namespace Pelo.v2.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _candidate.Insert(new InsertCandidate {Name = model.Name, Email = model.Email, Phone = model.Phone, CandidateStatusId = model.CandidateStatusId });
+                var result = await _candidate.Insert(new InsertCandidate { Name = model.Name, Email = model.Email, Phone = model.Phone, CandidateStatusId = model.CandidateStatusId, Address = model.Address, Description = model.Description });
                 if (result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();
@@ -58,7 +58,7 @@ namespace Pelo.v2.Web.Controllers
             var model = await _candidate.GetById(id);
             if (model.IsSuccess)
             {
-                return View(new UpdateCandidateModel { Id = model.Data.Id, Name = model.Data.Name, Email = model.Data.Email, Phone = model.Data.Phone, CandidateStatusId = model.Data.CandidateStatusId });
+                return View(new UpdateCandidateModel { Id = model.Data.Id, Name = model.Data.Name, Email = model.Data.Email, Phone = model.Data.Phone, CandidateStatusId = model.Data.CandidateStatusId, Address = model.Data.Address, Description = model.Data.Description });
             }
 
             return View("Notfound");
@@ -69,7 +69,7 @@ namespace Pelo.v2.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _candidate.Update(new UpdateCandidate { Id = model.Id, Name = model.Name, Email = model.Email, Phone = model.Phone, CandidateStatusId = model.CandidateStatusId });
+                var result = await _candidate.Update(new UpdateCandidate { Id = model.Id, Name = model.Name, Email = model.Email, Phone = model.Phone, CandidateStatusId = model.CandidateStatusId, Address = model.Address, Description = model.Description });
                 if (result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();

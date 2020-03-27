@@ -16,5 +16,9 @@ namespace Pelo.v2.Web.Models.Candidate
         public string Email { get; set; }
 
         public int CandidateStatusId { get; set; }
+
+        public string Address { get; set; }
+
+        public string Description { get; set; }
     }
 }
