@@ -94,6 +94,7 @@ namespace Pelo.v2.Web.Controllers
                     SortOrder = model.SortOrder,
                     Name = model.Name,
                     DistrictId = model.DistrictId,
+                    ProvinceId  = model.ProvinceId,
                     Type = model.Type
                 });
                 if (rs.IsSuccess)
@@ -118,7 +119,8 @@ namespace Pelo.v2.Web.Controllers
                     Name = result.Data.Name,
                     Type = result.Data.Type,
                     SortOrder = result.Data.SortOrder,
-                    DistrictId = result.Data.DistrictId
+                    DistrictId = result.Data.DistrictId,
+                    ProvinceId = result.Data.ProvinceId,
                 };
                 await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
                 await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
@@ -136,6 +138,7 @@ namespace Pelo.v2.Web.Controllers
                 SortOrder = model.SortOrder,
                 Name = model.Name,
                 DistrictId = model.DistrictId,
+                ProvinceId = model.ProvinceId,
                 Type = model.Type
             });
             if (result.IsSuccess)
@@ -144,8 +147,7 @@ namespace Pelo.v2.Web.Controllers
                 return RedirectToAction("Index");
             }
             await _baseModelFactory.PrepareProvinces(model.AvaiableProvinces);
-            await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts,
-                                                     model.ProvinceId);
+            await _baseModelFactory.PrepareDistricts(model.AvaiableDistricts, model.ProvinceId);
             return View(model);
         }
     }

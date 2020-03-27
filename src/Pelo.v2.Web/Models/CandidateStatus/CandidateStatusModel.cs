@@ -24,12 +24,6 @@ namespace Pelo.v2.Web.Models.CandidateStatus
         [JsonProperty("color")]
         public string Color { get; set; }
 
-        [JsonProperty("send_sms")]
-        public bool IsSendSms{ get; set; }
-
-        [JsonProperty("sms_content")]
-        public string SmsContent { get; set; }
-
         [JsonProperty("PageSize")]
         public int PageSize { get; set; }
 

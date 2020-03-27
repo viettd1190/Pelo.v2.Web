@@ -32,6 +32,7 @@
     <Folder Include="Services\WarrantyStatusInRole\" />
     <Folder Include="Services\Receipt\" />
     <Folder Include="Services\Warranty\" />
+    <Folder Include="Views\Recruitment\" />
     <Folder Include="Views\Shared\Components\CustomerDetail\" />
     <Folder Include="Views\Shared\Components\CustomerFindByPhone\" />
     <Folder Include="Views\District\" />
@@ -194,6 +195,14 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Update="Views\TaskType\Edit.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\User\Add.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\User\Edit.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

@@ -19,11 +19,13 @@ namespace Pelo.v2.Web.Services.User
 
         Task<UserListModel> GetByPaging(UserSearchModel request);
 
-        //Task<TResponse<bool>> Insert(UserInsert request);
+        Task<TResponse<bool>> Insert(InsertUserRequest request);
 
-        //Task<TResponse<UserUpdate>> GetById(int id);
+        Task<TResponse<bool>> Update(UpdateUserRequest request);
 
-        //Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<GetUserByIdResponse>> GetById(int id);
+
+        Task<TResponse<bool>> Delete(int id);
     }
 
     public class UserService : BaseService,
@@ -33,6 +35,29 @@ namespace Pelo.v2.Web.Services.User
                            ILogger<BaseService> logger) : base(httpService,
                                                                logger)
         {
+        }
+
+        public async Task<TResponse<bool>> Delete(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.USER_DELETE,
+                                        id);
+                var response = await HttpService.Send<bool>(url,
+                                                            null,
+                                                            HttpMethod.Delete,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
         }
 
         #region IUserService Members
@@ -54,6 +79,28 @@ namespace Pelo.v2.Web.Services.User
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<GetUserByIdResponse>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.USER_GET_BY_ID, id);
+                var response = await HttpService.Send<GetUserByIdResponse>(url,
+                                                                      null,
+                                                                      HttpMethod.Get,
+                                                                      true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<GetUserByIdResponse>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<GetUserByIdResponse>(exception);
             }
         }
 
@@ -130,6 +177,50 @@ namespace Pelo.v2.Web.Services.User
             catch (Exception exception)
             {
                 throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(InsertUserRequest request)
+        {
+            try
+            {
+                var url = ApiUrl.USER_INSERT;
+                var response = await HttpService.Send<bool>(url,
+                                                            request,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateUserRequest request)
+        {
+            try
+            {
+                var url = ApiUrl.USER_UPDATE;
+                var response = await HttpService.Send<bool>(url,
+                                                            request,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
             }
         }
 

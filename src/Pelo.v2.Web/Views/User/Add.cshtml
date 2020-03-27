@@ -1,8 +1,119 @@
-﻿@model Pelo.v2.Web.Models.AppConfig.AppConfigInsert
-
+﻿@model Pelo.v2.Web.Models.User.UpdateUserModel
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Thêm mới người dùng";
     Layout = "_Layout";
 }
+@section cssPlugin{
+    <link rel="stylesheet" href="@Url.Content("~/lib/spectrum/spectrum.css")">
+}
+@section jsPlugin {
+    <script src="@Url.Content("~/lib/spectrum/spectrum.js")"></script>
+}
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","User")">Danh sách người dùng</a></li>
+    <li class="active">Thêm mới người dùng</li>
+</ol>
 
-<h2>title</h2>
+<section class="card">
+    <div class="card-block">
+        <form asp-controller="User" asp-action="Add" method="post" id="user-form">
+            @Html.ValidationSummary()
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Username">Tên đăng nhập</label>
+                        <input asp-for="Username" class="form-control" type="text" placeholder="Tên đăng nhập" />
+                        @Html.ValidationMessageFor(c => c.Username)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="DisplayName">Tên hiển thị</label>
+                        <input asp-for="DisplayName" class="form-control" type="text" placeholder="Tên hiển thị" />
+                        @Html.ValidationMessageFor(c => c.DisplayName)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="FullName">Tên đầy đủ</label>
+                        <input asp-for="FullName" class="form-control" type="text" placeholder="Tên đầy đủ" />
+                        @Html.ValidationMessageFor(c => c.FullName)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="PhoneNumber">Mật khẩu</label>
+                        <input asp-for="PhoneNumber" class="form-control" type="password" placeholder="Mật khẩu" />
+                        @Html.ValidationMessageFor(c => c.Password)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="ConfirmPassword">Xác nhận lại mật khẩu</label>
+                        <input asp-for="ConfirmPassword" class="form-control" type="password" placeholder="Xác nhận lại mật khẩu" />
+                        @Html.ValidationMessageFor(c => c.ConfirmPassword)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="Email">Email</label>
+                        <input asp-for="Email" class="form-control" type="text" placeholder="Email" />
+                        @Html.ValidationMessageFor(c => c.Email)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" for="PhoneNumber">SĐT</label>
+                        <input asp-for="PhoneNumber" class="form-control" type="text" placeholder="SĐT" />
+                        @Html.ValidationMessageFor(c => c.PhoneNumber)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="BranchId" text-display="Chi nhánh" />
+                        <nop-select asp-for="BranchId" asp-items="Model.AvaiableBranches" />
+                        @Html.ValidationMessageFor(c => c.BranchId)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="DepartmentId" text-display="Phòng ban" />
+                        <nop-select asp-for="DepartmentId" asp-items="Model.AvaiableDepartments" />
+                        @Html.ValidationMessageFor(c => c.DepartmentId)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="RoleId" text-display="Vai trò" />
+                        <nop-select asp-for="RoleId" asp-items="Model.AvaiableRoles" />
+                        @Html.ValidationMessageFor(c => c.RoleId)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="RoleId" text-display="Trạng thái" />
+                        <nop-select asp-for="RoleId" asp-items="Model.AvaiableStatuses" />
+                        @Html.ValidationMessageFor(c => c.IsActive)
+                    </fieldset>
+                </div>
+                <div class="col-lg-12">
+                    <fieldset class="form-group">
+                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <a class="btn btn-default" href="@Url.Action("Index", "User")">Hủy</a>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section js{
+    <script>
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liAppConfig').addClass('opened');
+            $('#liUser').addClass('row-active');
+        })
+    </script>
+}
