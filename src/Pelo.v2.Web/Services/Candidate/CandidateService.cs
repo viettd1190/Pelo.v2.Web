@@ -17,6 +17,12 @@ namespace Pelo.v2.Web.Services.Candidate
         Task<CandidateListModel> GetByPaging(CandidateSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<bool>> Insert(InsertCandidate insertCandidate);
+        
+        Task<TResponse<GetCandidateResponse>> GetById(int id);
+        
+        Task<TResponse<bool>> Update(UpdateCandidate updateCandidate);
     }
 
     public class CandidateService : BaseService,
@@ -100,6 +106,71 @@ namespace Pelo.v2.Web.Services.Candidate
                 var response = await HttpService.Send<bool>(url,
                                                             null,
                                                             HttpMethod.Delete,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(InsertCandidate insertCandidate)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CANDIDATE_UPDATE,
+                                                            insertCandidate,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<GetCandidateResponse>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.CANDIDATE_GET_BY_ID,
+                                        id);
+                var response = await HttpService.Send<GetCandidateResponse>(url,
+                                                            null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<GetCandidateResponse>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<GetCandidateResponse>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateCandidate updateCandidate)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.CANDIDATE_UPDATE,
+                                                            updateCandidate,
+                                                            HttpMethod.Put,
                                                             true);
                 if (response.IsSuccess)
                 {
