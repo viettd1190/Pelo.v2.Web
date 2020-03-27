@@ -12,9 +12,9 @@ namespace Pelo.v2.Web.Models.Candidate
 
         public string CandidateStatusId { get; set; }
 
-        public DateTime FromDate { get; set; }
+        public string FromDate { get; set; }
 
-        public DateTime ToDate { get; set; }
+        public string ToDate { get; set; }
 
         public string ColumnOrder{ get; set; }
     }

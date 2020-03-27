@@ -1,37 +1,80 @@
 ﻿@using Pelo.v2.Web.Models.Datatables
 @using Pelo.v2.Web.Models.Datatables.Render
-@using Pelo.v2.Web.Models.CandidateStatus
-@model Pelo.v2.Web.Models.CandidateStatus.CandidateStatusSearchModel
+@using Pelo.v2.Web.Models.Candidate
+@model Pelo.v2.Web.Models.Candidate.CandidateSearchModel
 @{
-    ViewBag.Title = "Danh sách trạng thái ứng viên";
+    ViewBag.Title = "Danh sách ứng viên";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section cssPlugin{
     <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
     <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+    <link href="~/startui/css/separate/vendor/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/separate/vendor/bootstrap-daterangepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/lib/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" />
 }
 
 @section css{
-    <style>.box-typical.box-typical-dashboard .box-typical-body {height:auto !important;}</style>
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height: auto !important;
+        }
+    </style>
 }
 
 @section jsPlugin {
     <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+    <script src="~/startui/js/lib/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker-init.js"></script>
+    <script src="~/startui/js/lib/daterangepicker/daterangepicker.js"></script>
 }
 
 <div class="row">
     <div class="col-xl-12 dahsboard-column">
         <section class="box-typical box-typical-dashboard panel panel-default scrollable">
             <header class="box-typical-header panel-heading">
-                <h3 class="panel-title">Danh sách trạng thái ứng viên</h3>
+                <h3 class="panel-title">Danh sách ứng viên</h3>
             </header>
             <div class="box-typical-body panel-body">
                 <div class="row" style="padding:15px;">
-                    <div class="col-lg-12">
+                    <div class="col-lg-6">
                         <fieldset class="form-group">
-                            <label class="form-label semibold" for="Name">Tên trạng thái ứng viên</label>
-                            <input asp-for="Name" class="form-control" type="text" placeholder="Tên trạng thái"/>
+                            <label class="form-label semibold" for="Name">Tên ứng viên</label>
+                            <input asp-for="Name" class="form-control" type="text" placeholder="Tên trạng thái" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="Phone">Số điện thoại</label>
+                            <input asp-for="Phone" class="form-control" type="text" placeholder="Số điện thoại" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="Code">Mã ứng viên</label>
+                            <input asp-for="Code" class="form-control" type="text" placeholder="Mã ứng viên" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="CandidateStatusId">Trạng thái</label>
+                            <input asp-for="CandidateStatusId" class="form-control" type="text" placeholder="Trạng thái" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="FromDate">Từ ngày</label>
+                            <nop-editor asp-for="FromDate" />
+                            @*<input asp-for="FromDate" class="form-control" type="text" placeholder="Từ ngày" />*@
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="ToDate">Đến ngày</label>
+                            <nop-editor asp-for="ToDate" />
+                            @*<input asp-for="ToDate" class="form-control" type="text" placeholder="Đến ngày" />*@
                         </fieldset>
                     </div>
                     <div class="col-xs-12">
@@ -46,33 +89,48 @@
 
 <section class="card">
     <div class="card-block">
-        @await Html.PartialAsync("Table", new DataTablesModel {
-                                                                      Name = "receiptStatus-grid",
-                                                                      UrlRead = new DataUrl("GetList", "CandidateStatus", null),
-                                                                      UrlDelete = new DataUrl("Delete", "CandidateStatus", null),
-                                                                      SearchButtonId = "search-candidateStatus",
-                                                                      Filters = new List<FilterParameter> {
+        @await Html.PartialAsync("Table", new DataTablesModel
+   {
+       Name = "receiptStatus-grid",
+       UrlRead = new DataUrl("GetList", "CandidateStatus", null),
+       UrlDelete = new DataUrl("Delete", "CandidateStatus", null),
+       SearchButtonId = "search-candidateStatus",
+       Filters = new List<FilterParameter> {
                                                                                                                   new FilterParameter(nameof(Model.Name))
                                                                                                           },
-                                                                      ColumnCollection = new List<ColumnProperty> {
-                                                                                                                          new ColumnProperty(nameof(CandidateStatusModel.Name)) {
-                                                                                                                                                                                      Title = "Tên"
+       ColumnCollection = new List<ColumnProperty> {
+                                                                                                                          new ColumnProperty(nameof(CandidateModel.CandidateStatusName)) {
+                                                                                                                                                                                      Title = "Trạng thái",
+                                                                                                                                                                                      Render = new RenderCustom("displayColor")
                                                                                                                                                                               },
-                                                                                                                          new ColumnProperty(nameof(CandidateStatusModel.Color)) {
-                                                                                                                                                                                       Title = "Màu sắc",
-                                                                                                                                                                                       Render = new RenderCustom("displayColor")
+                                                                                                                          new ColumnProperty(nameof(CandidateModel.Code)) {
+                                                                                                                                                                                      Title = "Mã ứng viên"
+                                                                                                                                                                              },
+                                                                                                                          new ColumnProperty(nameof(CandidateModel.Name)) {
+                                                                                                                                                                                       Title = "Tên ứng viên",
+
                                                                                                                                                                                },
-                                                                                                                          new ColumnProperty(nameof(CandidateStatusModel.SortOrder)) {
-                                                                                                                                                                                           Title = "Vị trí",
+                                                                                                                          new ColumnProperty(nameof(CandidateModel.Phone)) {
+                                                                                                                                                                                           Title = "Số điện thoại",
+                                                                                                                                                                                           Render = new RenderCustom("displayPhone")
                                                                                                                                                                                    },
-                                                                                                                          new ColumnProperty(nameof(CandidateStatusModel.Id)) {
+                                                                                                                          new ColumnProperty(nameof(CandidateModel.Description)) {
+                                                                                                                                                                                       Title = "Ghi chú",
+
+                                                                                                                                                                               },
+                                                                                                                          new ColumnProperty(nameof(CandidateModel.UserNameCreated)) {
+                                                                                                                                                                                       Title = "Người tạo",
+                                                                                                                                                                                       Render = new RenderCustom("displayUserPhone")
+
+                                                                                                                                                                               },
+                                                                                                                          new ColumnProperty(nameof(CandidateModel.Id)) {
                                                                                                                                                                                     Title = "",
                                                                                                                                                                                     Width = "40",
                                                                                                                                                                                     Orderable = false,
                                                                                                                                                                                     ClassName = NopColumnClassDefaults.Button,
                                                                                                                                                                                     Render = new RenderButtonEdit(new DataUrl("ReceiptStatus/Edit"))
                                                                                                                                                                             },
-                                                                                                                          new ColumnProperty(nameof(CandidateStatusModel.Id)) {
+                                                                                                                          new ColumnProperty(nameof(CandidateModel.Id)) {
                                                                                                                                                                                     Title = "",
                                                                                                                                                                                     Width = "40",
                                                                                                                                                                                     Orderable = false,
@@ -80,7 +138,7 @@
                                                                                                                                                                                     Render = new RenderButtonRemove("Remove")
                                                                                                                                                                             }
                                                                                                                   }
-                                                              })
+   })
     </div>
 </section>
 
@@ -100,10 +158,16 @@
         });
         function displayColor(data,type,row,meta) {
             return '<div style="text-align:center;margin:auto;"><span class="label" style="width:70px;background-color:'+
-                data+
+                row.Color+
                 '">'+
                 data+
                 '</span></div>';
+        }
+        function displayPhone(data, type, row, meta) {
+            return '<a style="text-decoration:none" href="tel:\"' + data+'"\">'+data+'</a>';
+        }
+        function displayUserPhone(data, type, row, meta) {
+            return '<a style="text-decoration:none" href="tel:\"' + row.UserPhoneCreated + '"\">' + data + '</a>';;
         }
     </script>
 }
