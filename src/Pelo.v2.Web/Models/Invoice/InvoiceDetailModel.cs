@@ -41,6 +41,8 @@ namespace Pelo.v2.Web.Models.Invoice
         public List<ProductInInvoiceDetailModel> Products { get; set; }
 
         public string Description { get; set; }
+
+        public string PayMethod { get; set; }
     }
 
     public class ProductInInvoiceDetailModel

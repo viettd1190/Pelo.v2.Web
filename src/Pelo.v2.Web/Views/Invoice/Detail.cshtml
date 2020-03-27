@@ -1,4 +1,5 @@
-﻿@model Pelo.v2.Web.Models.Invoice.InvoiceDetailModel
+﻿@using Pelo.v2.Web.Commons
+@model Pelo.v2.Web.Models.Invoice.InvoiceDetailModel
 
 @{
     ViewBag.Title = "Thông tin đơn hàng " + Model.Code;
@@ -66,80 +67,168 @@
                     <h3>Chi tiết đơn hàng</h3>
                 </div>
                 @Html.HiddenFor(c => c.Id)
-                @*<div class="col-lg-6">
+                <div class="col-lg-6">
                     <fieldset class="form-group">
-                        <nop-label asp-for="Code" text-display="Mã cơ hội" />
-                        <nop-editor asp-for="Code" asp-disabled="true" />
-                        @Html.ValidationMessageFor(c => c.Need)
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <nop-label asp-for="UserCreated" text-display="Người tạo" />
-                        <nop-editor asp-for="UserCreated" asp-disabled="true" />
-                        @Html.ValidationMessageFor(c => c.UserCreated)
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <nop-label asp-for="DateCreated" text-display="Ngày tạo" />
-                        <input class="form-control" value="@string.Format(AppUtil.DATE_TIME_FORMAT, Model.DateCreated)" disabled="disabled" />
-                        @Html.ValidationMessageFor(c => c.DateCreated)
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <nop-label asp-for="Need" text-display="Nhu cầu" />
-                        <nop-editor asp-for="Need" placeholder="Nhu cầu" />
-                        @Html.ValidationMessageFor(c => c.Need)
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <nop-label asp-for="Description" text-display="Ghi chú" />
-                        <textarea asp-for="Description" class="form-control" type="text" placeholder="Ghi chú"></textarea>
-                        @Html.ValidationMessageFor(c => c.Description)
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <label class="form-label semibold" for="ContactDate">Ngày liên hệ</label>
-                        <nop-editor asp-for="ContactDate" />
-                        @Html.ValidationMessageFor(c => c.ContactDate)
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <nop-label asp-for="UserCareIds" text-display="Người phụ trách" />
-                        <nop-select asp-for="UserCareIds" asp-items="Model.AvaiableUserCares" asp-multiple="true" />
-                        @Html.ValidationMessageFor(c => c.UserCareIds)
+                        <label class="form-label semibold">Mã hóa đơn: <span class="label-content">@Model.Code</span></label>
                     </fieldset>
                 </div>
                 <div class="col-lg-6">
                     <fieldset class="form-group">
-                        <nop-label asp-for="CrmPriorityId" text-display="Mức độ khẩn cấp" />
-                        <nop-select asp-for="CrmPriorityId" asp-items="Model.AvaiableCrmPriorities" />
-                        @Html.ValidationMessageFor(c => c.CrmPriorityId)
+                        <label class="form-label semibold">Ngày tạo: <span class="label-content">@string.Format(AppUtil.DATE_TIME_FORMAT, Model.DateCreated)</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-xs-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Giá nhập</th>
+                                    <th>Giá bán</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @{
+                                int total = 0;
+                                int profit = 0;
+                                    for (int i = 0; i < Model.Products.Count; i++) {
+                                        total += Model.Products[i].SellPrice * Model.Products[i].Quantity;
+                                        profit += (Model.Products[i].SellPrice - Model.Products[i].ImportPrice) * Model.Products[i].Quantity;
+                                        <tr>
+                                            <td>@(i + 1)</td>
+                                            <td>@Model.Products[i].Name (@Model.Products[i].Description)</td>
+                                            <td>@string.Format(AppUtil.MONEY_FORMAT, Model.Products[i].ImportPrice)</td>
+                                            <td>@string.Format(AppUtil.MONEY_FORMAT, Model.Products[i].SellPrice)</td>
+                                            <td>@Model.Products[i].Quantity</td>
+                                            <td>@string.Format(AppUtil.MONEY_FORMAT, Model.Products[i].SellPrice * Model.Products[i].Quantity)</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-6" style="padding-top:20px;">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold">Telesales</label>
                     </fieldset>
                     <fieldset class="form-group">
-                        <nop-label asp-for="CrmStatusId" text-display="Trạng thái CRM" />
-                        <nop-select asp-for="CrmStatusId" asp-items="Model.AvaiableCrmStatuses" onchange="changeCrmStatus();" />
-                        @Html.ValidationMessageFor(c => c.CrmStatusId)
-                    </fieldset>
-                    <fieldset class="form-group" id="divReason">
-                        <nop-label asp-for="Reason" text-display="Lý do HỦY" />
-                        <nop-editor asp-for="Reason" placeholder="Lý do HỦY" />
-                        @Html.ValidationMessageFor(c => c.Reason)
+                        <label class="form-label semibold">Lên đơn: <span class="label-content"><a class="label-content" href="tel:@Model.UserCreatedPhone">@Model.UserCreated</a></span></label>
                     </fieldset>
                     <fieldset class="form-group">
-                        <nop-label asp-for="CustomerSourceId" text-display="Nguồn khách hàng" />
-                        <nop-select asp-for="CustomerSourceId" asp-items="Model.AvaiableCustomerSources" />
-                        @Html.ValidationMessageFor(c => c.CustomerSourceId)
+                        <label class="form-label semibold">Bán hàng: <span class="label-content"><a class="label-content" href="tel:@Model.UserSellPhone">@Model.UserSell</a></span></label>
                     </fieldset>
                     <fieldset class="form-group">
-                        <nop-label asp-for="ProductGroupId" text-display="Nhóm sản phẩm" />
-                        <nop-select asp-for="ProductGroupId" asp-items="Model.AvaiableProductGroups" />
-                        @Html.ValidationMessageFor(c => c.ProductGroupId)
+                        <label class="form-label semibold">Ngày giao: <span class="label-content">@string.Format(AppUtil.DATE_TIME_FORMAT,Model.DeliveryDate)</span></label>
+                    </fieldset>
+                </div>
+                <div class="col-lg-6" style="padding-top:20px;float:right;">
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" style="float:right;">Tổng cộng: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, total)</span></label>
                     </fieldset>
                     <fieldset class="form-group">
-                        <nop-label asp-for="CrmTypeId" text-display="Kiểu chốt" />
-                        <nop-select asp-for="CrmTypeId" asp-items="Model.AvaiableCrmTypes" />
-                        @Html.ValidationMessageFor(c => c.CrmTypeId)
+                        <label class="form-label semibold" style="float:right;">Giảm giá: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, Model.Discount)</span></label>
                     </fieldset>
                     <fieldset class="form-group">
-                        <nop-label asp-for="IsVisit" text-display="Đến cửa hàng" />
-                        <nop-select asp-for="IsVisit" asp-items="Model.AvaiableVisits" />
-                        @Html.ValidationMessageFor(c => c.IsVisit)
+                        <label class="form-label semibold" style="float:right;">Thành tiền: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, total - Model.Discount)</span></label>
                     </fieldset>
-                </div>*@
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" style="float:right;">Viết bằng chữ: <span class="label-content">@AppUtil.NumberToTextVn(total-Model.Discount)</span></label>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" style="float:right;">Đã trả: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, Model.Deposit)</span></label>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" style="float:right;">Còn lại: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, total - Model.Discount - Model.Deposit)</span></label>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" style="float:right;">Hình thức thanh toán: <span class="label-content">@Model.PayMethod</span></label>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" style="float:right;">Chi phí giao hàng: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, Model.DeliveryCost)</span></label>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label class="form-label semibold" style="float:right;">Lợi nhuận: <span class="label-content">@string.Format(AppUtil.MONEY_FORMAT, profit)</span></label>
+                    </fieldset>
+                </div>
+                @*<div class="col-lg-6">
+            <fieldset class="form-group">
+                <nop-label asp-for="Code" text-display="Mã cơ hội" />
+                <nop-editor asp-for="Code" asp-disabled="true" />
+                @Html.ValidationMessageFor(c => c.Need)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="UserCreated" text-display="Người tạo" />
+                <nop-editor asp-for="UserCreated" asp-disabled="true" />
+                @Html.ValidationMessageFor(c => c.UserCreated)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="DateCreated" text-display="Ngày tạo" />
+                <input class="form-control" value="@string.Format(AppUtil.DATE_TIME_FORMAT, Model.DateCreated)" disabled="disabled" />
+                @Html.ValidationMessageFor(c => c.DateCreated)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="Need" text-display="Nhu cầu" />
+                <nop-editor asp-for="Need" placeholder="Nhu cầu" />
+                @Html.ValidationMessageFor(c => c.Need)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="Description" text-display="Ghi chú" />
+                <textarea asp-for="Description" class="form-control" type="text" placeholder="Ghi chú"></textarea>
+                @Html.ValidationMessageFor(c => c.Description)
+            </fieldset>
+            <fieldset class="form-group">
+                <label class="form-label semibold" for="ContactDate">Ngày liên hệ</label>
+                <nop-editor asp-for="ContactDate" />
+                @Html.ValidationMessageFor(c => c.ContactDate)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="UserCareIds" text-display="Người phụ trách" />
+                <nop-select asp-for="UserCareIds" asp-items="Model.AvaiableUserCares" asp-multiple="true" />
+                @Html.ValidationMessageFor(c => c.UserCareIds)
+            </fieldset>
+        </div>
+        <div class="col-lg-6">
+            <fieldset class="form-group">
+                <nop-label asp-for="CrmPriorityId" text-display="Mức độ khẩn cấp" />
+                <nop-select asp-for="CrmPriorityId" asp-items="Model.AvaiableCrmPriorities" />
+                @Html.ValidationMessageFor(c => c.CrmPriorityId)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="CrmStatusId" text-display="Trạng thái CRM" />
+                <nop-select asp-for="CrmStatusId" asp-items="Model.AvaiableCrmStatuses" onchange="changeCrmStatus();" />
+                @Html.ValidationMessageFor(c => c.CrmStatusId)
+            </fieldset>
+            <fieldset class="form-group" id="divReason">
+                <nop-label asp-for="Reason" text-display="Lý do HỦY" />
+                <nop-editor asp-for="Reason" placeholder="Lý do HỦY" />
+                @Html.ValidationMessageFor(c => c.Reason)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="CustomerSourceId" text-display="Nguồn khách hàng" />
+                <nop-select asp-for="CustomerSourceId" asp-items="Model.AvaiableCustomerSources" />
+                @Html.ValidationMessageFor(c => c.CustomerSourceId)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="ProductGroupId" text-display="Nhóm sản phẩm" />
+                <nop-select asp-for="ProductGroupId" asp-items="Model.AvaiableProductGroups" />
+                @Html.ValidationMessageFor(c => c.ProductGroupId)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="CrmTypeId" text-display="Kiểu chốt" />
+                <nop-select asp-for="CrmTypeId" asp-items="Model.AvaiableCrmTypes" />
+                @Html.ValidationMessageFor(c => c.CrmTypeId)
+            </fieldset>
+            <fieldset class="form-group">
+                <nop-label asp-for="IsVisit" text-display="Đến cửa hàng" />
+                <nop-select asp-for="IsVisit" asp-items="Model.AvaiableVisits" />
+                @Html.ValidationMessageFor(c => c.IsVisit)
+            </fieldset>
+        </div>*@
                 <div class="col-lg-12">
                     <fieldset class="form-group">
                         <button type="submit" class="btn btn-primary">Cập nhật</button>

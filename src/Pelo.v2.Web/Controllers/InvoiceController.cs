@@ -250,6 +250,7 @@ namespace Pelo.v2.Web.Controllers
                                         DeliveryDate = invoice.DeliveryDate,
                                         DeliveryCost = invoice.DeliveryCost,
                                         InvoiceStatusId = invoice.InvoiceStatusId,
+                                        PayMethod = invoice.PayMethod,
                                         Products = invoice.Products.Select(c => new ProductInInvoiceDetailModel
                                                                                 {
                                                                                         Name = c.Name,
