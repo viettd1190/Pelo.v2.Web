@@ -35,7 +35,7 @@
                         </fieldset>
                     </div>
                     <div class="col-xs-12">
-                        <button class="btn btn-primary" id="search-receiptStatus">Tìm kiếm</button>
+                        <button class="btn btn-primary" id="search-recruitmentStatus">Tìm kiếm</button>
                         <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
                     </div>
                 </div>
@@ -47,10 +47,10 @@
 <section class="card">
     <div class="card-block">
         @await Html.PartialAsync("Table", new DataTablesModel {
-                                                                      Name = "receiptStatus-grid",
+                                                                      Name = "recruitmentStatus-grid",
                                                                       UrlRead = new DataUrl("GetList", "RecruitmentStatus", null),
                                                                       UrlDelete = new DataUrl("Delete", "RecruitmentStatus", null),
-                                                                      SearchButtonId = "search-RecruitmentStatus",
+                                                                      SearchButtonId = "search-recruitmentStatus",
                                                                       Filters = new List<FilterParameter> {
                                                                                                                   new FilterParameter(nameof(Model.Name))
                                                                                                           },
@@ -70,7 +70,7 @@
                                                                                                                                                                                     Width = "40",
                                                                                                                                                                                     Orderable = false,
                                                                                                                                                                                     ClassName = NopColumnClassDefaults.Button,
-                                                                                                                                                                                    Render = new RenderButtonEdit(new DataUrl("ReceiptStatus/Edit"))
+                                                                                                                                                                                    Render = new RenderButtonEdit(new DataUrl("RecruitmentStatus/Edit"))
                                                                                                                                                                             },
                                                                                                                           new ColumnProperty(nameof(RecruitmentStatusModel.Id)) {
                                                                                                                                                                                     Title = "",

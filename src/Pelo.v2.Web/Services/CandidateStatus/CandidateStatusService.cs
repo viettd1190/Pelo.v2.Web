@@ -40,7 +40,7 @@ namespace Pelo.v2.Web.Services.CandidateStatus
         {
             try
             {
-                var columnOrder = "name";
+                var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
                 if(request != null)

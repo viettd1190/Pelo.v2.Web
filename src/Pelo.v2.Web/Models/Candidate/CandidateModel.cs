@@ -12,24 +12,24 @@ namespace Pelo.v2.Web.Models.Candidate
             }
         }
 
-        [JsonProperty("id")] public int Id { get; set; }
+        [JsonProperty("Id")] public int Id { get; set; }
 
-        [JsonProperty("name")] public string Name { get; set; }
+        [JsonProperty("Name")] public string Name { get; set; }
 
-        [JsonProperty("color")] public string Color { get; set; }
+        [JsonProperty("Color")] public string Color { get; set; }
 
-        [JsonProperty("code")] public string Code { get; set; }
+        [JsonProperty("Code")] public string Code { get; set; }
 
-        [JsonProperty("candidate_status_name")] public string CandidateStatusName { get; set; }
+        [JsonProperty("CandidateStatusName")] public string CandidateStatusName { get; set; }
 
-        [JsonProperty("phone")]
+        [JsonProperty("Phone")]
         public string Phone { get; set; }
 
-        [JsonProperty("description")] public string Description { get; set; }
+        [JsonProperty("Description")] public string Description { get; set; }
 
-        [JsonProperty("user_name_created")] public string UserNameCreated { get; set; }
+        [JsonProperty("UserNameCreated")] public string UserNameCreated { get; set; }
 
-        [JsonProperty("user_phone_created")] public string UserPhoneCreated { get; set; }
+        [JsonProperty("UserPhoneCreated")] public string UserPhoneCreated { get; set; }
 
         [JsonProperty("PageSize")]
         public int PageSize { get; set; }

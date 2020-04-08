@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Pelo.Common.Dtos.Candidate;
 using Pelo.Common.Extensions;
+using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Candidate;
 using Pelo.v2.Web.Services.Candidate;
 
@@ -14,14 +15,20 @@ namespace Pelo.v2.Web.Controllers
     {
         private readonly ICandidateService _candidate;
 
-        public CandidateController(ICandidateService service)
+        private readonly IBaseModelFactory _baseModelFactory;
+
+        public CandidateController(ICandidateService service,
+                                  IBaseModelFactory baseModelFactory)
         {
             _candidate = service;
+            _baseModelFactory = baseModelFactory;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(new CandidateSearchModel());
+            var search = new CandidateSearchModel();
+            await _baseModelFactory.PrepareCandidateStatus(search.AvaiableCandidateStatus);
+            return View(search);
         }
 
         [HttpPost]

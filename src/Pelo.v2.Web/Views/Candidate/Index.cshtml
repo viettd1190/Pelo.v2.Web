@@ -59,8 +59,8 @@
                     </div>
                     <div class="col-lg-6">
                         <fieldset class="form-group">
-                            <label class="form-label semibold" for="CandidateStatusId">Trạng thái</label>
-                            <input asp-for="CandidateStatusId" class="form-control" type="text" placeholder="Trạng thái" />
+                                <nop-label asp-for="CandidateStatusId" text-display="Trạng thái" />
+                                <nop-select asp-for="CandidateStatusId" asp-items="Model.AvaiableCandidateStatus" />
                         </fieldset>
                     </div>
                     <div class="col-lg-6">
@@ -91,10 +91,10 @@
     <div class="card-block">
         @await Html.PartialAsync("Table", new DataTablesModel
    {
-       Name = "receiptStatus-grid",
-       UrlRead = new DataUrl("GetList", "CandidateStatus", null),
-       UrlDelete = new DataUrl("Delete", "CandidateStatus", null),
-       SearchButtonId = "search-candidateStatus",
+       Name = "candidate-grid",
+       UrlRead = new DataUrl("GetList", "Candidate", null),
+       UrlDelete = new DataUrl("Delete", "Candidate", null),
+       SearchButtonId = "search-Candidate",
        Filters = new List<FilterParameter> {
                                                                                                                   new FilterParameter(nameof(Model.Name))
                                                                                                           },
@@ -128,7 +128,7 @@
                                                                                                                                                                                     Width = "40",
                                                                                                                                                                                     Orderable = false,
                                                                                                                                                                                     ClassName = NopColumnClassDefaults.Button,
-                                                                                                                                                                                    Render = new RenderButtonEdit(new DataUrl("ReceiptStatus/Edit"))
+                                                                                                                                                                                    Render = new RenderButtonEdit(new DataUrl("Candidate/Edit"))
                                                                                                                                                                             },
                                                                                                                           new ColumnProperty(nameof(CandidateModel.Id)) {
                                                                                                                                                                                     Title = "",
@@ -148,7 +148,7 @@
             $('.opened').removeClass('opened');
             $('.row-active').removeClass('row-active');
             $('#liJob').addClass('opened');
-            $('#liCandidateStatus').addClass('row-active');
+            $('#liCandidate').addClass('row-active');
             $('.panel').lobiPanel({
                     sortable:false,
                     draggable:false,

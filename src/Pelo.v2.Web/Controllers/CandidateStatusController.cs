@@ -58,7 +58,7 @@ namespace Pelo.v2.Web.Controllers
             var model = await _candidateStatus.GetById(id);
             if (model.IsSuccess)
             {
-                return View(new CandidateStatusModel { Id = model.Data.Id, Name = model.Data.Name });
+                return View(new CandidateStatusModel { Id = model.Data.Id, Name = model.Data.Name , Color =model.Data.Color,SortOrder=model.Data.SortOrder});
             }
 
             return View("Notfound");

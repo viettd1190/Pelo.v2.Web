@@ -17,6 +17,9 @@ namespace Pelo.v2.Web.Services.RecruitmentStatus
         Task<RecruitmentStatusListModel> GetByPaging(RecruitmentStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<bool>> Add(InsertRecruitmentStatus insertRecruitmentStatus);
+        Task<TResponse<RecruitmentStatusResponse>> GetById(int id);
+        Task<TResponse<bool>> Edit(UpdateRecruitmentStatus updateRecruitmentStatus);
     }
 
     public class RecruitmentStatusService : BaseService,
@@ -33,7 +36,7 @@ namespace Pelo.v2.Web.Services.RecruitmentStatus
         {
             try
             {
-                var columnOrder = "name";
+                var columnOrder = "SortOrder";
                 var sortDir = "ASC";
 
                 if(request != null)
@@ -92,6 +95,71 @@ namespace Pelo.v2.Web.Services.RecruitmentStatus
                                                             HttpMethod.Delete,
                                                             true);
                 if(response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Add(InsertRecruitmentStatus insertRecruitmentStatus)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.RECRUITMENT_STATUS_UPDATE,
+                                                            insertRecruitmentStatus,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<RecruitmentStatusResponse>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.RECRUITMENT_STATUS_GET_BY_ID,
+                                        id);
+                var response = await HttpService.Send<RecruitmentStatusResponse>(url,
+                                                            null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<RecruitmentStatusResponse>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<RecruitmentStatusResponse>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Edit(UpdateRecruitmentStatus updateRecruitmentStatus)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.RECRUITMENT_STATUS_UPDATE,
+                                                            updateRecruitmentStatus,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }
