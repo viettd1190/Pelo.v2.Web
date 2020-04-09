@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Pelo.v2.Web.Models.Candidate
 {
@@ -9,6 +11,8 @@ namespace Pelo.v2.Web.Models.Candidate
         public CandidateSearchModel()
         {
             AvaiableCandidateStatus = new List<SelectListItem>();
+            FromDate = string.Empty;
+            ToDate = string.Empty;
         }
         public string Name { get; set; }
 
@@ -18,9 +22,19 @@ namespace Pelo.v2.Web.Models.Candidate
 
         public string CandidateStatusId { get; set; }
 
-        public string FromDate { get; set; }
+        [DataType(DataType.Date)]
+        [UIHint("DateTimeEn_Insert")]
+        [UIHint("DateAjaxCalendar")]
+        [UIHint("DateOnly")]
+        [DefaultValue(null)]
+        public string FromDate { get; set; } = string.Empty;
 
-        public string ToDate { get; set; }
+        [DataType(DataType.Date)]
+        [UIHint("DateTimeEn_Insert")]
+        [UIHint("DateAjaxCalendar")]
+        [UIHint("DateOnly")]
+        [DefaultValue(null)]
+        public string ToDate { get; set; } = string.Empty;
 
         public string ColumnOrder{ get; set; }
 

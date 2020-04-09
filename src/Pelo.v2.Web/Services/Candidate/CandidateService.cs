@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Pelo.v2.Web.Services.Candidate
         Task<TResponse<bool>> Insert(InsertCandidate insertCandidate);
         
         Task<TResponse<GetCandidateResponse>> GetById(int id);
-        
+
         Task<TResponse<bool>> Update(UpdateCandidate updateCandidate);
     }
 
@@ -45,11 +46,21 @@ namespace Pelo.v2.Web.Services.Candidate
                 if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
-
+                    string fromDate = string.Empty; string toDate = string.Empty;
+                    if (!string.IsNullOrEmpty(request.FromDate))
+                    {
+                        CultureInfo MyCultureInfo = new CultureInfo("de-DE");
+                        fromDate = string.Format("{0:yyyy-MM-dd} 00:00:00", DateTime.Parse(request.FromDate, MyCultureInfo));
+                    }
+                    if (!string.IsNullOrEmpty(request.ToDate))
+                    {
+                        CultureInfo MyCultureInfo = new CultureInfo("de-DE");
+                        toDate = string.Format("{0:yyyy-MM-dd} 00:00:00", DateTime.Parse(request.ToDate, MyCultureInfo));
+                    }
                     var url = string.Format(ApiUrl.CANDIDATE_GET_BY_PAGING,
                                             request.Name,
-                                            request.FromDate,
-                                            request.ToDate,
+                                            fromDate,
+                                            toDate,
                                             request.Phone,
                                             request.Code,
                                             request.CandidateStatusId,

@@ -25,6 +25,7 @@
 
 @section jsPlugin {
     <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+    <script src="~/startui/js/lib/moment/moment-with-locales.js"></script>
     <script src="~/startui/js/lib/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
     <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker.min.js"></script>
     <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker-init.js"></script>
@@ -59,21 +60,21 @@
                     </div>
                     <div class="col-lg-6">
                         <fieldset class="form-group">
-                                <nop-label asp-for="CandidateStatusId" text-display="Trạng thái" />
-                                <nop-select asp-for="CandidateStatusId" asp-items="Model.AvaiableCandidateStatus" />
+                            <nop-label asp-for="CandidateStatusId" text-display="Trạng thái" />
+                            <nop-select asp-for="CandidateStatusId" asp-items="Model.AvaiableCandidateStatus" />
                         </fieldset>
                     </div>
                     <div class="col-lg-6">
                         <fieldset class="form-group">
                             <label class="form-label semibold" for="FromDate">Từ ngày</label>
-                            <nop-editor asp-for="FromDate" />
+                            <nop-editor asp-for="FromDate" value="" />
                             @*<input asp-for="FromDate" class="form-control" type="text" placeholder="Từ ngày" />*@
                         </fieldset>
                     </div>
                     <div class="col-lg-6">
                         <fieldset class="form-group">
                             <label class="form-label semibold" for="ToDate">Đến ngày</label>
-                            <nop-editor asp-for="ToDate" />
+                            <nop-editor asp-for="ToDate" value=""/>
                             @*<input asp-for="ToDate" class="form-control" type="text" placeholder="Đến ngày" />*@
                         </fieldset>
                     </div>
@@ -90,13 +91,18 @@
 <section class="card">
     <div class="card-block">
         @await Html.PartialAsync("Table", new DataTablesModel
-   {
+   {       
        Name = "candidate-grid",
        UrlRead = new DataUrl("GetList", "Candidate", null),
        UrlDelete = new DataUrl("Delete", "Candidate", null),
        SearchButtonId = "search-Candidate",
        Filters = new List<FilterParameter> {
-                                                                                                                  new FilterParameter(nameof(Model.Name))
+                                                                                                                  new FilterParameter(nameof(Model.Name)),
+                                                                                                                  new FilterParameter(nameof(Model.Phone)),
+                                                                                                                  new FilterParameter(nameof(Model.Code)),
+                                                                                                                  new FilterParameter(nameof(Model.CandidateStatusId)),
+                                                                                                                  new FilterParameter(nameof(Model.FromDate)),
+                                                                                                                  new FilterParameter(nameof(Model.ToDate))
                                                                                                           },
        ColumnCollection = new List<ColumnProperty> {
                                                                                                                           new ColumnProperty(nameof(CandidateModel.CandidateStatusName)) {
@@ -104,7 +110,8 @@
                                                                                                                                                                                       Render = new RenderCustom("displayColor")
                                                                                                                                                                               },
                                                                                                                           new ColumnProperty(nameof(CandidateModel.Code)) {
-                                                                                                                                                                                      Title = "Mã ứng viên"
+                                                                                                                                                                                      Title = "Mã ứng viên",
+                                                                                                                                                                                      Render = new RenderLink(new DataUrl("Candidate/Detail","Id"))
                                                                                                                                                                               },
                                                                                                                           new ColumnProperty(nameof(CandidateModel.Name)) {
                                                                                                                                                                                        Title = "Tên ứng viên",
@@ -123,20 +130,6 @@
                                                                                                                                                                                        Render = new RenderCustom("displayUserPhone")
 
                                                                                                                                                                                },
-                                                                                                                          new ColumnProperty(nameof(CandidateModel.Id)) {
-                                                                                                                                                                                    Title = "",
-                                                                                                                                                                                    Width = "40",
-                                                                                                                                                                                    Orderable = false,
-                                                                                                                                                                                    ClassName = NopColumnClassDefaults.Button,
-                                                                                                                                                                                    Render = new RenderButtonEdit(new DataUrl("Candidate/Edit"))
-                                                                                                                                                                            },
-                                                                                                                          new ColumnProperty(nameof(CandidateModel.Id)) {
-                                                                                                                                                                                    Title = "",
-                                                                                                                                                                                    Width = "40",
-                                                                                                                                                                                    Orderable = false,
-                                                                                                                                                                                    ClassName = NopColumnClassDefaults.Button,
-                                                                                                                                                                                    Render = new RenderButtonRemove("Remove")
-                                                                                                                                                                            }
                                                                                                                   }
    })
     </div>
@@ -145,6 +138,8 @@
 @section js{
     <script>
         $(document).ready(function () {
+            $('#FromDate').val('');
+            $('#ToDate').val('');
             $('.opened').removeClass('opened');
             $('.row-active').removeClass('row-active');
             $('#liJob').addClass('opened');
@@ -153,8 +148,9 @@
                     sortable:false,
                     draggable:false,
                     resize:'none'
-                });
+                });            
             reloadDataWhenEnter('@nameof(Model.Name)');
+            $('#search-Candidate').click();
         });
         function displayColor(data,type,row,meta) {
             return '<div style="text-align:center;margin:auto;"><span class="label" style="width:70px;background-color:'+

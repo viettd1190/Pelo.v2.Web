@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,9 @@ namespace Pelo.v2.Web.Models.Candidate
 {
     public class UpdateCandidateModel
     {
+        public UpdateCandidateModel()
+        {
+        }
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -20,5 +24,6 @@ namespace Pelo.v2.Web.Models.Candidate
         public string Address { get; set; }
 
         public string Description { get; set; }
+
     }
 }

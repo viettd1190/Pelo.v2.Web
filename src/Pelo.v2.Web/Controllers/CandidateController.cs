@@ -94,5 +94,64 @@ namespace Pelo.v2.Web.Controllers
             var result = await _candidate.Delete(id);
             return Json(result);
         }
+
+        public async Task<IActionResult> Detail(int id)
+        {
+            var model = await _candidate.GetById(id);
+            if (model != null)
+            {
+                CandidateDetailModel candidate = new CandidateDetailModel
+                {
+                    Id = model.Data.Id,
+                    Code = model.Data.Code,
+                    CandidateStatusId = model.Data.CandidateStatusId,
+                    Address = model.Data.Address,
+                    DateCreated = model.Data.DateCreated,
+                    Description = model.Data.Description,
+                    Email = model.Data.Email,
+                    Name = model.Data.Name,
+                    Phone = model.Data.Phone,
+                    UserNameCreated = model.Data.UserNameCreated,
+                    UserPhoneCreated = model.Data.UserPhoneCreated,
+                };
+                await _baseModelFactory.PrepareCandidateStatus(candidate.AvaiableCandidateStatuses);
+                return View(candidate);
+            }
+
+            return View("Notfound");
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetLogs(int id)
+        {
+            //var logs = await _candidate.GetLogs(id);
+            //var result = new List<CrmLogDetail>();
+
+            //foreach (var log in logs)
+            //{
+            //    var crmLog = new CrmLogDetail
+            //    {
+            //        Name = log.User?.Name ?? string.Empty,
+            //        PhoneNumber = log.User?.PhoneNumber ?? string.Empty,
+            //        Avatar = log.User?.Avatar ?? string.Empty,
+            //        Content = log.Comment,
+            //        LogDate = string.Format(AppUtil.DATE_TIME_FORMAT,
+            //                                                 log.LogDate),
+            //        AttachmentModels = new List<AttachmentModel>()
+            //    };
+
+            //    crmLog.AttachmentModels.AddRange(log.Attachments.Where(c => !string.IsNullOrEmpty(c.AttachmentName))
+            //                                        .Select(c => new AttachmentModel
+            //                                        {
+            //                                            Name = c.AttachmentName,
+            //                                            Url = $"http://103.77.167.96:20001/Attachments/{c.Attachment}",
+            //                                            IsImage = CheckStringIsImageExtension(c.AttachmentName)
+            //                                        })
+            //                                        .OrderByDescending(c => CheckStringIsImageExtension(c.Name)));
+
+            //    result.Add(crmLog);
+            //}
+
+            return Json("");
+        }
     }
 }
