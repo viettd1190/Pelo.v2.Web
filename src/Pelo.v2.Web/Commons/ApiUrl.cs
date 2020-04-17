@@ -420,6 +420,10 @@
         public const string CANDIDATE_GET_BY_ID = BASE_API_URL + "/api/candidate/{0}";
 
         public const string CANDIDATE_UPDATE = BASE_API_URL + "/api/candidate";
+
+        public const string CANDIDATE_GET_LOGS = BASE_API_URL + "/api/candidate/log/{0}";
+
+        public const string CANDIDATE_COMMENT = BASE_API_URL + "/api/candidate/comment";
         #endregion
 
         #region Receipt Status

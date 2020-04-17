@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pelo.Common.Dtos.Candidate;
 using Pelo.Common.Extensions;
+using Pelo.Common.Models;
 using Pelo.v2.Web.Factories;
 using Pelo.v2.Web.Models.Candidate;
+using Pelo.v2.Web.Models.Crm;
 using Pelo.v2.Web.Services.Candidate;
 
 namespace Pelo.v2.Web.Controllers
@@ -60,16 +63,16 @@ namespace Pelo.v2.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Edit(int id)
-        {
-            var model = await _candidate.GetById(id);
-            if (model.IsSuccess)
-            {
-                return View(new UpdateCandidateModel { Id = model.Data.Id, Name = model.Data.Name, Email = model.Data.Email, Phone = model.Data.Phone, CandidateStatusId = model.Data.CandidateStatusId, Address = model.Data.Address, Description = model.Data.Description });
-            }
+        //public async Task<IActionResult> Edit(int id)
+        //{
+        //    var model = await _candidate.GetById(id);
+        //    if (model.IsSuccess)
+        //    {
+        //        return View(new UpdateCandidateModel { Id = model.Data.Id, Name = model.Data.Name, Email = model.Data.Email, Phone = model.Data.Phone, CandidateStatusId = model.Data.CandidateStatusId, Address = model.Data.Address, Description = model.Data.Description });
+        //    }
 
-            return View("Notfound");
-        }
+        //    return View("Notfound");
+        //}
 
         [HttpPost]
         public async Task<IActionResult> Edit(UpdateCandidateModel model)
@@ -123,35 +126,80 @@ namespace Pelo.v2.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> GetLogs(int id)
         {
-            //var logs = await _candidate.GetLogs(id);
-            //var result = new List<CrmLogDetail>();
+            var logs = await _candidate.GetLogs(id);
+            var result = new List<CandidateLogDetail>();
 
-            //foreach (var log in logs)
-            //{
-            //    var crmLog = new CrmLogDetail
-            //    {
-            //        Name = log.User?.Name ?? string.Empty,
-            //        PhoneNumber = log.User?.PhoneNumber ?? string.Empty,
-            //        Avatar = log.User?.Avatar ?? string.Empty,
-            //        Content = log.Comment,
-            //        LogDate = string.Format(AppUtil.DATE_TIME_FORMAT,
-            //                                                 log.LogDate),
-            //        AttachmentModels = new List<AttachmentModel>()
-            //    };
+            foreach (var log in logs)
+            {
+                var crmLog = new CandidateLogDetail
+                {
+                    Name = log.User?.Name ?? string.Empty,
+                    PhoneNumber = log.User?.PhoneNumber ?? string.Empty,
+                    Avatar = log.User?.Avatar ?? string.Empty,
+                    Content = log.Comment,
+                    LogDate = string.Format(AppUtil.DATE_TIME_FORMAT,
+                                                             log.LogDate),
+                    AttachmentModels = new List<AttachmentModel>()
+                };
 
-            //    crmLog.AttachmentModels.AddRange(log.Attachments.Where(c => !string.IsNullOrEmpty(c.AttachmentName))
-            //                                        .Select(c => new AttachmentModel
-            //                                        {
-            //                                            Name = c.AttachmentName,
-            //                                            Url = $"http://103.77.167.96:20001/Attachments/{c.Attachment}",
-            //                                            IsImage = CheckStringIsImageExtension(c.AttachmentName)
-            //                                        })
-            //                                        .OrderByDescending(c => CheckStringIsImageExtension(c.Name)));
+                crmLog.AttachmentModels.AddRange(log.Attachments.Where(c => !string.IsNullOrEmpty(c.AttachmentName))
+                                                    .Select(c => new AttachmentModel
+                                                    {
+                                                        Name = c.AttachmentName,
+                                                        Url = $"http://103.77.167.96:20001/Attachments/{c.Attachment}",
+                                                        IsImage = Util.CheckStringIsImageExtension(c.AttachmentName)
+                                                    })
+                                                    .OrderByDescending(c => Util.CheckStringIsImageExtension(c.Name)));
 
-            //    result.Add(crmLog);
-            //}
+                result.Add(crmLog);
+            }
 
-            return Json("");
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Comment(CandidateCommentModel model,
+                                                 List<IFormFile> files)
+        {
+            if (string.IsNullOrWhiteSpace(model.Comment)
+               && (files == null || !files.Any()))
+            {
+                TempData["Update"] = (new TResponse<bool>
+                {
+                    Data = false,
+                    IsSuccess = false,
+                    Message = "Bạn phải bình luận hoặc đính kèm file để thực hiện chức năng này"
+                }).ToJson();
+                return RedirectToAction("Detail",
+                                        "Crm",
+                                        new
+                                        {
+                                            id = model.Id
+                                        });
+            }
+
+            var result = await _candidate.Comment(new CandidateComment { CandidateStatusId = model.CandidateStatusId, Comment = model.Comment, Id = model.Id },
+                                                   files);
+
+            if (result.IsSuccess)
+            {
+                TempData["Update"] = result.ToJson();
+                return RedirectToAction("Index");
+            }
+
+            TempData["Update"] = (new TResponse<bool>
+            {
+                Data = false,
+                IsSuccess = false,
+                Message = result.Message
+            }).ToJson();
+
+            return RedirectToAction("Detail",
+                                    "CAndidate",
+                                    new
+                                    {
+                                        id = model.Id
+                                    });
         }
     }
 }

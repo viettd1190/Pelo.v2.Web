@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Pelo.Common.Dtos.Candidate;
 using Pelo.Common.Exceptions;
 using Pelo.Common.Models;
+using Pelo.Common.Extensions;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.Candidate;
 using Pelo.v2.Web.Services.Http;
@@ -24,14 +30,21 @@ namespace Pelo.v2.Web.Services.Candidate
         Task<TResponse<GetCandidateResponse>> GetById(int id);
 
         Task<TResponse<bool>> Update(UpdateCandidate updateCandidate);
+        Task<IEnumerable<CandidateLogResponse>> GetLogs(int id);
+
+        Task<TResponse<bool>> Comment(CandidateComment model,
+                                      List<IFormFile> files);
     }
 
     public class CandidateService : BaseService,
                                     ICandidateService
     {
+        private readonly ContextHelper _contextHelper;
+
         public CandidateService(IHttpService httpService,
-                                ILogger<BaseService> logger) : base(httpService, logger)
+                                ILogger<BaseService> logger, ContextHelper contextHelper) : base(httpService, logger)
         {
+            _contextHelper = contextHelper;
         }
 
         #region ICandidateService Members
@@ -197,5 +210,98 @@ namespace Pelo.v2.Web.Services.Candidate
         }
 
         #endregion
+
+        public async Task<IEnumerable<CandidateLogResponse>> GetLogs(int id)
+        {
+            try
+            {
+                string url = string.Format(ApiUrl.CANDIDATE_GET_LOGS,
+                                           id);
+                var response = await HttpService.Send<IEnumerable<CandidateLogResponse>>(url,
+                                                                                   null,
+                                                                                   HttpMethod.Get,
+                                                                                   true);
+                if (response.IsSuccess)
+                {
+                    return response.Data;
+                }
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Comment(CandidateComment model,
+                                                   List<IFormFile> files)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (var form = new MultipartFormDataContent())
+                    {
+                        foreach (var file in files)
+                        {
+                            var fileStream = file.OpenReadStream();
+                            form.Add(CreateFileContent(fileStream,
+                                                       file.FileName,
+                                                       file.ContentType));
+                        }
+
+                        var paras = new List<KeyValuePair<string, string>>();
+                        var para = new Tuple<int, string>(model.Id, model.Comment);
+                        paras.Add(new KeyValuePair<string, string>("para", para.ToJson()));
+
+                        form.Add(new FormUrlEncodedContent(paras));
+
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _contextHelper.GetToken());
+
+                        var response = await client.PostAsync(ApiUrl.CANDIDATE_COMMENT,
+                                                              form);
+                        response.EnsureSuccessStatusCode();
+
+                        var res = await response.Content.ReadAsStringAsync();
+                        var obj = JsonConvert.DeserializeObject<TResponse<bool>>(res);
+                        if (obj.IsSuccess)
+                        {
+                            return await Task.FromResult(new TResponse<bool>
+                            {
+                                Data = obj.Data,
+                                IsSuccess = true,
+                                Message = string.Empty
+                            });
+                        }
+
+                        return await Task.FromResult(new TResponse<bool>
+                        {
+                            Data = default,
+                            IsSuccess = false,
+                            Message = obj.Message
+                        });
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        private StreamContent CreateFileContent(Stream stream,
+                                                string fileName,
+                                                string contentType)
+        {
+            var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "\"files\"",
+                FileName = "\"" + fileName + "\""
+            }; // the extra quotes are key here
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+            return fileContent;
+        }
     }
 }

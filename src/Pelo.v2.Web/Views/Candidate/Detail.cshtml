@@ -1,9 +1,9 @@
 ﻿@using Newtonsoft.Json
 @using Pelo.v2.Web.Models.Candidate
-@model Pelo.v2.Web.Models.Candidate.UpdateCandidateModel
+@model Pelo.v2.Web.Models.Candidate.CandidateDetailModel
 
 @{
-    ViewBag.Title = "Thông tin Ứng viên ";
+    ViewBag.Title = "Thông tin ứng viên ";
     Layout = "_Layout";
 }
 
@@ -46,32 +46,90 @@
 }
 
 <ol class="breadcrumb">
-    <li><a href="@Url.Action("Index","Crm")">Danh sách CRM</a></li>
+    <li><a href="@Url.Action("Index","Crm")">Danh sách ứng viên</a></li>
     <li class="active">Thông tin ứng viên</li>
 </ol>
 
 <section class="card">
     <div class="card-block">
         <div class="row">
-            <form id="update-candidate" asp-controller="Candidate" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" onsubmit="return checkSubmit();">
+            <form id="update-candidate" asp-controller="Candidate" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
                 @Html.HiddenFor(c => c.Id)
-                @Html.HiddenFor(c=>c.CandidateStatusId)
                 @Html.ValidationSummary()
                 <div class="col-lg-12">
-                    <h3>Thông tin khách hàng</h3>
+                    <h3>Thông tin ứng viên</h3>
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold">Mã tuyển dụng: <span class="label-content">@Model.Code</span></label>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold">Ngày tạo: <span class="label-content">@Model.UserNameCreated</span></label>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold">Người tạo: <span class="label-content"><a href="tel:@Model.UserPhoneCreated">@Model.UserNameCreated</a></span></label>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-12">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="Name">Tên ứng viên</label>
+                            <input asp-for="Name" class="form-control" type="text" placeholder="Tên ứng viên" />
+                            @Html.ValidationMessageFor(c => c.Name)
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-12">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="Phone">Số điện thoại</label>
+                            <input asp-for="Phone" class="form-control" type="text" placeholder="Số điện thoại" />
+                            @Html.ValidationMessageFor(c => c.Phone)
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-12">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="Address">Địa chỉ</label>
+                            <input asp-for="Address" class="form-control" type="text" placeholder="Địa chỉ" />
+                            @Html.ValidationMessageFor(c => c.Address)
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-12">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="Email">Email</label>
+                            <input asp-for="Email" class="form-control" type="text" placeholder="Email" />
+                            @Html.ValidationMessageFor(c => c.Email)
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-12">
+                        <fieldset class="form-group">
+                            <label class="form-label semibold" for="Description">Ghi chú</label>
+                            <textarea asp-for="Description" class="form-control" type="text" placeholder="Ghi chú"></textarea>
+                            @Html.ValidationMessageFor(c => c.Description)
+                        </fieldset>
+                    </div>
                 </div>
                 <div class="col-lg-12">
                     <fieldset class="form-group">
-                        <a class="btn btn-primary" href="@Url.Action("Edit", "Candidate")">Sửa thông tin</a>
-                        <a class="btn btn-default" href="@Url.Action("Index", "Candidate")">Hủy</a>
+                        <a class="btn btn-primary" href="@Url.Action("Edit", "Candidate")">Lưu thông tin</a>
+                        <a class="btn btn-default" href="@Url.Action("Index", "Candidate")">Trở lại</a>
                     </fieldset>
                 </div>
             </form>
-            <form id="comment-crm" asp-controller="Crm" asp-action="Comment" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+            <form id="comment-candiate" asp-controller="Candidate" asp-action="Comment" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+                @Html.HiddenFor(c => c.Id)
+                @Html.HiddenFor(c => c.CandidateStatusId)
                 <div class="col-lg-12">
                     <div class="divider"></div>
                 </div>
                 <div class="col-lg-4">
+                    <fieldset class="form-group">
+                        <nop-label asp-for="CandidateStatusId" text-display="Trạng thái" />
+                        <nop-select asp-for="CandidateStatusId" asp-items="Model.AvaiableCandidateStatuses" />
+                        @Html.ValidationMessageFor(c => c.CandidateStatusId)
+                    </fieldset>
                     <fieldset class="form-group">
                         <label class="form-label semibold" for="Comment">Bình luận</label>
                         <textarea type="text" class="form-control" id="Comment" name="Comment"></textarea>
@@ -151,20 +209,6 @@
             Mustache.parse(tmpl);
             displayLogs();
         });
-        function changeCrmStatus() {
-            var crmStatus=$('#CrmStatusId').val();
-            @*if(crmStatus=='@Model.CrmStatusDeleted') {
-                $('#divReason').css('display','');
-            } else {
-                $('#divReason').css('display','none');
-            }*@
-        }
-        function checkSubmit() {
-            var contactDate=$('#ContactDate').val();
-            var formatedDate=moment(contactDate,'DD-MM-YYYY HH:mm');
-            $('#ContactDate').val(moment(formatedDate).format('YYYY-MM-DD HH:mm:ss'));
-            return true;
-        }
         function displayLogs() {
             $.post('@Url.Action("GetLogs", "Candidate")',
                 {id:'@Model.Id'},
@@ -182,7 +226,6 @@
                         var rendered=Mustache.render(tmpl,obj);
                         $("#logContent").append(rendered);
                     }
-                    //$('#logContent').html(liContent);
                     $('#countLogs').html(result.length);
                 });
         }
