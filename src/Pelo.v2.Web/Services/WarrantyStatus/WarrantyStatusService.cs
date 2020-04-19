@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -17,6 +18,14 @@ namespace Pelo.v2.Web.Services.WarrantyStatus
         Task<WarrantyStatusListModel> GetByPaging(WarrantyStatusSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+
+        Task<TResponse<GetWarrantyStatusResponse>> GetById(int id);
+
+        Task<TResponse<bool>> Add(InsertWarrantyStatus warrantyStatus);
+
+        Task<TResponse<bool>> Update(UpdateWarrantyStatus warrantyStatus);
+
+        Task<IEnumerable<WarrantyStatusSimpleModel>> GetAll();
     }
 
     public class WarrantyStatusService : BaseService,
@@ -36,7 +45,7 @@ namespace Pelo.v2.Web.Services.WarrantyStatus
                 var columnOrder = "name";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
@@ -65,8 +74,6 @@ namespace Pelo.v2.Web.Services.WarrantyStatus
                                 Name = c.Name,
                                 Color = c.Color,
                                 SortOrder = c.SortOrder,
-                                IsSendSms = c.IsSendSms,
-                                SmsContent = c.SmsContent,
                                 PageSize = request.PageSize,
                                 PageSizeOptions = request.AvailablePageSizes
                             })
@@ -93,7 +100,94 @@ namespace Pelo.v2.Web.Services.WarrantyStatus
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<IEnumerable<WarrantyStatusSimpleModel>> GetAll()
+        {
+            try
+            {
+                
+                var response = await HttpService.Send<IEnumerable<WarrantyStatusSimpleModel>>(ApiUrl.WARRANTY_STATUS_GET_ALL,
+                                                            null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return response.Data;
+                }
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<GetWarrantyStatusResponse>> GetById(int id)
+        {
+            try
+            {
+                var url = string.Format(ApiUrl.WARRANTY_STATUS_GET_BY_ID,
+                                        id);
+                var response = await HttpService.Send<GetWarrantyStatusResponse>(url,
+                                                            null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Add(InsertWarrantyStatus warrantyStatus)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.WARRANTY_STATUS_UPDATE,
+                                                            warrantyStatus,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateWarrantyStatus warrantyStatus)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.WARRANTY_STATUS_UPDATE,
+                                                            warrantyStatus,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }

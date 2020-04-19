@@ -28,6 +28,7 @@ using Pelo.v2.Web.Services.TaskPriority;
 using Pelo.v2.Web.Services.TaskStatus;
 using Pelo.v2.Web.Services.TaskType;
 using Pelo.v2.Web.Services.User;
+using Pelo.v2.Web.Services.WarrantyStatus;
 
 namespace Pelo.v2.Web.Factories
 {
@@ -340,6 +341,10 @@ namespace Pelo.v2.Web.Factories
         Task PrepareCandidateStatus(IList<SelectListItem> items,
                                     bool withSpecialDefaultItem = true,
                                     string defaultItemText = null);
+
+        Task PrepareWarrantyStatuses(IList<SelectListItem> items, 
+                                    bool withSpecialDefaultItem = true,
+                                    string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
@@ -400,6 +405,8 @@ namespace Pelo.v2.Web.Factories
 
         private readonly ICandidateStatusService _candidatestatusservice;
 
+        private readonly IWarrantyStatusService _warrantyStatusService;
+
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
                                 IWardService wardService,
@@ -427,7 +434,8 @@ namespace Pelo.v2.Web.Factories
                                 IReceiptStatusService receiptStatusService,
                                 IReceiptDescriptionService receiptDescriptionService,
                                 ICountryService countryService,
-                                ICandidateStatusService candidateStatusService)
+                                ICandidateStatusService candidateStatusService,
+                                IWarrantyStatusService warrantyStatusService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -457,6 +465,7 @@ namespace Pelo.v2.Web.Factories
             _receiptDescriptionService = receiptDescriptionService;
             _countryService = countryService;
             _candidatestatusservice = candidateStatusService;
+            _warrantyStatusService = warrantyStatusService;
         }
 
         #region IBaseModelFactory Members
@@ -471,20 +480,20 @@ namespace Pelo.v2.Web.Factories
                                            bool withSpecialDefaultItem = true,
                                            string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available provinces
             var avaiableProvinces = await _provinceService.GetAll();
-            if(avaiableProvinces.IsSuccess)
+            if (avaiableProvinces.IsSuccess)
             {
                 foreach (var province in avaiableProvinces.Data)
                 {
                     items.Add(new SelectListItem
-                              {
-                                      Value = province.Id.ToString(),
-                                      Text = province.Name
-                              });
+                    {
+                        Value = province.Id.ToString(),
+                        Text = province.Name
+                    });
                 }
 
                 //insert special item for the default value
@@ -499,20 +508,20 @@ namespace Pelo.v2.Web.Factories
                                            bool withSpecialDefaultItem = true,
                                            string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available districts
             var avaiableDistricts = await _districtService.GetAll(provinceId);
-            if(avaiableDistricts.IsSuccess)
+            if (avaiableDistricts.IsSuccess)
             {
                 foreach (var district in avaiableDistricts.Data)
                 {
                     items.Add(new SelectListItem
-                              {
-                                      Value = district.Id.ToString(),
-                                      Text = $"{district.Type} {district.Name}"
-                              });
+                    {
+                        Value = district.Id.ToString(),
+                        Text = $"{district.Type} {district.Name}"
+                    });
                 }
 
                 //insert special item for the default value
@@ -527,20 +536,20 @@ namespace Pelo.v2.Web.Factories
                                        bool withSpecialDefaultItem = true,
                                        string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available wards
             var avaiableWards = await _wardService.GetAll(districtId);
-            if(avaiableWards.IsSuccess)
+            if (avaiableWards.IsSuccess)
             {
                 foreach (var ward in avaiableWards.Data)
                 {
                     items.Add(new SelectListItem
-                              {
-                                      Value = ward.Id.ToString(),
-                                      Text = $"{ward.Type} {ward.Name}"
-                              });
+                    {
+                        Value = ward.Id.ToString(),
+                        Text = $"{ward.Type} {ward.Name}"
+                    });
                 }
 
                 //insert special item for the default value
@@ -554,7 +563,7 @@ namespace Pelo.v2.Web.Factories
                                           bool withSpecialDefaultItem = true,
                                           string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available branches
@@ -562,10 +571,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var branch in avaiableBranches)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = branch.Id.ToString(),
-                                  Text = $"{branch.Name}"
-                          });
+                {
+                    Value = branch.Id.ToString(),
+                    Text = $"{branch.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -578,7 +587,7 @@ namespace Pelo.v2.Web.Factories
                                        bool withSpecialDefaultItem = true,
                                        string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available roles
@@ -586,10 +595,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var role in avaiableRoles)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = role.Id.ToString(),
-                                  Text = $"{role.Name}"
-                          });
+                {
+                    Value = role.Id.ToString(),
+                    Text = $"{role.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -602,7 +611,7 @@ namespace Pelo.v2.Web.Factories
                                              bool withSpecialDefaultItem = true,
                                              string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available departments
@@ -610,10 +619,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var department in avaiableDepartments)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = department.Id.ToString(),
-                                  Text = $"{department.Name}"
-                          });
+                {
+                    Value = department.Id.ToString(),
+                    Text = $"{department.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -626,7 +635,7 @@ namespace Pelo.v2.Web.Factories
                                               bool withSpecialDefaultItem = true,
                                               string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available customer vips
@@ -634,10 +643,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var customerVip in avaiableCustomerVips)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = customerVip.Id.ToString(),
-                                  Text = $"{customerVip.Name}"
-                          });
+                {
+                    Value = customerVip.Id.ToString(),
+                    Text = $"{customerVip.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -650,7 +659,7 @@ namespace Pelo.v2.Web.Factories
                                                 bool withSpecialDefaultItem = true,
                                                 string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available customer groups
@@ -658,10 +667,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var customerGroup in avaiableCustomerGroups)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = customerGroup.Id.ToString(),
-                                  Text = $"{customerGroup.Name}"
-                          });
+                {
+                    Value = customerGroup.Id.ToString(),
+                    Text = $"{customerGroup.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -674,7 +683,7 @@ namespace Pelo.v2.Web.Factories
                                                bool withSpecialDefaultItem = true,
                                                string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available product groups
@@ -682,10 +691,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var productGroup in avaiableProductGroups)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = productGroup.Id.ToString(),
-                                  Text = $"{productGroup.Name}"
-                          });
+                {
+                    Value = productGroup.Id.ToString(),
+                    Text = $"{productGroup.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -698,7 +707,7 @@ namespace Pelo.v2.Web.Factories
                                               bool withSpecialDefaultItem = true,
                                               string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available product groups
@@ -706,10 +715,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var productUnit in avaiableProductUnits)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = productUnit.Id.ToString(),
-                                  Text = $"{productUnit.Name}"
-                          });
+                {
+                    Value = productUnit.Id.ToString(),
+                    Text = $"{productUnit.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -722,7 +731,7 @@ namespace Pelo.v2.Web.Factories
                                                  bool withSpecialDefaultItem = true,
                                                  string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available product groups
@@ -730,10 +739,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var productStatus in avaiableProductStatuses)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = productStatus.Id.ToString(),
-                                  Text = $"{productStatus.Name}"
-                          });
+                {
+                    Value = productStatus.Id.ToString(),
+                    Text = $"{productStatus.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -746,7 +755,7 @@ namespace Pelo.v2.Web.Factories
                                                bool withSpecialDefaultItem = true,
                                                string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available product groups
@@ -754,10 +763,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var manufacturer in avaiableManufacturers)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = manufacturer.Id.ToString(),
-                                  Text = $"{manufacturer.Name}"
-                          });
+                {
+                    Value = manufacturer.Id.ToString(),
+                    Text = $"{manufacturer.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -770,7 +779,7 @@ namespace Pelo.v2.Web.Factories
                                           bool withSpecialDefaultItem = true,
                                           string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available product
@@ -778,10 +787,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var product in avaiableProducts)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = product.Id.ToString(),
-                                  Text = $"{product.Name}"
-                          });
+                {
+                    Value = product.Id.ToString(),
+                    Text = $"{product.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -794,7 +803,7 @@ namespace Pelo.v2.Web.Factories
                                              bool withSpecialDefaultItem = true,
                                              string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available crmStatus
@@ -802,10 +811,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var crmStatus in avaiableCrmStatuses)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = crmStatus.Id.ToString(),
-                                  Text = $"{crmStatus.Name}"
-                          });
+                {
+                    Value = crmStatus.Id.ToString(),
+                    Text = $"{crmStatus.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -818,7 +827,7 @@ namespace Pelo.v2.Web.Factories
                                                bool withSpecialDefaultItem = true,
                                                string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available crm priorities
@@ -826,10 +835,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var crmPriority in avaiableCrmPriorities)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = crmPriority.Id.ToString(),
-                                  Text = $"{crmPriority.Name}"
-                          });
+                {
+                    Value = crmPriority.Id.ToString(),
+                    Text = $"{crmPriority.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -842,7 +851,7 @@ namespace Pelo.v2.Web.Factories
                                           bool withSpecialDefaultItem = true,
                                           string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available crm types
@@ -850,10 +859,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var crmType in avaiableCrmTypes)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = crmType.Id.ToString(),
-                                  Text = $"{crmType.Name}"
-                          });
+                {
+                    Value = crmType.Id.ToString(),
+                    Text = $"{crmType.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -866,7 +875,7 @@ namespace Pelo.v2.Web.Factories
                                                  bool withSpecialDefaultItem = true,
                                                  string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available customer sources
@@ -874,10 +883,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var customerSource in avaiableCustomerSources)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = customerSource.Id.ToString(),
-                                  Text = $"{customerSource.Name}"
-                          });
+                {
+                    Value = customerSource.Id.ToString(),
+                    Text = $"{customerSource.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -890,7 +899,7 @@ namespace Pelo.v2.Web.Factories
                                        bool withSpecialDefaultItem = true,
                                        string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available customer sources
@@ -898,10 +907,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var user in avaiableUsers)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = user.Id.ToString(),
-                                  Text = $"{user.DisplayName}"
-                          });
+                {
+                    Value = user.Id.ToString(),
+                    Text = $"{user.DisplayName}"
+                });
             }
 
             //insert special item for the default value
@@ -914,7 +923,7 @@ namespace Pelo.v2.Web.Factories
                                            bool withSpecialDefaultItem = true,
                                            string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available task types
@@ -922,10 +931,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var taskType in avaiableTaskTypes)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = taskType.Id.ToString(),
-                                  Text = $"{taskType.Name}"
-                          });
+                {
+                    Value = taskType.Id.ToString(),
+                    Text = $"{taskType.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -938,7 +947,7 @@ namespace Pelo.v2.Web.Factories
                                               bool withSpecialDefaultItem = true,
                                               string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available taskStatus
@@ -946,10 +955,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var taskStatus in avaiableTaskStatuses)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = taskStatus.Id.ToString(),
-                                  Text = $"{taskStatus.Name}"
-                          });
+                {
+                    Value = taskStatus.Id.ToString(),
+                    Text = $"{taskStatus.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -962,7 +971,7 @@ namespace Pelo.v2.Web.Factories
                                                 bool withSpecialDefaultItem = true,
                                                 string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available taskPriority
@@ -970,10 +979,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var taskPriority in avaiableTaskPriorities)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = taskPriority.Id.ToString(),
-                                  Text = $"{taskPriority.Name}"
-                          });
+                {
+                    Value = taskPriority.Id.ToString(),
+                    Text = $"{taskPriority.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -986,7 +995,7 @@ namespace Pelo.v2.Web.Factories
                                            bool withSpecialDefaultItem = true,
                                            string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available task loops
@@ -994,10 +1003,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var taskLoop in avaiableTaskLoops)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = taskLoop.Id.ToString(),
-                                  Text = $"{taskLoop.Name}"
-                          });
+                {
+                    Value = taskLoop.Id.ToString(),
+                    Text = $"{taskLoop.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -1010,7 +1019,7 @@ namespace Pelo.v2.Web.Factories
                                             bool withSpecialDefaultItem = true,
                                             string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available pay methods
@@ -1018,10 +1027,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var payMethod in avaiablePayMethods)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = payMethod.Id.ToString(),
-                                  Text = $"{payMethod.Name}"
-                          });
+                {
+                    Value = payMethod.Id.ToString(),
+                    Text = $"{payMethod.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -1034,7 +1043,7 @@ namespace Pelo.v2.Web.Factories
                                                  bool withSpecialDefaultItem = true,
                                                  string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available invoice statuses
@@ -1042,10 +1051,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var invoiceStatus in avaiableInvoiceStatuses)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = invoiceStatus.Id.ToString(),
-                                  Text = $"{invoiceStatus.Name}"
-                          });
+                {
+                    Value = invoiceStatus.Id.ToString(),
+                    Text = $"{invoiceStatus.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -1058,7 +1067,7 @@ namespace Pelo.v2.Web.Factories
                                                  bool withSpecialDefaultItem = true,
                                                  string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available receipt statuses
@@ -1066,10 +1075,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var receiptStatus in avaiableReceiptStatuses)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = receiptStatus.Id.ToString(),
-                                  Text = $"{receiptStatus.Name}"
-                          });
+                {
+                    Value = receiptStatus.Id.ToString(),
+                    Text = $"{receiptStatus.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -1082,7 +1091,7 @@ namespace Pelo.v2.Web.Factories
                                                      bool withSpecialDefaultItem = true,
                                                      string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //prepare available pay methods
@@ -1090,10 +1099,10 @@ namespace Pelo.v2.Web.Factories
             foreach (var receiptDescription in avaiableReceiptDescriptions)
             {
                 items.Add(new SelectListItem
-                          {
-                                  Value = receiptDescription.Id.ToString(),
-                                  Text = $"{receiptDescription.Name}"
-                          });
+                {
+                    Value = receiptDescription.Id.ToString(),
+                    Text = $"{receiptDescription.Name}"
+                });
             }
 
             //insert special item for the default value
@@ -1137,11 +1146,11 @@ namespace Pelo.v2.Web.Factories
                                                   bool withSpecialDefaultItem,
                                                   string defaultItemText = null)
         {
-            if(items == null)
+            if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
             //whether to insert the first special item for the default value
-            if(!withSpecialDefaultItem)
+            if (!withSpecialDefaultItem)
                 return;
 
             //at now we use "0" as the default value
@@ -1154,8 +1163,8 @@ namespace Pelo.v2.Web.Factories
             items.Insert(0,
                          new SelectListItem
                          {
-                                 Text = defaultItemText,
-                                 Value = value
+                             Text = defaultItemText,
+                             Value = value
                          });
         }
 
@@ -1172,6 +1181,30 @@ namespace Pelo.v2.Web.Factories
                 {
                     Value = item.Id.ToString(),
                     Text = $"{item.Name}"
+                });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+
+        public async Task PrepareWarrantyStatuses(IList<SelectListItem> items,
+                                                 bool withSpecialDefaultItem = true,
+                                                 string defaultItemText = null)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available invoice statuses
+            var availableWarrantyStatus = await _warrantyStatusService.GetAll();
+            foreach (var warrantyStatus in availableWarrantyStatus)
+            {
+                items.Add(new SelectListItem
+                {
+                    Value = warrantyStatus.Id.ToString(),
+                    Text = $"{warrantyStatus.Name}"
                 });
             }
 
