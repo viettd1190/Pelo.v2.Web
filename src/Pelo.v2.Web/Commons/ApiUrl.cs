@@ -238,6 +238,8 @@
 
         public const string GET_INVOICE_CUSTOMER_BY_PAGING = BASE_API_URL + "/api/invoice/get_by_customer?customerId={0}&page={1}&pageSize={2}";
 
+        public const string GET_WARRANTY_CUSTOMER_BY_PAGING = BASE_API_URL + "/api/warranty/get_by_customer?customerId={0}&page={1}&pageSize={2}";
+
         public const string CRM_INSERT = BASE_API_URL + "/api/crm";
 
         public const string CRM_GET_BY_ID = BASE_API_URL + "/api/crm/{0}";
@@ -568,6 +570,22 @@
         public const string RECRUITMENT_GET_BY_ID = BASE_API_URL + "/api/recruiment/{0}";
 
         public const string RECRUITMENT_UPDATE = BASE_API_URL + "/api/recruiment";
+        #endregion
+
+        #region Warranty
+
+        public const string WARRANTY_GET_BY_PAGING = BASE_API_URL + "/api/warranty?customer_phone={0}&customer_name={1}&code={2}&warranty_status_id={3}&user_created_id={4}&user_care_id={5}&from_date={6}&to_date={7}&page={8}&page_size={9}";
+
+        public const string WARRANTY_DELETE = BASE_API_URL + "/api/warranty/{0}";
+
+        public const string WARRANTY_GET_BY_ID = BASE_API_URL + "/api/warranty/{0}";
+
+        public const string WARRANTY_UPDATE = BASE_API_URL + "/api/warranty";
+
+        public const string WARRANTY_GET_ALL = BASE_API_URL + "/api/warranty/all";
+
+        public const string WARRANTY_INSERT = BASE_API_URL + "/api/warranty";
+
         #endregion
     }
 }

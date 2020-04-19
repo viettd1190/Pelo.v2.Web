@@ -156,7 +156,7 @@ namespace Pelo.v2.Web.Services.Invoice
                 {
                     var start = request.Start / request.Length + 1;
 
-                    var url = string.Format(ApiUrl.GET_INVOICE_CUSTOMER_BY_PAGING,
+                    var url = string.Format(ApiUrl.GET_WARRANTY_CUSTOMER_BY_PAGING,
                                             request.CustomerId,
                                             start,
                                             request?.Length ?? 10);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using Pelo.v2.Web.Models.Customer;
 
 namespace Pelo.v2.Web.Models.Warranty
@@ -10,60 +11,49 @@ namespace Pelo.v2.Web.Models.Warranty
     {
         public InsertWarrantyModel()
         {
-            AvaiableCustomerSources = new List<SelectListItem>();
-            AvaiableCrmTypes = new List<SelectListItem>();
-            AvaiableCrmPriorities = new List<SelectListItem>();
-            AvaiableUserCares = new List<SelectListItem>();
-            AvaiableProductGroups = new List<SelectListItem>();
-            AvaiableCrmStatuses=new List<SelectListItem>();
-            AvaiableVisits = new List<SelectListItem>
-                             {
-                                     new SelectListItem("Đã đến cửa hàng",
-                                                        "1"),
-                                     new SelectListItem("Chưa đến cửa hàng",
-                                                        "0")
-                             };
+            AvaiableBranches = new List<SelectListItem>();
+            AvaiableProducts = new List<SelectListItem>();
+            Products = new List<ProductInWarrantyModel>();
             Customer=new CustomerDetailModel();
-            UserCareIds=new List<int>();
+            DeliveryDate = DateTime.Now;
         }
 
         public CustomerDetailModel Customer { get; set; }
 
-        public string Need { get; set; }
+        public int Deposit { get; set; }
 
-        public int CrmTypeId { get; set; }
-
-        public int CrmStatusId { get; set; }
-
-        public int CrmPriorityId { get; set; }
-
-        public int CustomerSourceId { get; set; }
+        public int Total { get; set; }
 
         public int CustomerId { get; set; }
 
-        public IList<int> UserCareIds { get; set; }
-
-        public int ProductGroupId { get; set; }
-
-        public int IsVisit { get; set; }
+        public int BranchId { get; set; }
 
         [UIHint("DateTime")]
-        public DateTime ContactDate { get; set; }
+        public DateTime DeliveryDate { get; set; }
 
         public string Description { get; set; }
 
-        public IList<SelectListItem> AvaiableCustomerSources { get; set; }
+        public IList<SelectListItem> AvaiableBranches { get; set; }
 
-        public IList<SelectListItem> AvaiableCrmTypes { get; set; }
+        public IList<SelectListItem> AvaiableProducts { get; set; }
 
-        public IList<SelectListItem> AvaiableCrmPriorities { get; set; }
+        public IList<ProductInWarrantyModel> Products { get; set; }
 
-        public IList<SelectListItem> AvaiableUserCares { get; set; }
+        public string ProductRaw { get; set; }
+    }
+    public class ProductInWarrantyModel
+    {
+        [JsonProperty("id")]
+        public int Id { get; set; }
 
-        public IList<SelectListItem> AvaiableProductGroups { get; set; }
+        [JsonProperty("description")]
+        public string Description { get; set; }
 
-        public IList<SelectListItem> AvaiableVisits { get; set; }
+        [JsonProperty("warranty_description_id")]
+        public int WarrantyDescriptionId { get; set; }
 
-        public IList<SelectListItem> AvaiableCrmStatuses { get; set; }
+        [JsonProperty("serialnumber")]
+        public string SertialNumber { get; set; }
+
     }
 }

@@ -16,9 +16,9 @@ namespace Pelo.v2.Web.Models.Warranty
 
         [JsonProperty("Id")] public int Id { get; set; }
 
-        [JsonProperty("CrmStatus")] public string CrmStatus { get; set; }
+        [JsonProperty("WarrantyStatus")] public string WarrantyStatus { get; set; }
 
-        [JsonProperty("CrmStatusColor")] public string CrmStatusColor { get; set; }
+        [JsonProperty("WarrantyStatusColor")] public string WarrantyStatusColor { get; set; }
 
         [JsonProperty("Code")] public string Code { get; set; }
 
@@ -30,45 +30,23 @@ namespace Pelo.v2.Web.Models.Warranty
 
         [JsonProperty("CustomerPhone3")] public string CustomerPhone3 { get; set; }
 
-        [JsonProperty("Province")] public string Province { get; set; }
-
-        [JsonProperty("District")] public string District { get; set; }
-
-        [JsonProperty("Ward")] public string Ward { get; set; }
-
         [JsonProperty("CustomerAddress")] public string CustomerAddress { get; set; }
 
-        [JsonProperty("CustomerGroup")] public string CustomerGroup { get; set; }
+        [JsonProperty("ProductsWarranties")] public List<ProductInWarrantySimpleList> Products { get; set; }
 
-        [JsonProperty("CustomerVip")] public string CustomerVip { get; set; }
-
-        [JsonProperty("Need")] public string Need { get; set; }
-
-        [JsonProperty("Description")] public string Description { get; set; }
-
-        [JsonProperty("ProductGroup")] public string ProductGroup { get; set; }
-
-        [JsonProperty("CrmPriority")] public string CrmPriority { get; set; }
-
-        [JsonProperty("CustomerSource")] public string CustomerSource { get; set; }
-
-        [JsonProperty("CrmType")] public string CrmType { get; set; }
-
-        [JsonProperty("Visit")] public string Visit { get; set; }
+        [JsonProperty("Branch")] public string Branch { get; set; }
 
         [JsonProperty("UserCreated")] public string UserCreated { get; set; }
 
         [JsonProperty("UserCreatedPhone")] public string UserCreatedPhone { get; set; }
 
-        [JsonProperty("UserCares")] public List<UserCareModel> UserCares { get; set; }
-
-        [JsonProperty("ContactDate")] public DateTime ContactDate { get; set; }
-
-        [JsonProperty("DateCreated")] public DateTime DateCreated { get; set; }
+        [JsonProperty("PlanDate")] public string DeliveryDate { get; set; }
 
         [JsonProperty("PageSize")] public int PageSize { get; set; }
 
         [JsonProperty("PageSizeOptions")] public string PageSizeOptions { get; set; }
+
+        public string DateCreated { get; set; }
     }
 
     public class UserCareModel
