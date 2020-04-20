@@ -17,6 +17,9 @@ namespace Pelo.v2.Web.Services.WarrantyDescription
         Task<WarrantyDescriptionListModel> GetByPaging(WarrantyDescriptionSearchModel request);
 
         Task<TResponse<bool>> Delete(int id);
+        Task<TResponse<bool>> Add(InsertWarrantyDescription insertWarrantyDescription);
+        Task<TResponse<GetWarrantyDescriptionPagingResponse>> GetById(int id);
+        Task<TResponse<bool>> Update(UpdateWarrantyDescription updateWarrantyDescription);
     }
 
     public class WarrantyDescriptionService : BaseService,
@@ -33,10 +36,10 @@ namespace Pelo.v2.Web.Services.WarrantyDescription
         {
             try
             {
-                var columnOrder = "name";
+                var columnOrder = "Name";
                 var sortDir = "ASC";
 
-                if(request != null)
+                if (request != null)
                 {
                     var start = request.Start / request.Length + 1;
 
@@ -89,7 +92,71 @@ namespace Pelo.v2.Web.Services.WarrantyDescription
                                                             null,
                                                             HttpMethod.Delete,
                                                             true);
-                if(response.IsSuccess)
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Add(InsertWarrantyDescription insertWarrantyDescription)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.WARRANTY_DESCRIPTION_INSERT,
+                                                            insertWarrantyDescription,
+                                                            HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<GetWarrantyDescriptionPagingResponse>> GetById(int id)
+        {
+            try
+            {
+                string url = string.Format(ApiUrl.GET_WARRANTY_DESCRIPTION_ID, id);
+                var response = await HttpService.Send<GetWarrantyDescriptionPagingResponse>(url,
+                                                            null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(response.Data);
+                }
+
+                return await Fail<GetWarrantyDescriptionPagingResponse>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<GetWarrantyDescriptionPagingResponse>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateWarrantyDescription updateWarrantyDescription)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.WARRANTY_DESCRIPTION_UPDATE,
+                                                            updateWarrantyDescription,
+                                                            HttpMethod.Put,
+                                                            true);
+                if (response.IsSuccess)
                 {
                     return await Ok(true);
                 }

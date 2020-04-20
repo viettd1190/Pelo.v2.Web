@@ -2,10 +2,10 @@
 @using Pelo.v2.Web.Models.TaskStatus
 @using Pelo.v2.Web.Models.Datatables
 @using Pelo.v2.Web.Models.Datatables.Render
-@using Pelo.v2.Web.Models.WarrantyStatus
-@model Pelo.v2.Web.Models.WarrantyStatus.WarrantyStatusSearchModel
+@using Pelo.v2.Web.Models.WarrantyDescription
+@model Pelo.v2.Web.Models.WarrantyDescription.WarrantyDescriptionSearchModel
 @{
-    ViewBag.Title = "Danh sách trạng thái bảo hành";
+    ViewBag.Title = "Danh sách mô tả bảo hành";
    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -30,18 +30,18 @@
     <div class="col-xl-12 dahsboard-column">
         <section class="box-typical box-typical-dashboard panel panel-default scrollable">
             <header class="box-typical-header panel-heading">
-                <h3 class="panel-title">Danh sách trạng thái bảo hành</h3>
+                <h3 class="panel-title">Danh sách mô tả bảo hành</h3>
             </header>
             <div class="box-typical-body panel-body">
                 <div class="row" style="padding:15px;">
                     <div class="col-lg-12">
                         <fieldset class="form-group">
-                            <label class="form-label semibold" for="Name">Tên trạng thái bảo hành</label>
+                            <label class="form-label semibold" for="Name">Tên mô tả bảo hành</label>
                             <input asp-for="Name" class="form-control" type="text" placeholder="Tên trạng thái" />
                         </fieldset>
                     </div>
                     <div class="col-xs-12">
-                        <button class="btn btn-primary" id="search-warrantyStatus">Tìm kiếm</button>
+                        <button class="btn btn-primary" id="search-warrantyDescription ">Tìm kiếm</button>
                         <a class="btn btn-success" href="@Url.Action("Add")">Thêm mới</a>
                     </div>
                 </div>
@@ -54,39 +54,26 @@
     <div class="card-block">
         @await Html.PartialAsync("Table", new DataTablesModel
    {
-       Name = "warrantyStatus-grid",
-       UrlRead = new DataUrl("GetList", "WarrantyStatus", null),
-       UrlDelete = new DataUrl("Delete", "WarrantyStatus", null),
-       SearchButtonId = "search-warrantyStatus",
+       Name = "warrantyDescription-grid",
+       UrlRead = new DataUrl("GetList", "WarrantyDescription", null),
+       UrlDelete = new DataUrl("Delete", "WarrantyDescription", null),
+       SearchButtonId = "search-warrantyDescription",
        Ordering = false,
        Filters = new List<FilterParameter> {
                                                    new FilterParameter(nameof(Model.Name)),
                                            },
        ColumnCollection = new List<ColumnProperty> {
-                                                           new ColumnProperty(nameof(WarrantyStatusModel.Name))
+                                                           new ColumnProperty(nameof(WarrantyDescriptionModel.Name))
                                                            {
                                                                    Title = "Tên"
                                                            },
-                                                           new ColumnProperty(nameof(WarrantyStatusModel.Color))
-                                                           {
-                                                                   Title = "Màu sắc",
-                                                                   Render = new RenderCustom("displayColor")
-                                                           },
-                                                           new ColumnProperty(nameof(WarrantyStatusModel.SortOrder))
-                                                           {
-                                                                   Title = "Vị trí"
-                                                           },
-                                                           new ColumnProperty(nameof(WarrantyStatusModel.IsSendSms)) {
-                                                                                                                                                                                           Title = "Gửi SMS khi thay đổi trạng thái",
-                                                                                                                                                                                           Render = new RenderCheckBox("IsSendSms")
-                                                                                                                                                                                   },
-                                                           new ColumnProperty(nameof(WarrantyStatusModel.Id))
+                                                           new ColumnProperty(nameof(WarrantyDescriptionModel.Id))
                                                            {
                                                                    Title = "",
                                                                    Width = "40",
                                                                    Orderable = false,
                                                                    ClassName =  NopColumnClassDefaults.Button,
-                                                                   Render = new RenderButtonEdit(new DataUrl("WarrantyStatus/Edit"))
+                                                                   Render = new RenderButtonEdit(new DataUrl("WarrantyDescription/Edit"))
                                                            },
                                                            new ColumnProperty(nameof(TaskStatusModel.Id))
                                                            {
@@ -107,7 +94,7 @@
             $('.opened').removeClass('opened');
             $('.row-active').removeClass('row-active');
             $('#liWarranty').addClass('opened');
-            $('#liWarrantyStatus').addClass('row-active');
+            $('#liWarrantyDescription').addClass('row-active');
             $('.panel').lobiPanel({
                     sortable:false,
                     draggable:false,
@@ -115,12 +102,5 @@
                 });
             reloadDataWhenEnter('@nameof(Model.Name)');
         });
-        function displayColor(data,type,row,meta) {
-            return '<div style="text-align:center;margin:auto;"><span class="label" style="width:70px;background-color:'+
-                data+
-                '">'+
-                data+
-                '</span></div>';
-        }
     </script>
 }

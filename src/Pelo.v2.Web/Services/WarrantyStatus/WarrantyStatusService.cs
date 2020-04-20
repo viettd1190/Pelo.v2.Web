@@ -42,7 +42,7 @@ namespace Pelo.v2.Web.Services.WarrantyStatus
         {
             try
             {
-                var columnOrder = "name";
+                var columnOrder = "Name";
                 var sortDir = "ASC";
 
                 if (request != null)
@@ -74,6 +74,8 @@ namespace Pelo.v2.Web.Services.WarrantyStatus
                                 Name = c.Name,
                                 Color = c.Color,
                                 SortOrder = c.SortOrder,
+                                SmsContent = c.SmsContent,
+                                IsSendSms = c.IsSendSms,
                                 PageSize = request.PageSize,
                                 PageSizeOptions = request.AvailablePageSizes
                             })
@@ -117,7 +119,7 @@ namespace Pelo.v2.Web.Services.WarrantyStatus
         {
             try
             {
-                
+
                 var response = await HttpService.Send<IEnumerable<WarrantyStatusSimpleModel>>(ApiUrl.WARRANTY_STATUS_GET_ALL,
                                                             null,
                                                             HttpMethod.Get,

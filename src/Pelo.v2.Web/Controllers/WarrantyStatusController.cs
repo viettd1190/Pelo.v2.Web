@@ -41,7 +41,7 @@ namespace Pelo.v2.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _warrantyStatusService.Add(new InsertWarrantyStatus { Color = model.Color, Name = model.Name, SortOrder = model.SortOrder });
+                var result = await _warrantyStatusService.Add(new InsertWarrantyStatus { Color = model.Color, Name = model.Name, SortOrder = model.SortOrder, IsSendSms = model.IsSendSms, SmsContent = model.SmsContent });
                 if (result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();
@@ -58,7 +58,7 @@ namespace Pelo.v2.Web.Controllers
             var model = await _warrantyStatusService.GetById(id);
             if (model.IsSuccess)
             {
-                return View(new UpdateWarrantyStatusModel { Id = model.Data.Id, Name = model.Data.Name, SortOrder = model.Data.SortOrder, Color = model.Data.Color });
+                return View(new UpdateWarrantyStatusModel { Id = model.Data.Id, Name = model.Data.Name, SortOrder = model.Data.SortOrder, Color = model.Data.Color,IsSendSms=model.Data.IsSendSms,SmsContent=model.Data.SmsContent });
             }
 
             return View("Notfound");
@@ -69,7 +69,7 @@ namespace Pelo.v2.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _warrantyStatusService.Update(new UpdateWarrantyStatus { Id = model.Id, Color = model.Color, Name = model.Name, SortOrder = model.SortOrder });
+                var result = await _warrantyStatusService.Update(new UpdateWarrantyStatus { Id = model.Id, Color = model.Color, Name = model.Name, SortOrder = model.SortOrder, IsSendSms = model.IsSendSms, SmsContent = model.SmsContent });
                 if (result.IsSuccess)
                 {
                     TempData["Update"] = result.ToJson();

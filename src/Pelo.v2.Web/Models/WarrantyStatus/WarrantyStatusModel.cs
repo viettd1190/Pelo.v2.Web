@@ -12,17 +12,23 @@ namespace Pelo.v2.Web.Models.WarrantyStatus
             }
         }
 
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public int Id { get; set; }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("sort_order")]
+        [JsonProperty("SortOrder")]
         public int SortOrder { get; set; }
 
-        [JsonProperty("color")]
+        [JsonProperty("Color")]
         public string Color { get; set; }
+
+        [JsonProperty("IsSendSms")]
+        public bool IsSendSms { get; set; }
+
+        [JsonProperty("SmsContent")]
+        public string SmsContent { get; set; }
 
         [JsonProperty("PageSize")]
         public int PageSize { get; set; }
