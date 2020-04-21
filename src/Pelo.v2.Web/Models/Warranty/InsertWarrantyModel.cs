@@ -16,6 +16,8 @@ namespace Pelo.v2.Web.Models.Warranty
             Products = new List<ProductInWarrantyModel>();
             Customer=new CustomerDetailModel();
             DeliveryDate = DateTime.Now;
+            AvaiableWarrantyStatuses = new List<SelectListItem>();
+            AvaiableWarrantyDescriptions = new List<SelectListItem>();
         }
 
         public CustomerDetailModel Customer { get; set; }
@@ -36,6 +38,10 @@ namespace Pelo.v2.Web.Models.Warranty
         public IList<SelectListItem> AvaiableBranches { get; set; }
 
         public IList<SelectListItem> AvaiableProducts { get; set; }
+
+        public IList<SelectListItem> AvaiableWarrantyStatuses { get; set; }
+
+        public IList<SelectListItem> AvaiableWarrantyDescriptions { get; set; }
 
         public IList<ProductInWarrantyModel> Products { get; set; }
 

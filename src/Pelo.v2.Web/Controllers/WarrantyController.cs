@@ -12,6 +12,9 @@ using Pelo.v2.Web.Services.Product;
 using Pelo.v2.Web.Services.Role;
 using Pelo.v2.Web.Services.Warranty;
 using Pelo.Common.Extensions;
+using Pelo.v2.Web.Services.WarrantyStatus;
+using Pelo.v2.Web.Services.WarrantyDescription;
+using Microsoft.Extensions.Configuration;
 
 namespace Pelo.v2.Web.Controllers
 {
@@ -29,12 +32,20 @@ namespace Pelo.v2.Web.Controllers
 
         private readonly IRoleService _roleService;
 
+        private readonly IWarrantyStatusService _warrantyStatusService;
+
+        private readonly IWarrantyDescriptionService _warrantyDescriptionService;
+
+        private readonly IConfiguration _configuration;
+
         public WarrantyController(IWarrantyService warrantyService,
                                  IBaseModelFactory baseModelFactory,
                                  ICustomerService customerService,
                                  IProductService productService,
                                  IRoleService roleService,
-                                 IAppConfigService appConfigService)
+                                 IAppConfigService appConfigService,
+                                 IWarrantyDescriptionService warrantyDescriptionService,
+                                 IWarrantyStatusService warrantyStatusService,IConfiguration configuration)
         {
             _warrantyService = warrantyService;
             _baseModelFactory = baseModelFactory;
@@ -42,6 +53,9 @@ namespace Pelo.v2.Web.Controllers
             _productService = productService;
             _roleService = roleService;
             _appConfigService = appConfigService;
+            _warrantyDescriptionService = warrantyDescriptionService;
+            _warrantyStatusService = warrantyStatusService;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
@@ -60,6 +74,7 @@ namespace Pelo.v2.Web.Controllers
             var result = await _warrantyService.GetByPaging(model);
             return Json(result);
         }
+
         public IActionResult FindCustomer()
         {
             return View(new CustomerFindByPhoneModel());
@@ -87,6 +102,7 @@ namespace Pelo.v2.Web.Controllers
 
             return View(model);
         }
+
         public async Task<IActionResult> Add(string customerPhone)
         {
             var customer = await _customerService.GetCustomerByPhone(customerPhone);
@@ -118,6 +134,10 @@ namespace Pelo.v2.Web.Controllers
                 await _baseModelFactory.PrepareBranches(model.AvaiableBranches,
                                                         false);
                 await _baseModelFactory.PrepareProducts(model.AvaiableProducts,
+                                                    false);
+                await _baseModelFactory.PrepareWarrantyDescription(model.AvaiableWarrantyDescriptions,
+                                                    false);
+                await _baseModelFactory.PrepareWarrantyStatuses(model.AvaiableWarrantyStatuses,
                                                     false);
                 ViewBag.Products = (await _productService.GetAll()).ToList();
                 ViewBag.DefaultRole = false;
@@ -185,10 +205,13 @@ namespace Pelo.v2.Web.Controllers
             }
 
             await _baseModelFactory.PrepareBranches(model.AvaiableBranches,
-                                                    false);
+                                                        false);
             await _baseModelFactory.PrepareProducts(model.AvaiableProducts,
-                                                    false);
-
+                                                false);
+            await _baseModelFactory.PrepareWarrantyDescription(model.AvaiableWarrantyDescriptions,
+                                                false);
+            await _baseModelFactory.PrepareWarrantyStatuses(model.AvaiableWarrantyStatuses,
+                                                false);
             ViewBag.Products = (await _productService.GetAll()).ToList();
             ViewBag.DefaultRole = false;
 
@@ -211,30 +234,30 @@ namespace Pelo.v2.Web.Controllers
             var response = await _warrantyService.GetById(id);
             if (response.IsSuccess)
             {
-                var invoice = response.Data;
+                var warranty = response.Data;
 
-                if (invoice != null)
+                if (warranty != null)
                 {
                     var model = new WarrantyDetailModel
                     {
-                        Id = invoice.Id,
-                        Code = invoice.Code,
+                        Id = warranty.Id,
+                        Code = warranty.Code,
                         Customer = new CustomerDetailModel(),
-                        CustomerId = invoice.CustomerId,
-                        DateCreated = invoice.DateCreated,
-                        UserCreated = invoice.UserCreated,
-                        UserCreatedPhone = invoice.UserCreatedPhone,
-                        Deposit = invoice.Deposit,
-                        Description = invoice.Description,
-                        Total = invoice.Total,
-                        DeliveryDate = invoice.DeliveryDate,
-                        WarrantyStatusId = invoice.WarrantyStatusId,
+                        CustomerId = warranty.CustomerId,
+                        DateCreated = warranty.DateCreated,
+                        UserCreated = warranty.UserCreated,
+                        UserCreatedPhone = warranty.UserCreatedPhone,
+                        Deposit = warranty.Deposit,
+                        Description = warranty.Description,
+                        Total = warranty.Total,
+                        DeliveryDate = warranty.DeliveryDate,
+                        WarrantyStatusId = warranty.WarrantyStatusId,
 
-                        UserCareIds = invoice.UsersCare.Select(c => c.Id)
+                        UserCareIds = warranty.UsersCare.Select(c => c.Id)
                                                              .ToList(),
-                        UsersInChargeIds = invoice.UsersInCharge.Select(c => c.Id)
+                        UsersInChargeIds = warranty.UsersInCharge.Select(c => c.Id)
                                                                  .ToList(),
-                        Products = invoice.Products.Select(c => new ProductInWarrantyDetailModel
+                        Products = warranty.Products.Select(c => new ProductInWarrantyDetailModel
                         {
                             Name = c.Name,
                             Description = c.Description,
@@ -242,7 +265,7 @@ namespace Pelo.v2.Web.Controllers
                             WarrantyDescription = c.WarrantyDescription
                         }).ToList()
                     };
-                    var customer = await _customerService.GetDetail(invoice.CustomerId);
+                    var customer = await _customerService.GetDetail(warranty.CustomerId);
                     if (customer.IsSuccess && customer.Data != null)
                     {
                         model.Customer = new CustomerDetailModel
@@ -260,12 +283,64 @@ namespace Pelo.v2.Web.Controllers
                             UserCreatedPhone = customer.Data.UserCreatedPhone
                         };
                     }
-
+                    var crmStatusDeleted = await _appConfigService.GetByName("WarrantyStatusDeleted");
+                    if (crmStatusDeleted.IsSuccess)
+                    {
+                        model.WarrantyStatusDeleted = Convert.ToInt32(crmStatusDeleted.Data);
+                    }
+                    await _baseModelFactory.PrepareWarrantyStatuses(model.AvaiableWarrantyStatuses,
+                                                        false);
                     return View(model);
                 }
             }
 
             return View("Notfound");
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetLogs(int id)
+        {
+            var logs = await _warrantyService.GetLogs(id);
+            var result = new List<WarrantyLogDetail>();
+            foreach (var log in logs)
+            {
+                var crmLog = new WarrantyLogDetail
+                {
+                    Name = log.User?.Name ?? string.Empty,
+                    PhoneNumber = log.User?.PhoneNumber ?? string.Empty,
+                    Avatar = log.User?.Avatar ?? string.Empty,
+                    Content = log.Comment,
+                    LogDate = string.Format(AppUtil.DATE_TIME_FORMAT,
+                                                             log.LogDate),
+                    AttachmentModels = new List<AttachmentModel>()
+                };
+
+                crmLog.AttachmentModels.AddRange(log.Attachments.Where(c => !string.IsNullOrEmpty(c.AttachmentName))
+                                                    .Select(c => new AttachmentModel
+                                                    {
+                                                        Name = c.AttachmentName,
+                                                        Url = $"{_configuration["AttachFileUrl"]}/{c.Attachment}",
+                                                        IsImage = CheckStringIsImageExtension(c.AttachmentName)
+                                                    })
+                                                    .OrderByDescending(c => CheckStringIsImageExtension(c.Name)));
+
+                result.Add(crmLog);
+            }
+
+            return Json(result);
+        }
+        private bool CheckStringIsImageExtension(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return false;
+            }
+
+            if (fileName.EndsWith(".jpg") || fileName.EndsWith(".jpeg") || fileName.EndsWith(".png") || fileName.EndsWith(".bmp") || fileName.EndsWith(".gif"))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

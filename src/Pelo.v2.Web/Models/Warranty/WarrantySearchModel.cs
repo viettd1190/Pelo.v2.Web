@@ -36,5 +36,6 @@ namespace Pelo.v2.Web.Models.Warranty
         public IList<SelectListItem> AvaiableWarrantyStatus { get; set; }
 
         public IList<SelectListItem> AvaiableUserCreateds { get; set; }
+
     }
 }

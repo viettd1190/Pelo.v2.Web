@@ -35,6 +35,7 @@ namespace Pelo.v2.Web.Services.Warranty
         Task<TResponse<GetWarrantyByIdResponse>> GetById(int id);
 
         Task<WarrantyListModel> GetByCustomerIdPaging(CustomerWarrantySearchModel request);
+        Task<IEnumerable<WarrantyLogResponse>> GetLogs(int id);
     }
     public class WarrantyService : BaseService,
                                   IWarrantyService

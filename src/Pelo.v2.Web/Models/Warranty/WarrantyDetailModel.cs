@@ -1,4 +1,5 @@
-﻿using Pelo.v2.Web.Models.Customer;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Pelo.v2.Web.Models.Customer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,9 @@ namespace Pelo.v2.Web.Models.Warranty
 
         public string Description { get; set; }
 
+        public IList<SelectListItem> AvaiableWarrantyStatuses { get; set; } = new List<SelectListItem>();
+
+        public int WarrantyStatusDeleted { get; set; }
     }
     public class ProductInWarrantyDetailModel
     {
