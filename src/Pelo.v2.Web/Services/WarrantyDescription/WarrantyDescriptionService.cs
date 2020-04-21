@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace Pelo.v2.Web.Services.WarrantyDescription
         Task<TResponse<bool>> Add(InsertWarrantyDescription insertWarrantyDescription);
         Task<TResponse<GetWarrantyDescriptionPagingResponse>> GetById(int id);
         Task<TResponse<bool>> Update(UpdateWarrantyDescription updateWarrantyDescription);
+
+        Task<IEnumerable<WarrantyDescriptionSimpleModel>> GetAll();
     }
 
     public class WarrantyDescriptionService : BaseService,
@@ -166,6 +169,27 @@ namespace Pelo.v2.Web.Services.WarrantyDescription
             catch (Exception exception)
             {
                 return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<IEnumerable<WarrantyDescriptionSimpleModel>> GetAll()
+        {
+            try
+            {
+                var response = await HttpService.Send<IEnumerable<WarrantyDescriptionSimpleModel>>(ApiUrl.WARRANTY_DESCRIPTION_GET_ALL,
+                                                            null,
+                                                            HttpMethod.Get,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return response.Data;
+                }
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
             }
         }
 

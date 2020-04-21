@@ -29,6 +29,7 @@ using Pelo.v2.Web.Services.TaskStatus;
 using Pelo.v2.Web.Services.TaskType;
 using Pelo.v2.Web.Services.User;
 using Pelo.v2.Web.Services.WarrantyStatus;
+using Pelo.v2.Web.Services.WarrantyDescription;
 
 namespace Pelo.v2.Web.Factories
 {
@@ -345,6 +346,9 @@ namespace Pelo.v2.Web.Factories
         Task PrepareWarrantyStatuses(IList<SelectListItem> items, 
                                     bool withSpecialDefaultItem = true,
                                     string defaultItemText = null);
+        Task PrepareWarrantyDescription(IList<SelectListItem> items,
+                                    bool withSpecialDefaultItem = true,
+                                    string defaultItemText = null);
     }
 
     public class BaseModelFactory : IBaseModelFactory
@@ -407,6 +411,8 @@ namespace Pelo.v2.Web.Factories
 
         private readonly IWarrantyStatusService _warrantyStatusService;
 
+        private readonly IWarrantyDescriptionService _warrantyDescriptionService;
+
         public BaseModelFactory(IProvinceService provinceService,
                                 IDistrictService districtService,
                                 IWardService wardService,
@@ -435,7 +441,8 @@ namespace Pelo.v2.Web.Factories
                                 IReceiptDescriptionService receiptDescriptionService,
                                 ICountryService countryService,
                                 ICandidateStatusService candidateStatusService,
-                                IWarrantyStatusService warrantyStatusService)
+                                IWarrantyStatusService warrantyStatusService,
+                                IWarrantyDescriptionService warrantyDescriptionService)
         {
             _provinceService = provinceService;
             _districtService = districtService;
@@ -466,6 +473,7 @@ namespace Pelo.v2.Web.Factories
             _countryService = countryService;
             _candidatestatusservice = candidateStatusService;
             _warrantyStatusService = warrantyStatusService;
+            _warrantyDescriptionService = warrantyDescriptionService;
         }
 
         #region IBaseModelFactory Members
@@ -1205,6 +1213,29 @@ namespace Pelo.v2.Web.Factories
                 {
                     Value = warrantyStatus.Id.ToString(),
                     Text = $"{warrantyStatus.Name}"
+                });
+            }
+
+            //insert special item for the default value
+            PrepareDefaultItem(items,
+                               withSpecialDefaultItem,
+                               defaultItemText);
+        }
+        public async Task PrepareWarrantyDescription(IList<SelectListItem> items,
+                                                 bool withSpecialDefaultItem = true,
+                                                 string defaultItemText = null)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            //prepare available invoice statuses
+            var availableWarrantyDescription = await _warrantyDescriptionService.GetAll();
+            foreach (var warrantyDescription in availableWarrantyDescription)
+            {
+                items.Add(new SelectListItem
+                {
+                    Value = warrantyDescription.Id.ToString(),
+                    Text = $"{warrantyDescription.Name}"
                 });
             }
 

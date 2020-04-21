@@ -16,7 +16,7 @@
 
 <section class="card">
     <div class="card-block">
-        <form asp-controller="WarrantyDescription" asp-action="Add" method="post" id="warrantydescription-form">
+        <form asp-controller="WarrantyDescription" asp-action="Edit" method="post" id="warrantydescription-form">
             @Html.ValidationSummary()
             @Html.HiddenFor(c => c.Id)
             <div class="row">
