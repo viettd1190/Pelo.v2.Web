@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Pelo.Common.Dtos.Warranty;
 using Pelo.Common.Exceptions;
+using Pelo.Common.Extensions;
 using Pelo.Common.Models;
 using Pelo.v2.Web.Commons;
 using Pelo.v2.Web.Models.Customer;
@@ -9,46 +11,109 @@ using Pelo.v2.Web.Models.Warranty;
 using Pelo.v2.Web.Services.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Pelo.v2.Web.Services.Warranty
 {
     public interface IWarrantyService
     {
-        //Task<TResponse<bool>> Insert(InsertWarranty model);
+        Task<TResponse<bool>> Update(UpdateWarrantyRequest model);
 
-        //Task<TResponse<bool>> Update(UpdateCrmModel model);
-
-        //Task<WarrantyListModel> GetByCustomerIdPaging(CustomerComponentSearchModel request);
-
-        //Task<UpdateWarrantyModel> GetById(int id);
-
-        //Task<IEnumerable<WarrantyLogResponse>> GetLogs(int id);
+        Task<IEnumerable<WarrantyLogResponse>> GetLogs(int id);
 
         Task<TResponse<bool>> Comment(WarrantyCommentModel model,
                                       List<IFormFile> files);
         Task<WarrantyListModel> GetByPaging(WarrantySearchModel model);
-        Task<TResponse<bool>> Insert(InsertWarrantyModel model);
+
+        Task<TResponse<bool>> Insert(InsertWarrantyRequest model);
 
         Task<TResponse<GetWarrantyByIdResponse>> GetById(int id);
 
         Task<WarrantyListModel> GetByCustomerIdPaging(CustomerWarrantySearchModel request);
-        Task<IEnumerable<WarrantyLogResponse>> GetLogs(int id);
     }
     public class WarrantyService : BaseService,
                                   IWarrantyService
     {
+        private readonly ContextHelper _contextHelper;
+
         public WarrantyService(IHttpService httpService,
-                              ILogger<BaseService> logger) : base(httpService,
+                              ILogger<BaseService> logger,ContextHelper contextHelper) : base(httpService,
                                                                   logger)
         {
+            _contextHelper = contextHelper;
         }
 
-        public Task<TResponse<bool>> Comment(WarrantyCommentModel model, List<IFormFile> files)
+        public async Task<TResponse<bool>> Comment(WarrantyCommentModel model, List<IFormFile> files)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (var form = new MultipartFormDataContent())
+                    {
+                        foreach (var file in files)
+                        {
+                            var fileStream = file.OpenReadStream();
+                            form.Add(CreateFileContent(fileStream,
+                                                       file.FileName,
+                                                       file.ContentType));
+                        }
+
+                        var paras = new List<KeyValuePair<string, string>>();
+                        var para = new Tuple<int, string>(model.Id, model.Comment);
+                        paras.Add(new KeyValuePair<string, string>("para", para.ToJson()));
+
+                        form.Add(new FormUrlEncodedContent(paras));
+
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _contextHelper.GetToken());
+
+                        var response = await client.PostAsync(ApiUrl.WARRANTY_COMMENT,
+                                                              form);
+                        response.EnsureSuccessStatusCode();
+
+                        var res = await response.Content.ReadAsStringAsync();
+                        var obj = JsonConvert.DeserializeObject<TResponse<bool>>(res);
+                        if (obj.IsSuccess)
+                        {
+                            return await Task.FromResult(new TResponse<bool>
+                            {
+                                Data = obj.Data,
+                                IsSuccess = true,
+                                Message = string.Empty
+                            });
+                        }
+
+                        return await Task.FromResult(new TResponse<bool>
+                        {
+                            Data = default,
+                            IsSuccess = false,
+                            Message = obj.Message
+                        });
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        private StreamContent CreateFileContent(Stream stream,
+                                                string fileName,
+                                                string contentType)
+        {
+            var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "\"files\"",
+                FileName = "\"" + fileName + "\""
+            }; // the extra quotes are key here
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+            return fileContent;
         }
 
         public async Task<WarrantyListModel> GetByCustomerIdPaging(CustomerWarrantySearchModel request)
@@ -200,29 +265,57 @@ namespace Pelo.v2.Web.Services.Warranty
             }
         }
 
-        public async Task<TResponse<bool>> Insert(InsertWarrantyModel model)
+        public async Task<IEnumerable<WarrantyLogResponse>> GetLogs(int id)
+        {
+            try
+            {
+                string url = string.Format(ApiUrl.WARRANTY_GETLOG,
+                                           id);
+                var response = await HttpService.Send<IEnumerable<WarrantyLogResponse>>(url,
+                                                                                   null,
+                                                                                   HttpMethod.Get,
+                                                                                   true);
+                if (response.IsSuccess)
+                {
+                    return response.Data;
+                }
+
+                throw new PeloException(response.Message);
+            }
+            catch (Exception exception)
+            {
+                throw new PeloException(exception.Message);
+            }
+        }
+
+        public async Task<TResponse<bool>> Insert(InsertWarrantyRequest model)
         {
             try
             {
                 var response = await HttpService.Send<bool>(ApiUrl.WARRANTY_INSERT,
-                                                            new InsertWarrantyRequest
-                                                            {
-                                                                CustomerId = model.CustomerId,
-                                                                BranchId = model.BranchId,
-                                                                DeliveryDate = model.DeliveryDate,
-                                                                Deposit = model.Deposit,
-                                                                Description = model.Description,
-                                                                Total = model.Total,
-                                                                Products = model.Products.Select(c => new InsertProductInWarrantyRequest
-                                                                {
-                                                                    Id = c.Id,
-                                                                    Description = c.Description,
-                                                                    SerialNumber = c.SertialNumber,
-                                                                    WarrantyDescriptionId = c.WarrantyDescriptionId
-                                                                })
-                                                                                    .ToList()
-                                                            },
+                                                            model,
                                                             HttpMethod.Post,
+                                                            true);
+                if (response.IsSuccess)
+                {
+                    return await Ok(true);
+                }
+
+                return await Fail<bool>(response.Message);
+            }
+            catch (Exception exception)
+            {
+                return await Fail<bool>(exception);
+            }
+        }
+
+        public async Task<TResponse<bool>> Update(UpdateWarrantyRequest model)
+        {
+            try
+            {
+                var response = await HttpService.Send<bool>(ApiUrl.WARRANTY_UPDATE,
+                                                            model,
+                                                            HttpMethod.Put,
                                                             true);
                 if (response.IsSuccess)
                 {

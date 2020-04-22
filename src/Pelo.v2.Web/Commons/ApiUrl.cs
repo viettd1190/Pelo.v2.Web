@@ -586,6 +586,10 @@
 
         public const string WARRANTY_INSERT = BASE_API_URL + "/api/warranty";
 
+        public const string WARRANTY_GETLOG = BASE_API_URL + "/api/warranty/log/{0}";
+
+        public const string WARRANTY_COMMENT = BASE_API_URL + "/api/warranty/comment";
+
         #endregion
     }
 }

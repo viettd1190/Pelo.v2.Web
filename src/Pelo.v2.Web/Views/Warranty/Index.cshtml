@@ -1,0 +1,245 @@
+﻿@using Microsoft.AspNetCore.Routing
+@using Pelo.v2.Web.Models.Warranty
+@using Pelo.v2.Web.Models.Datatables
+@using Pelo.v2.Web.Models.Datatables.Render
+@model Pelo.v2.Web.Models.Warranty.WarrantySearchModel
+@{
+    ViewBag.Title = "Danh sách bảo hành";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section cssPlugin{
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+}
+
+@section css{
+    <style>
+        .box-typical.box-typical-dashboard .box-typical-body {
+            height: auto !important;
+        }
+    </style>
+}
+
+@section jsPlugin {
+    <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
+    <script src="~/startui/js/lib/moment/moment.min.js"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12 dahsboard-column">
+        <section class="box-typical box-typical-dashboard panel panel-default scrollable">
+            <header class="box-typical-header panel-heading">
+                <h3 class="panel-title">Danh sách bảo hành</h3>
+            </header>
+            <div class="box-typical-body panel-body">
+                <div class="row" style="padding:15px;">
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="CustomerName" text-display="Tên khách hàng" />
+                            <input asp-for="CustomerName" class="form-control" type="text" placeholder="Tên khách hàng" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <fieldset class="form-group">
+                                <nop-label asp-for="CustomerPhone" text-display="Điện thoại" />
+                                <input asp-for="CustomerPhone" class="form-control" type="text" placeholder="Tên khách hàng" />
+                            </fieldset>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <fieldset class="form-group">
+                                <nop-label asp-for="Code" text-display="Mã bảo hành" />
+                                <input asp-for="Code" class="form-control" type="text" placeholder="Mã bảo hành" />
+                            </fieldset>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="WarrantyStatusId" text-display="Trạng thái" />
+                            <nop-select asp-for="WarrantyStatusId" asp-items="Model.AvaiableWarrantyStatus" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="UserCreatedId" text-display="Người tạo" />
+                            <nop-select asp-for="UserCreatedId" asp-items="Model.AvaiableUserCreateds" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="UserCareId" text-display="Người phụ trách" />
+                            <nop-select asp-for="UserCareId" asp-items="Model.AvaiableUserCares" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="FromDate" text-display="Ngày hẹn từ" />
+                            <input asp-for="FromDate" class="form-control" type="text" placeholder="Ngày hẹn từ" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="FromDate" text-display="Ngày hẹn đến" />
+                            <input asp-for="FromDate" class="form-control" type="text" placeholder="Ngày hẹn đến" />
+                        </fieldset>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary" id="search-warranty">Tìm kiếm</button>
+                        <a class="btn btn-success" href="@Url.Action("FindCustomer","Warranty")">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-block">
+        @await Html.PartialAsync("Table", new DataTablesModel
+   {
+       Name = "warranty-grid",
+       UrlRead = new DataUrl("GetList", "Warranty", null),
+       SearchButtonId = "search-warranty",
+       Ordering = false,
+       Filters = new List<FilterParameter> {
+                                                   new FilterParameter(nameof(Model.CustomerName)),
+                                                   new FilterParameter(nameof(Model.CustomerPhone)),
+                                                   new FilterParameter(nameof(Model.Code)),
+                                                   new FilterParameter(nameof(Model.WarrantyStatusId)),
+                                                   new FilterParameter(nameof(Model.UserCareId)),
+                                                   new FilterParameter(nameof(Model.UserCreatedId)),
+                                                   new FilterParameter(nameof(Model.FromDate)),
+                                                   new FilterParameter(nameof(Model.ToDate)),
+                                           },
+       ColumnCollection = new List<ColumnProperty> {
+                                                           new ColumnProperty(nameof(WarrantyModel.WarrantyStatus))
+                                                           {
+                                                                   Title = "Trạng thái",
+                                                                   Width = "150",
+                                                                   Render = new RenderCustom("displayStatus")
+                                                           },
+                                                           new ColumnProperty(nameof(WarrantyModel.Id))
+                                                           {
+                                                                   Title = "In",
+                                                                   Render = new RenderCustom("print")
+                                                           },
+                                                           new ColumnProperty(nameof(WarrantyModel.Code))
+                                                           {
+                                                                   Title = "Mã bảo hành",
+                                                                   Render = new RenderLink(new DataUrl("Warranty/Detail","Id"))
+                                                           },
+                                                           new ColumnProperty(nameof(WarrantyModel.CustomerName))
+                                                           {
+                                                                   Title = "Khách hàng",
+                                                                   Render = new RenderCustom("displayCustomer")
+                                                           },
+                                                           new ColumnProperty(nameof(WarrantyModel.Products))
+                                                           {
+                                                                   Title = "Product",
+                                                                   Render = new RenderCustom("displayProduct")
+                                                           },
+                                                           new ColumnProperty(nameof(WarrantyModel.Branch))
+                                                           {
+                                                                   Title = "Chi nhánh",
+                                                                   Render = new RenderCustom("displayBranch")
+                                                           },
+                                                           new ColumnProperty(nameof(WarrantyModel.DeliveryDate))
+                                                           {
+                                                                   Title = "Ngày liên hệ",
+                                                                   Render = new RenderCustom("displayDate")
+                                                           }
+                                                   }
+   })
+    </div>
+</section>
+
+@section js{
+    <script>
+        $(document).ready(function () {
+            $('.opened').removeClass('opened');
+            $('.row-active').removeClass('row-active');
+            $('#liWarranty').addClass('opened');
+            $('#liWarrantyList').addClass('row-active');
+
+            $('.panel').lobiPanel({
+                    sortable:false,
+                    draggable:false,
+                    resize:'none'
+                });
+
+            reloadDataWhenEnter('@nameof(Model.CustomerPhone)');
+            reloadDataWhenEnter('@nameof(Model.CustomerName)');
+            reloadDataWhenEnter('@nameof(Model.UserCreatedId)');
+            reloadDataWhenEnter('@nameof(Model.UserCareId)');
+            reloadDataWhenEnter('@nameof(Model.Code)');
+            reloadDataWhenEnter('@nameof(Model.FromDate)');
+            reloadDataWhenEnter('@nameof(Model.ToDate)');
+            reloadDataWhenEnter('@nameof(Model.DateCreated)');
+            reloadDataWhenSelect('@nameof(Model.WarrantyStatusId)');
+        });
+        function displayStatus(data,type,row,meta) {
+            return '<div style="text-align:center;margin:auto;"><span class="label" style="width:150px;background-color:'+
+                row.WarrantyStatusColor+
+                '">'+
+                row.WarrantyStatus+
+                '</span></div>';
+        }
+        function print(data) {
+            window.open('@Url.Action("Print","Warranty")/'+data,'_blank');
+        }
+        function displayDate(data, type, row, meta) {
+            return '<div style="text-align:center;min-width:121px;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
+        }
+        function displayDateCreated(data, type, row, meta) {
+            return '<div style="text-align:center;">'+moment(data).format('DD-MM-YYYY hh:mm')+'</div>';
+        }
+        function displayBranch(data, type, row, meta) {
+            var need = '';
+            if (isNull(row.Branch)) {
+                need = '<span><span>' + row.Branch + '</span></span><br/>';
+            }
+            var description = '';
+            if (isNull(row.UserCreated)) {
+                description = '<span>Lên đơn: <a style="font-weight:700;" href="tel:' + row.UserCreatedPhone+'">'+
+                    row.UserCreated+
+                    '</span></span><br/>';
+            }
+            return '<div style="padding:10px;">'+need+description+'</div></div>';
+        }
+        function displayCustomer(data,type,row,meta) {
+            var customerName = '<span style="font-weight:600;font-size:16px;">' + data + '</span><br/>';
+                    var phone = '<span><a href="tel:' + row.CustomerPhone1 + '">' + row.CustomerPhone1 + '</a></span><br/>';
+                    var phone2 = '';
+                    if (isNull(row.CustomerPhone2)) {
+                        phone2 = '<span><a href="tel:' + row.CustomerPhone2 + '">' + row.CustomerPhone2 + '</a></span><br/>';
+                    }
+                    var phone3 = '';
+                    if (isNull(row.CustomerPhone3)) {
+                        phone3 = '<span><a href="tel:' + row.CustomerPhone3 + '">' + row.CustomerPhone3 + '</a></span><br/>';
+                    }
+                    var address = '';
+                    if(isNull(row.CustomerAddress)) {
+                        address = '<span>Địa chỉ: <span style="font-weight:700;">' + row.CustomerAddress + '</span></span><br/>';
+                    }
+                    return '<div style="padding:10px;">'+
+                        customerName+
+                        phone+
+                        phone2+
+                        phone3+
+                        address+
+                        '</div>';
+        }
+        function displayProduct(data, type, row, meta) {
+            var str = '';
+            if (row.Products) {
+                for (var i = 0; i < row.Products.length; i++) {
+                    str += '<span>' + row.Products[i].Name + ' (' + row.Products[i].Description+')</span>';
+                }
+            }
+            return str;
+        }
+    </script>
+}

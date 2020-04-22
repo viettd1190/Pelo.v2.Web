@@ -195,7 +195,7 @@ namespace Pelo.v2.Web.Controllers
             }).ToJson();
 
             return RedirectToAction("Detail",
-                                    "CAndidate",
+                                    "Candidate",
                                     new
                                     {
                                         id = model.Id

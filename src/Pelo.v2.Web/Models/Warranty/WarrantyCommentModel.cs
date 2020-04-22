@@ -5,5 +5,7 @@
         public int Id { get; set; }
 
         public string Comment { get; set; }
+
+        public int WarrantyStatusId { get; set; }
     }
 }
