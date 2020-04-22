@@ -46,6 +46,8 @@ namespace Pelo.v2.Web.Models.Warranty
         public IList<ProductInWarrantyModel> Products { get; set; }
 
         public string ProductRaw { get; set; }
+
+        public int Price { get; set; }
     }
     public class ProductInWarrantyModel
     {
