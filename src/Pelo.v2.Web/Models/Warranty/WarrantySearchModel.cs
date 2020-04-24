@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Pelo.v2.Web.Models.Warranty
@@ -23,13 +25,21 @@ namespace Pelo.v2.Web.Models.Warranty
 
         public int UserCareId { get; set; }
 
+        [DataType(DataType.Date)]
+        [UIHint("DateTimeEn_Insert")]
+        [UIHint("DateAjaxCalendar")]
+        [UIHint("DateOnly")]
+        [DefaultValue(null)]
         public DateTime? FromDate { get; set; }
 
+        [DataType(DataType.Date)]
+        [UIHint("DateTimeEn_Insert")]
+        [UIHint("DateAjaxCalendar")]
+        [UIHint("DateOnly")]
+        [DefaultValue(null)]
         public DateTime? ToDate { get; set; }
 
         public int UserCreatedId { get; set; }
-
-        public DateTime? DateCreated { get; set; }
 
         public IList<SelectListItem> AvaiableUserCares { get; set; }
 

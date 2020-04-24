@@ -11,6 +11,9 @@
 @section cssPlugin{
     <link rel="stylesheet" href="@Url.Content("~/startui/css/lib/datatables-net/datatables.min.css")">
     <link rel="stylesheet" href="@Url.Content("~/startui/css/separate/vendor/datatables-net.min.css")">
+    <link href="~/startui/css/separate/vendor/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/separate/vendor/bootstrap-daterangepicker.css" rel="stylesheet" />
+    <link href="~/startui/css/lib/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" />
 }
 
 @section css{
@@ -24,6 +27,10 @@
 @section jsPlugin {
     <script src="@Url.Content("~/startui/js/lib/datatables-net/datatables.min.js")"></script>
     <script src="~/startui/js/lib/moment/moment.min.js"></script>
+    <script src="~/startui/js/lib/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker.min.js"></script>
+    <script src="~/startui/js/lib/clockpicker/bootstrap-clockpicker-init.js"></script>
+    <script src="~/startui/js/lib/daterangepicker/daterangepicker.js"></script>
 }
 
 <div class="row">
@@ -33,7 +40,7 @@
                 <h3 class="panel-title">Danh sách bảo hành</h3>
             </header>
             <div class="box-typical-body panel-body">
-                <div class="row" style="padding:15px;">
+                <div class="row" style="padding:5px">
                     <div class="col-lg-6">
                         <fieldset class="form-group">
                             <nop-label asp-for="CustomerName" text-display="Tên khách hàng" />
@@ -50,10 +57,14 @@
                     </div>
                     <div class="col-lg-6">
                         <fieldset class="form-group">
-                            <fieldset class="form-group">
-                                <nop-label asp-for="Code" text-display="Mã bảo hành" />
-                                <input asp-for="Code" class="form-control" type="text" placeholder="Mã bảo hành" />
-                            </fieldset>
+                            <nop-label asp-for="Code" text-display="Mã bảo hành" />
+                            <input asp-for="Code" class="form-control" type="text" placeholder="Mã bảo hành" />
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <fieldset class="form-group">
+                            <nop-label asp-for="WarrantyStatusId" text-display="Trạng thái" />
+                            <nop-select asp-for="WarrantyStatusId" asp-items="Model.AvaiableWarrantyStatus" />
                         </fieldset>
                     </div>
                     <div class="col-lg-6">
@@ -77,13 +88,14 @@
                     <div class="col-lg-6">
                         <fieldset class="form-group">
                             <nop-label asp-for="FromDate" text-display="Ngày hẹn từ" />
-                            <input asp-for="FromDate" class="form-control" type="text" placeholder="Ngày hẹn từ" />
+                            <nop-editor asp-for="FromDate" class="form-control" value="" />
+                            @*<input asp-for="FromDate" class="form-control" type="text" placeholder="Ngày hẹn từ" />*@
                         </fieldset>
                     </div>
                     <div class="col-lg-6">
                         <fieldset class="form-group">
-                            <nop-label asp-for="FromDate" text-display="Ngày hẹn đến" />
-                            <input asp-for="FromDate" class="form-control" type="text" placeholder="Ngày hẹn đến" />
+                            <nop-label asp-for="ToDate" text-display="Ngày hẹn đến" />
+                            <nop-editor asp-for="ToDate" class="form-control" value="" />
                         </fieldset>
                     </div>
                     <div class="col-xs-12">
@@ -159,6 +171,8 @@
 @section js{
     <script>
         $(document).ready(function () {
+             $('#FromDate').val('');
+            $('#ToDate').val('');
             $('.opened').removeClass('opened');
             $('.row-active').removeClass('row-active');
             $('#liWarranty').addClass('opened');
@@ -177,8 +191,8 @@
             reloadDataWhenEnter('@nameof(Model.Code)');
             reloadDataWhenEnter('@nameof(Model.FromDate)');
             reloadDataWhenEnter('@nameof(Model.ToDate)');
-            reloadDataWhenEnter('@nameof(Model.DateCreated)');
             reloadDataWhenSelect('@nameof(Model.WarrantyStatusId)');
+            $('#search-warranty').click();
         });
         function displayStatus(data,type,row,meta) {
             return '<div style="text-align:center;margin:auto;"><span class="label" style="width:150px;background-color:'+
